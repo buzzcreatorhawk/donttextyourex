@@ -39,17 +39,18 @@ export default function LandingPage() {
   ];
 
   // Palette — dark to light journey
-  const dark = "#12120e";
-  const darkMid = "#1a1c16";
-  const transition1 = "#232b1e"; // dark green
-  const transition2 = "#2d3d28"; // forest
-  const transition3 = "#3d5235"; // sage
-  const light1 = "#f0ede6";      // warm cream
-  const light2 = "#e8e4db";      // slightly darker cream
-  const accent = "#E94560";      // red — crisis colour
-  const green = "#3a7d4a";       // hopeful green
-  const greenLight = "#4a9d5a";  // lighter green
-  const gold = "#c8963c";        // warm gold
+  // ── Book cover palette ──────────────────────────────────────────────────────
+  const dark = "#0D2626";        // deep dark teal — cover shadow tone
+  const darkMid = "#0D3D3D";     // mid dark teal
+  const transition1 = "#0D5555"; // deeper teal
+  const transition2 = "#0D7377"; // deep teal — mid journey
+  const transition3 = "#1ABFBF"; // bright teal — cover dominant colour
+  const light1 = "#F5D5A0";      // warm cream — cover cloud highlights
+  const light2 = "#E8C888";      // slightly deeper cream
+  const accent = "#E8622A";      // burnt orange — cover ray colour
+  const green = "#1ABFBF";       // bright teal — the destination
+  const greenLight = "#1ABFBF";  // bright teal accent
+  const gold = "#E8622A";        // burnt orange — quotes and highlights
 
   return (
     <div style={{ margin:0, padding:0, fontFamily:"Georgia,serif", overflowX:"hidden" }}>

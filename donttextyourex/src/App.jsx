@@ -127,6 +127,17 @@ export default function LandingPage() {
             <div style={{ fontSize:9, letterSpacing:4, color:greenLight, textTransform:"uppercase", marginBottom:18 }}>The Book</div>
             <h2 style={{ fontSize:"clamp(28px,4vw,48px)", fontWeight:"normal", color:light1, lineHeight:1.2, marginBottom:20 }}>Six chapters.<br/>One goal.<br/>Get you back.</h2>
             <p style={{ fontSize:14, color:"rgba(240,237,230,0.55)", lineHeight:1.9, marginBottom:36, fontStyle:"italic" }}>Short on purpose. We won't dwell on what went wrong. We'll focus on how to get out of the hole you're in.</p>
+            {/* Book cover */}
+            <div style={{ marginBottom:36 }}>
+              <div style={{ position:"relative", display:"inline-block" }}>
+                <img
+                  src="https://m.media-amazon.com/images/I/8155kpdVNkL._SY522_.jpg"
+                  alt="How to Get Over a Breakup — A Survival Guide For Men by Kamil Zalenski"
+                  style={{ width:160, borderRadius:8, boxShadow:"0 20px 60px rgba(0,0,0,0.6), 0 4px 16px rgba(233,69,96,0.2)", display:"block" }}
+                />
+                <div style={{ position:"absolute", top:-8, right:-8, background:accent, color:"#fff", borderRadius:100, padding:"4px 10px", fontSize:9, letterSpacing:1, fontWeight:"bold", fontFamily:"Georgia,serif" }}>ON AMAZON</div>
+              </div>
+            </div>
             <button className="btn" style={{ background:accent, color:"#fff", border:"none", borderRadius:100, padding:"15px 34px", fontSize:14, fontFamily:"Georgia,serif", boxShadow:"0 6px 24px rgba(233,69,96,0.25)" }}>Read on Amazon →</button>
           </div>
           <div className="card" style={{ background:"rgba(240,237,230,0.04)", border:"1px solid rgba(240,237,230,0.1)", borderRadius:24, padding:"32px 28px" }}>

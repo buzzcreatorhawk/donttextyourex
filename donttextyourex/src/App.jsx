@@ -1,280 +1,396 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { CSS } from "./styles";
+import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } from "./icons";
+
+// ── Commerce ────────────────────────────────────────────────────────────────
+const BUY_URL = "";       // TODO: paste the Gumroad product URL here
+const APP_URL = "";       // TODO: app store / download link, when there is one
+const LIST_ENDPOINT = ""; // TODO: POST target for the email list. While this is
+                          // empty the signup section does not render at all -
+                          // a form that silently discards an address is worse
+                          // than no form.
+const PRICE = "$24.99";
+const COVER_SRC = "/cover.jpg";
+
+// ── Content ─────────────────────────────────────────────────────────────────
+const problems = [
+  { Icon: Moon,   text: "It's 2am and you can't stop checking her Instagram." },
+  { Icon: Loop,   text: "The same thoughts on loop. Every conversation replayed." },
+  { Icon: Phone,  text: "Your thumb hovering over her name for the hundredth time." },
+  { Icon: Mirror, text: "Not recognising the person staring back at you." },
+];
+
+const chapters = [
+  { num: "01", title: "What's in your mind right now — the five stages, named." },
+  { num: "02", title: "Discipline as self-sacrifice — give your pain a job." },
+  { num: "03", title: "The power of goals — starting from the floor." },
+  { num: "04", title: "Rebuilding — the diamond under the coal." },
+  { num: "05", title: "Support system — the message Mark almost didn't send." },
+  { num: "06", title: "Moving forward — protecting what's yours." },
+];
+
+const features = [
+  { Icon: Block, title: "Don't Text Your Ex", desc: "Intercepts the urge and redirects it into something real. Instantly." },
+  { Icon: Bars,  title: "No Contact Counter", desc: "Track every day of distance. Watch the number grow. That number is you." },
+  { Icon: Book,  title: "Daily Thought",      desc: "One line from the book. Delivered when you need it most." },
+  { Icon: Check, title: "Habit Tracker",      desc: "Eight habits. One tap each. Small wins that build a life." },
+];
+
+// ── Reveal on scroll ────────────────────────────────────────────────────────
+// The hidden state only exists while .page.js is set, and that class is only
+// set when IntersectionObserver is available. On top of that every element has
+// a hard fallback timer: if the observer is throttled (background tab, hidden
+// window) and never fires, the content still appears. Content must never be
+// able to get stuck invisible.
+const REVEAL_FALLBACK_MS = 1400;
+
+const enhanceOK = () =>
+  typeof window !== "undefined" &&
+  typeof IntersectionObserver !== "undefined" &&
+  !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+function useReveal() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const show = () => el.classList.add("in");
+    if (typeof IntersectionObserver === "undefined") { show(); return; }
+    const timer = setTimeout(show, REVEAL_FALLBACK_MS);
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { show(); clearTimeout(timer); io.disconnect(); } },
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.08 }
+    );
+    io.observe(el);
+    return () => { clearTimeout(timer); io.disconnect(); };
+  }, []);
+  return ref;
+}
+
+const Reveal = ({ children, delay = 0, as: Tag = "div", className = "", style, ...rest }) => {
+  const ref = useReveal();
+  return (
+    <Tag ref={ref} className={`rv ${className}`.trim()} style={{ transitionDelay: `${delay}ms`, ...style }} {...rest}>
+      {children}
+    </Tag>
+  );
+};
+
+// Primary CTA. When BUY_URL is unset it stays visible but is honestly inert
+// rather than looking clickable and doing nothing.
+const Buy = ({ label = `Get the book — ${PRICE}` }) =>
+  BUY_URL
+    ? <a className="cta" href={BUY_URL}>{label}<Arrow size={18} /></a>
+    : <span className="cta" role="link" aria-disabled="true">{label}<Arrow size={18} /></span>;
 
 export default function LandingPage() {
+  const [navOn, setNavOn] = useState(false);
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [navVisible, setNavVisible] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const [err, setErr] = useState("");
+  const [sent, setSent] = useState(false);
   const [coverOk, setCoverOk] = useState(true);
+  // Computed once, before first paint, so the page never flashes visible then hides.
+  const [enhance] = useState(enhanceOK);
 
+  // rAF-throttled, passive. The old handler stored scrollY in state on every
+  // scroll event and re-rendered the whole page; that value was never read.
   useEffect(() => {
-    const handleScroll = () => {
-      setNavVisible(window.scrollY > 80);
-      setScrollY(window.scrollY);
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { setNavOn(window.scrollY > 90); raf = 0; });
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(raf); };
   }, []);
 
-  const problems = [
-    { icon: "🌙", text: "It's 2am and you can't stop checking her Instagram." },
-    { icon: "🔄", text: "The same thoughts on loop. Every conversation replayed." },
-    { icon: "📱", text: "Your thumb hovering over her name for the hundredth time." },
-    { icon: "🪞", text: "Not recognising the person staring back at you." },
-  ];
-
-  const chapters = [
-    { num: "01", title: "What's in your mind right now — the five stages, named." },
-    { num: "02", title: "Discipline as self-sacrifice — give your pain a job." },
-    { num: "03", title: "The power of goals — starting from the floor." },
-    { num: "04", title: "Rebuilding — the diamond under the coal." },
-    { num: "05", title: "Support system — the message Mark almost didn't send." },
-    { num: "06", title: "Moving forward — protecting what's yours." },
-  ];
-
-  const features = [
-    { icon: "🚫", title: "Don't Text Your Ex", desc: "Intercepts the urge and redirects it into something real. Instantly." },
-    { icon: "📊", title: "No Contact Counter", desc: "Track every day of distance. Watch the number grow. That number is you." },
-    { icon: "📖", title: "Daily Thought", desc: "One line from the book. Delivered when you need it most." },
-    { icon: "🏃", title: "Habit Tracker", desc: "Eight habits. One tap each. Small wins that build a life." },
-  ];
-
-  // Palette — dark to light journey
-  // ── Book cover palette ──────────────────────────────────────────────────────
-  const dark = "#0D2626";        // deep dark teal — cover shadow tone
-  const darkMid = "#0D3D3D";     // mid dark teal
-  const transition1 = "#0D5555"; // deeper teal
-  const transition2 = "#0D7377"; // deep teal — mid journey
-  const transition3 = "#1ABFBF"; // bright teal — cover dominant colour
-  const light1 = "#F5D5A0";      // warm cream — cover cloud highlights
-  const light2 = "#E8C888";      // slightly deeper cream
-  const accent = "#E8622A";      // burnt orange — cover ray colour
-  const green = "#1ABFBF";       // bright teal — the destination
-  const greenLight = "#1ABFBF";  // bright teal accent
-  const gold = "#E8622A";        // burnt orange — quotes and highlights
-
-  // Commerce — swap BUY_URL for the real product link (Gumroad / Etsy / etc.)
-  const BUY_URL = "";            // TODO: paste the product URL here
-  const PRICE = "$24.99";
-  const COVER_SRC = "/cover.jpg"; // served from public/cover.jpg (800x1280)
+  const submit = useCallback(async (e) => {
+    e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr("Enter a valid email address."); return; }
+    setErr("");
+    try {
+      await fetch(LIST_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setSent(true);
+    } catch { setErr("That didn't send. Try again in a moment."); }
+  }, [email]);
 
   return (
-    <div style={{ margin:0, padding:0, fontFamily:"Georgia,serif", overflowX:"hidden" }}>
-      <style>{`
-        *{box-sizing:border-box;margin:0;padding:0;}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:0.9}}
-        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-        .fu{animation:fadeUp 0.8s ease forwards;opacity:0;}
-        .fu1{animation-delay:0.1s}.fu2{animation-delay:0.25s}.fu3{animation-delay:0.4s}.fu4{animation-delay:0.55s}.fu5{animation-delay:0.7s}
-        .btn{transition:all 0.2s ease;cursor:pointer;}
-        .btn:hover{opacity:0.88;transform:translateY(-2px);}
-        .card{transition:transform 0.2s ease,box-shadow 0.2s ease;}
-        .card:hover{transform:translateY(-3px);}
-        input:focus{outline:none;}
-        ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#12120e}::-webkit-scrollbar-thumb{background:#3a7d4a;border-radius:2px}
-      `}</style>
+    <div className={enhance ? "page js" : "page"}>
+      <style>{CSS}</style>
 
-      {/* NAV */}
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, padding:"14px 40px", display:"flex", justifyContent:"space-between", alignItems:"center", background: navVisible ? "rgba(18,18,14,0.96)" : "transparent", backdropFilter: navVisible ? "blur(16px)" : "none", borderBottom: navVisible ? "1px solid rgba(58,125,74,0.15)" : "none", transition:"all 0.4s ease" }}>
-        <div style={{ fontSize:10, letterSpacing:4, color: navVisible ? green : "rgba(240,237,230,0.5)", textTransform:"uppercase", transition:"color 0.4s ease" }}>Survival Guide</div>
-        <a className="btn" href={BUY_URL || undefined} style={{ display:"inline-block", background:accent, color:"#fff", border:"none", borderRadius:100, padding:"10px 22px", fontSize:12, fontFamily:"Georgia,serif", letterSpacing:0.5, textDecoration:"none" }}>Get the Book — {PRICE} →</a>
-      </nav>
-
-      {/* ── HERO — DARK ── */}
-      <section style={{ minHeight:"100vh", background:`linear-gradient(160deg,${dark} 0%,${darkMid} 60%,${dark} 100%)`, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"120px 40px 100px", textAlign:"center", position:"relative", overflow:"hidden" }}>
-        {/* Subtle glow */}
-        <div style={{ position:"absolute", width:800, height:800, borderRadius:"50%", background:"radial-gradient(circle,rgba(58,125,74,0.06) 0%,transparent 65%)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", pointerEvents:"none" }}/>
-        {/* Grain texture */}
-        <div style={{ position:"absolute", inset:0, backgroundImage:"url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E\")", pointerEvents:"none" }}/>
-
-        <div className="fu fu1" style={{ fontSize:9, letterSpacing:5, color:accent, textTransform:"uppercase", marginBottom:24 }}>How to Get Over a Breakup</div>
-        <h1 className="fu fu2" style={{ fontSize:"clamp(44px,7vw,84px)", fontWeight:"normal", lineHeight:1.05, color:light1, marginBottom:18, maxWidth:680 }}>A Survival Guide<br/>For Men</h1>
-        <p className="fu fu3" style={{ fontSize:"clamp(15px,2vw,20px)", color:"rgba(58,125,74,0.9)", fontStyle:"italic", marginBottom:28, letterSpacing:0.5 }}>Written by someone who's been there.</p>
-        <p className="fu fu4" style={{ fontSize:15, lineHeight:1.95, color:"rgba(240,237,230,0.45)", maxWidth:500, marginBottom:52, fontStyle:"italic" }}>
-          You're not sleeping. You're checking her Instagram at midnight.<br/>
-          You're replaying conversations that go nowhere.<br/>
-          This book — and this app — were built for that moment.
-        </p>
-        <div className="fu fu5" style={{ display:"flex", gap:12, flexWrap:"wrap", justifyContent:"center" }}>
-          <a className="btn" href={BUY_URL || undefined} style={{ display:"inline-block", background:accent, color:"#fff", border:"none", borderRadius:100, padding:"17px 38px", fontSize:14, fontFamily:"Georgia,serif", boxShadow:"0 8px 32px rgba(233,69,96,0.28)", textDecoration:"none" }}>Get the Book — {PRICE} →</a>
-          <button className="btn" style={{ background:"transparent", color:"rgba(58,125,74,0.9)", border:"1px solid rgba(58,125,74,0.3)", borderRadius:100, padding:"17px 38px", fontSize:14, fontFamily:"Georgia,serif" }}>Download the App</button>
+      {/* ── NAV ── */}
+      <header
+        style={{
+          position: "fixed", inset: "0 0 auto 0", zIndex: 100,
+          padding: "14px var(--gut)", display: "flex",
+          justifyContent: "space-between", alignItems: "center", gap: 16,
+          background: navOn ? "rgba(10,33,48,0.94)" : "transparent",
+          backdropFilter: navOn ? "blur(14px)" : "none",
+          transition: "background 320ms ease",
+        }}
+      >
+        <span className="label" style={{ color: navOn ? "var(--teal300)" : "var(--on-dark-lo)" }}>
+          Survival Guide
+        </span>
+        <div style={{ opacity: navOn ? 1 : 0, pointerEvents: navOn ? "auto" : "none", transition: "opacity 320ms ease" }}>
+          {BUY_URL
+            ? <a className="cta" style={{ padding: "12px 20px", minHeight: 44, fontSize: 14 }} href={BUY_URL}>{PRICE}<Arrow size={16} /></a>
+            : <span className="cta" style={{ padding: "12px 20px", minHeight: 44, fontSize: 14 }} role="link" aria-disabled="true">{PRICE}<Arrow size={16} /></span>}
         </div>
-        <div style={{ position:"absolute", bottom:38, display:"flex", flexDirection:"column", alignItems:"center", gap:8, color:"rgba(240,237,230,0.2)", fontSize:9, letterSpacing:3 }}>
-          <div style={{ width:1, height:44, background:`linear-gradient(to bottom,rgba(58,125,74,0.6),transparent)`, animation:"pulse 2s ease-in-out infinite" }}/>
-          SCROLL
-        </div>
-      </section>
+      </header>
 
-      {/* ── PROBLEM — STILL DARK ── */}
-      <section style={{ padding:"100px 40px", background:`linear-gradient(180deg,${dark} 0%,${darkMid} 100%)` }}>
-        <div style={{ maxWidth:900, margin:"0 auto", textAlign:"center" }}>
-          <div style={{ fontSize:9, letterSpacing:4, color:green, textTransform:"uppercase", marginBottom:18 }}>Sound familiar?</div>
-          <h2 style={{ fontSize:"clamp(28px,4vw,50px)", fontWeight:"normal", color:light1, lineHeight:1.2, marginBottom:18 }}>You know exactly<br/>what this feels like.</h2>
-          <p style={{ fontSize:15, color:"rgba(240,237,230,0.4)", fontStyle:"italic", lineHeight:1.9, maxWidth:480, margin:"0 auto 52px" }}>And you also know you shouldn't text her. But knowing and doing are two different things at 2am.</p>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(195px,1fr))", gap:14 }}>
-            {problems.map((p,i) => (
-              <div key={i} className="card" style={{ background:"rgba(233,69,96,0.04)", border:"1px solid rgba(233,69,96,0.1)", borderRadius:20, padding:"28px 22px", textAlign:"left" }}>
-                <div style={{ fontSize:28, marginBottom:16 }}>{p.icon}</div>
-                <p style={{ fontSize:13, lineHeight:1.8, color:"rgba(240,237,230,0.55)", fontStyle:"italic" }}>{p.text}</p>
-              </div>
-            ))}
-          </div>
-          <p style={{ fontSize:16, color:"rgba(240,237,230,0.35)", fontStyle:"italic", lineHeight:1.85, maxWidth:520, margin:"52px auto 0" }}>
-            This isn't a therapy manual. This isn't a list of affirmations.<br/>
-            This is a blueprint — written by a man who's been on the floor<br/>and figured out how to get back up.
-          </p>
-        </div>
-      </section>
-
-      {/* ── TRANSITION — DARK TO FOREST ── */}
-      <section style={{ padding:"100px 40px", background:`linear-gradient(180deg,${darkMid} 0%,${transition1} 50%,${transition2} 100%)` }}>
-        <div style={{ maxWidth:960, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:60, alignItems:"center" }}>
-          <div>
-            <div style={{ fontSize:9, letterSpacing:4, color:greenLight, textTransform:"uppercase", marginBottom:18 }}>The Book</div>
-            <h2 style={{ fontSize:"clamp(28px,4vw,48px)", fontWeight:"normal", color:light1, lineHeight:1.2, marginBottom:20 }}>Six chapters.<br/>One goal.<br/>Get you back.</h2>
-            <p style={{ fontSize:14, color:"rgba(240,237,230,0.55)", lineHeight:1.9, marginBottom:36, fontStyle:"italic" }}>Short on purpose. We won't dwell on what went wrong. We'll focus on how to get out of the hole you're in.</p>
-            {/* Book cover */}
-            <div style={{ marginBottom:36 }}>
-              <div style={{ position:"relative", display:"inline-block" }}>
-                {coverOk ? (
-                  <img
-                    src={COVER_SRC}
-                    alt="How to Get Over a Breakup — A Survival Guide For Men"
-                    onError={() => setCoverOk(false)}
-                    style={{ width:160, borderRadius:8, boxShadow:"0 20px 60px rgba(0,0,0,0.6), 0 4px 16px rgba(233,69,96,0.2)", display:"block" }}
-                  />
-                ) : (
-                  <div style={{ width:160, height:240, borderRadius:8, background:`linear-gradient(160deg,${transition2} 0%,${dark} 100%)`, border:`1px solid ${transition3}33`, boxShadow:"0 20px 60px rgba(0,0,0,0.6)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"0 18px", textAlign:"center", gap:10 }}>
-                    <div style={{ fontSize:13, color:light1, lineHeight:1.4 }}>How to Get Over a Breakup</div>
-                    <div style={{ fontSize:9, letterSpacing:2, color:greenLight, textTransform:"uppercase" }}>A Survival Guide For Men</div>
-                  </div>
-                )}
-                <div style={{ position:"absolute", top:-8, right:-8, background:accent, color:"#fff", borderRadius:100, padding:"4px 10px", fontSize:9, letterSpacing:1, fontWeight:"bold", fontFamily:"Georgia,serif" }}>{PRICE}</div>
-              </div>
+      <main>
+        {/* ── HERO — the floor ── */}
+        <section className="sec on-ink" aria-labelledby="h-hero"
+          style={{ minHeight: "100dvh", display: "flex", alignItems: "center", paddingTop: "clamp(110px,15vh,180px)" }}>
+          <div className="wrap g-split">
+            <div>
+              <Reveal style={{ marginBottom: 26 }}>
+                <span className="label c-orange">How to Get Over a Breakup</span>
+              </Reveal>
+              <Reveal delay={80}>
+                <h1 id="h-hero" className="d-xl hi" style={{ marginBottom: 24 }}>
+                  A Survival<br />Guide For Men
+                </h1>
+              </Reveal>
+              <Reveal delay={160}>
+                <p className="lead it c-teal" style={{ marginBottom: 22 }}>Written by someone who's been there.</p>
+              </Reveal>
+              <Reveal delay={220}>
+                <p className="lead" style={{ marginBottom: 44 }}>
+                  You're not sleeping. You're checking her Instagram at midnight.
+                  You're replaying conversations that go nowhere. This book was built for that moment.
+                </p>
+              </Reveal>
+              <Reveal delay={300}><Buy /></Reveal>
             </div>
-            <a className="btn" href={BUY_URL || undefined} style={{ display:"inline-block", background:accent, color:"#fff", border:"none", borderRadius:100, padding:"15px 34px", fontSize:14, fontFamily:"Georgia,serif", boxShadow:"0 6px 24px rgba(233,69,96,0.25)", textDecoration:"none" }}>Get the PDF — {PRICE} →</a>
-          </div>
-          <div className="card" style={{ background:"rgba(240,237,230,0.04)", border:"1px solid rgba(240,237,230,0.1)", borderRadius:24, padding:"32px 28px" }}>
-            <div style={{ fontSize:8, letterSpacing:3, color:greenLight, marginBottom:18 }}>WHAT'S INSIDE</div>
-            <div style={{ fontSize:19, color:light1, marginBottom:6, fontWeight:"normal" }}>How to Get Over a Breakup</div>
-            <div style={{ fontSize:11, color:greenLight, marginBottom:26, letterSpacing:1 }}>A Survival Guide For Men</div>
-            {chapters.map((c,i) => (
-              <div key={i} style={{ display:"flex", gap:14, alignItems:"flex-start", padding:"12px 0", borderBottom:"1px solid rgba(240,237,230,0.07)", fontSize:13, color:"rgba(240,237,230,0.58)", lineHeight:1.55 }}>
-                <span style={{ fontSize:9, color:greenLight, letterSpacing:2, minWidth:26, paddingTop:2 }}>{c.num}</span>
-                <span>{c.title}</span>
-              </div>
-            ))}
-            <div style={{ fontSize:11, color:"rgba(240,237,230,0.28)", fontStyle:"italic", marginTop:18 }}>+ The 25-quality exercise that changes everything.</div>
-          </div>
-        </div>
-      </section>
 
-      {/* ── QUOTE 1 — FOREST ── */}
-      <section style={{ padding:"90px 40px", background:transition2, textAlign:"center" }}>
-        <div style={{ maxWidth:680, margin:"0 auto" }}>
-          <div style={{ width:36, height:1, background:greenLight, margin:"0 auto 32px" }}/>
-          <p style={{ fontSize:"clamp(19px,3vw,32px)", fontStyle:"italic", lineHeight:1.65, color:light1, marginBottom:20 }}>"The pain is fuel. The only question is what you point it at."</p>
-          <p style={{ fontSize:11, color:greenLight, letterSpacing:3 }}>— CHAPTER 2, DISCIPLINE</p>
-        </div>
-      </section>
-
-      {/* ── APP — SAGE TO LIGHT ── */}
-      <section style={{ padding:"100px 40px", background:`linear-gradient(180deg,${transition2} 0%,${transition3} 40%,#5a7a4a 100%)` }}>
-        <div style={{ maxWidth:960, margin:"0 auto" }}>
-          <div style={{ textAlign:"center", marginBottom:60 }}>
-            <div style={{ fontSize:9, letterSpacing:4, color:"rgba(240,237,230,0.7)", textTransform:"uppercase", marginBottom:18 }}>The App</div>
-            <h2 style={{ fontSize:"clamp(28px,4vw,48px)", fontWeight:"normal", color:light1, lineHeight:1.3 }}>For the 2am moment.<br/>Right in your pocket.</h2>
-          </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:56, alignItems:"center" }}>
-            {/* Phone mockup */}
-            <div style={{ background:"#141814", borderRadius:30, padding:"24px 18px 18px", border:"1px solid rgba(240,237,230,0.1)", boxShadow:"0 32px 70px rgba(0,0,0,0.4)", maxWidth:320, margin:"0 auto", animation:"float 4s ease-in-out infinite" }}>
-              <div style={{ fontSize:8, letterSpacing:3, color:accent, marginBottom:14, textAlign:"center" }}>DON'T TEXT YOUR EX</div>
-              <div style={{ background:"linear-gradient(135deg,#1c0810,#2a0d18)", border:`2px solid ${accent}`, borderRadius:14, padding:"16px 14px", marginBottom:10, display:"flex", alignItems:"center", gap:10 }}>
-                <span style={{ fontSize:22 }}>🚫</span>
-                <div>
-                  <div style={{ fontSize:13, color:accent, fontWeight:"bold", marginBottom:2 }}>Don't Text Your Ex</div>
-                  <div style={{ fontSize:9, color:"rgba(233,69,96,0.5)" }}>Tap for an instant redirect</div>
-                </div>
-              </div>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:7, marginBottom:10 }}>
-                {["🚿 Cold Shower ✓","🏃 Exercise ✓","🚫 No Contact","📓 Journal"].map((h,i) => (
-                  <div key={i} style={{ background:i<2?"rgba(39,174,96,0.13)":"rgba(42,157,110,0.04)", border:`1px solid ${i<2?"#27AE60":"rgba(42,157,110,0.1)"}`, borderRadius:9, padding:"9px", fontSize:10, color:i<2?"#27AE60":"#8a9a88" }}>{h}</div>
-                ))}
-              </div>
-              <div style={{ background:"rgba(42,157,110,0.06)", border:"1px solid rgba(42,157,110,0.12)", borderRadius:10, padding:"10px 12px" }}>
-                <div style={{ fontSize:7, letterSpacing:2, color:"#2a9d6e", marginBottom:5 }}>TODAY'S THOUGHT</div>
-                <div style={{ fontSize:10, color:"rgba(240,240,236,0.55)", fontStyle:"italic", lineHeight:1.5 }}>"The goal right now isn't transformation. It's interruption."</div>
-              </div>
-            </div>
-            {/* Features */}
-            <div style={{ display:"flex", flexDirection:"column", gap:26 }}>
-              {features.map((f,i) => (
-                <div key={i} style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
-                  <div style={{ width:44, height:44, borderRadius:13, background:"rgba(240,237,230,0.1)", border:"1px solid rgba(240,237,230,0.15)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:19, flexShrink:0 }}>{f.icon}</div>
-                  <div>
-                    <div style={{ fontSize:14, color:light1, marginBottom:5, fontWeight:"bold" }}>{f.title}</div>
-                    <div style={{ fontSize:12, color:"rgba(240,237,230,0.55)", lineHeight:1.7 }}>{f.desc}</div>
-                  </div>
-                </div>
-              ))}
-              <button className="btn" style={{ background:"rgba(240,237,230,0.1)", color:light1, border:"1px solid rgba(240,237,230,0.2)", borderRadius:100, padding:"14px 28px", fontSize:13, fontFamily:"Georgia,serif", alignSelf:"flex-start", marginTop:8 }}>Download Free →</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── QUOTE 2 — EMERGING INTO LIGHT ── */}
-      <section style={{ padding:"90px 40px", background:`linear-gradient(180deg,#5a7a4a 0%,#8aaa7a 50%,#b5c9a5 100%)`, textAlign:"center" }}>
-        <div style={{ maxWidth:680, margin:"0 auto" }}>
-          <div style={{ width:36, height:1, background:"rgba(255,255,255,0.4)", margin:"0 auto 32px" }}/>
-          <p style={{ fontSize:"clamp(18px,2.8vw,28px)", fontStyle:"italic", lineHeight:1.7, color:"#1a2a14", marginBottom:20 }}>"Somewhere underneath the coal of all this pain, there is a diamond. It was always there. The breakup didn't create it. But it created the pressure."</p>
-          <p style={{ fontSize:11, color:"rgba(26,42,20,0.6)", letterSpacing:3 }}>— CHAPTER 4, REBUILDING YOUR LIFE</p>
-        </div>
-      </section>
-
-      {/* ── EMAIL — FULL LIGHT ── */}
-      <section style={{ padding:"110px 40px", background:`linear-gradient(180deg,#b5c9a5 0%,${light1} 40%,${light2} 100%)`, textAlign:"center" }}>
-        <div style={{ maxWidth:560, margin:"0 auto" }}>
-          <div style={{ fontSize:9, letterSpacing:4, color:green, textTransform:"uppercase", marginBottom:18 }}>Free download</div>
-          <h2 style={{ fontSize:"clamp(26px,4vw,44px)", fontWeight:"normal", color:"#1a2a14", lineHeight:1.3, marginBottom:16 }}>Get the free<br/>habit tracker.</h2>
-          <p style={{ fontSize:15, color:"rgba(26,42,20,0.55)", fontStyle:"italic", lineHeight:1.9, marginBottom:40 }}>A companion to the book. 12 months of habit tracking, progress charts, and weekly reflections. Free when you join the list.</p>
-          {!submitted ? (
-            <>
-              <div style={{ display:"flex", gap:10, flexWrap:"wrap", justifyContent:"center" }}>
-                <input
-                  style={{ flex:1, minWidth:210, background:"rgba(26,42,20,0.06)", border:"1px solid rgba(26,42,20,0.2)", borderRadius:100, padding:"15px 24px", fontSize:14, color:"#1a2a14", fontFamily:"Georgia,serif" }}
-                  type="email" placeholder="your@email.com"
-                  value={email} onChange={e=>setEmail(e.target.value)}
+            <Reveal delay={240} style={{ justifySelf: "center" }}>
+              {coverOk ? (
+                <img
+                  src={COVER_SRC} width="800" height="1280"
+                  alt="Cover of How to Get Over a Breakup — A Survival Guide For Men"
+                  onError={() => setCoverOk(false)}
+                  style={{ width: "min(320px,72vw)", height: "auto", borderRadius: 3, boxShadow: "0 34px 70px -20px rgba(7,24,35,0.85)" }}
                 />
-                <button className="btn" onClick={()=>email&&setSubmitted(true)} style={{ background:green, color:"#fff", border:"none", borderRadius:100, padding:"15px 28px", fontSize:14, fontFamily:"Georgia,serif", whiteSpace:"nowrap", boxShadow:"0 6px 20px rgba(58,125,74,0.25)" }}>Send it →</button>
+              ) : (
+                <div aria-hidden="true" style={{ width: "min(320px,72vw)", aspectRatio: "5/8", background: "var(--teal900)", borderRadius: 3 }} />
+              )}
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── PROBLEM — still on the floor ── */}
+        <section className="sec on-ink" aria-labelledby="h-problem">
+          <div className="wrap">
+            <div className="g-split-r" style={{ marginBottom: "clamp(32px,5vw,56px)" }}>
+              <div>
+                <span className="label c-teal">Sound familiar?</span>
+                <h2 id="h-problem" className="d-l hi" style={{ marginTop: 18 }}>
+                  You know exactly<br />what this feels like.
+                </h2>
               </div>
-              <p style={{ fontSize:11, color:"rgba(26,42,20,0.35)", marginTop:14, fontStyle:"italic" }}>No spam. One email with your tracker. That's it.</p>
-            </>
-          ) : (
-            <div style={{ padding:"28px", background:"rgba(58,125,74,0.08)", border:"1px solid rgba(58,125,74,0.2)", borderRadius:20 }}>
-              <div style={{ fontSize:20, color:green, marginBottom:8 }}>Done. Check your inbox.</div>
-              <div style={{ fontSize:13, color:"rgba(26,42,20,0.45)", fontStyle:"italic" }}>Your tracker is on its way.</div>
+              <p className="lead" style={{ alignSelf: "end" }}>
+                And you also know you shouldn't text her. But knowing and doing are two different
+                things at 2am.
+              </p>
             </div>
-          )}
-        </div>
-      </section>
 
-      {/* ── AUTHOR NOTE — LIGHT ── */}
-      <section style={{ padding:"80px 40px", background:light2, textAlign:"center" }}>
-        <div style={{ maxWidth:620, margin:"0 auto" }}>
-          <div style={{ width:36, height:1, background:green, margin:"0 auto 32px" }}/>
-          <p style={{ fontSize:"clamp(14px,2vw,17px)", fontStyle:"italic", lineHeight:1.9, color:"rgba(26,42,20,0.6)", marginBottom:24 }}>
-            "I'm not a therapist. I'm not a life coach. What I have is this — I've been the person you are right now. The 2am person. I also know, because I've been here more than once, how to get out."
-          </p>
-          <p style={{ fontSize:13, color:green, letterSpacing:1 }}>— THE AUTHOR</p>
-        </div>
-      </section>
+            <ul style={{ listStyle: "none" }}>
+              {problems.map(({ Icon, text }, i) => (
+                <Reveal as="li" key={i} delay={i * 70} className="row">
+                  <span className="num c-orange" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  <span style={{ display: "flex", gap: 18, alignItems: "flex-start" }}>
+                    <span className="c-teal" style={{ flexShrink: 0, marginTop: 3 }}><Icon size={22} /></span>
+                    <span className="d-m hi" style={{ fontSize: "clamp(19px,2.4vw,30px)" }}>{text}</span>
+                  </span>
+                </Reveal>
+              ))}
+            </ul>
 
-      {/* ── FOOTER — WARM LIGHT ── */}
-      <footer style={{ padding:"44px 40px", background:light1, borderTop:"1px solid rgba(26,42,20,0.08)", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:14 }}>
-        <div style={{ fontSize:11, color:"rgba(26,42,20,0.3)", letterSpacing:1 }}>© 2025 How to Get Over a Breakup</div>
-        <div style={{ fontSize:13, color:green, fontStyle:"italic" }}>"Go live your life."</div>
+            <Reveal delay={140}>
+              <p className="lead" style={{ marginTop: "clamp(40px,6vw,68px)" }}>
+                This isn't a therapy manual. This isn't a list of affirmations. This is a blueprint —
+                written by a man who's been on the floor and figured out how to get back up.
+              </p>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── QUOTE 1 — first light ── */}
+        <section className="sec on-t900">
+          <Reveal>
+            <figure className="wrap" style={{ maxWidth: 860 }}>
+              <blockquote className="d-l it hi">
+                “The pain is fuel. The only question is what you point it at.”
+              </blockquote>
+              <figcaption className="label c-teal" style={{ marginTop: 30 }}>Chapter 2 — Discipline</figcaption>
+            </figure>
+          </Reveal>
+        </section>
+
+        {/* ── BOOK ── */}
+        <section className="sec on-t900" aria-labelledby="h-book" style={{ paddingTop: 0 }}>
+          <div className="wrap">
+            <hr className="rule" style={{ marginBottom: "clamp(56px,8vw,96px)", color: "var(--on-dark-hi)" }} />
+            <div className="g-split-r">
+              <div>
+                <span className="label c-teal">The book</span>
+                <h2 id="h-book" className="d-l hi" style={{ marginTop: 18, marginBottom: 22 }}>
+                  Six chapters.<br />One goal.<br />Get you back.
+                </h2>
+                <p className="body" style={{ marginBottom: 38 }}>
+                  Short on purpose. We won't dwell on what went wrong. We'll focus on how to get out
+                  of the hole you're in.
+                </p>
+                <Buy label={`Get the PDF — ${PRICE}`} />
+              </div>
+
+              <div>
+                <ol style={{ listStyle: "none" }}>
+                  {chapters.map((ch, i) => (
+                    <Reveal as="li" key={ch.num} delay={i * 60} className="row" style={{ alignItems: "baseline" }}>
+                      <span className="label c-orange" style={{ minWidth: 28 }}>{ch.num}</span>
+                      <span className="hi" style={{ fontSize: "clamp(16px,1.7vw,20px)", lineHeight: 1.5 }}>{ch.title}</span>
+                    </Reveal>
+                  ))}
+                </ol>
+                <p className="small lo it" style={{ marginTop: 22 }}>
+                  Plus the 25-quality exercise that changes everything.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── APP ── */}
+        <section className="sec on-t700" aria-labelledby="h-app">
+          <div className="wrap">
+            <div style={{ marginBottom: "clamp(44px,6vw,76px)", maxWidth: "22ch" }}>
+              <span className="label c-teal">The app</span>
+              <h2 id="h-app" className="d-l hi" style={{ marginTop: 18 }}>
+                For the 2am moment.<br />Right in your pocket.
+              </h2>
+            </div>
+
+            <div className="g-split">
+              <div className="stack-l">
+                {features.map(({ Icon, title, desc }, i) => (
+                  <Reveal key={title} delay={i * 70} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 18, alignItems: "start" }}>
+                    <span className="c-teal" style={{ marginTop: 2 }}><Icon size={26} /></span>
+                    <span>
+                      <span className="hi" style={{ display: "block", fontSize: 18, fontWeight: 600, marginBottom: 6 }}>{title}</span>
+                      <span className="body" style={{ display: "block" }}>{desc}</span>
+                    </span>
+                  </Reveal>
+                ))}
+                {APP_URL
+                  ? <a className="ghost" href={APP_URL}>Download the app<Arrow size={16} /></a>
+                  : <p className="small lo it">The app is still in build. The book stands on its own.</p>}
+              </div>
+
+              <Reveal delay={180} style={{ justifySelf: "center" }}>
+                <div className="phone float" role="img" aria-label="Preview of the app: an interrupt button, a habit grid, and the day's thought.">
+                  <p className="label c-orange" style={{ fontSize: 9, textAlign: "center", marginBottom: 14 }}>Don't Text Your Ex</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "15px 13px", marginBottom: 10, borderRadius: 3, border: "1px solid var(--orange)", background: "rgba(239,105,62,0.13)" }}>
+                    <span className="c-orange"><Block size={22} /></span>
+                    <span>
+                      <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "var(--orange)" }}>Don't Text Your Ex</span>
+                      <span style={{ display: "block", fontSize: 11, color: "var(--on-dark-lo)" }}>Tap for an instant redirect</span>
+                    </span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7, marginBottom: 10 }}>
+                    {[["Cold shower", true], ["Exercise", true], ["No contact", false], ["Journal", false]].map(([lbl, done]) => (
+                      <span key={lbl} className={done ? "tile done" : "tile"}>
+                        {done ? <Check size={14} /> : <Circle size={14} />}{lbl}
+                      </span>
+                    ))}
+                  </div>
+                  <div style={{ padding: "12px 13px", borderRadius: 3, border: "1px solid rgba(252,250,231,0.12)" }}>
+                    <span className="label" style={{ fontSize: 9, color: "var(--teal300)" }}>Today's thought</span>
+                    <p className="it" style={{ fontSize: 12, color: "var(--on-dark-mid)", marginTop: 7, lineHeight: 1.55 }}>
+                      “The goal right now isn't transformation. It's interruption.”
+                    </p>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ── QUOTE 2 — the turn. Hard cut into the light, on purpose. ── */}
+        <section className="sec on-sage">
+          <Reveal>
+            <figure className="wrap" style={{ maxWidth: 900 }}>
+              <blockquote className="d-l it hi-d">
+                “Somewhere underneath the coal of all this pain, there is a diamond. It was always
+                there. The breakup didn't create it. But it created the pressure.”
+              </blockquote>
+              <figcaption className="label c-t700" style={{ marginTop: 30 }}>Chapter 4 — Rebuilding your life</figcaption>
+            </figure>
+          </Reveal>
+        </section>
+
+        {/* ── AUTHOR ── */}
+        <section className="sec on-cream" aria-labelledby="h-author">
+          <div className="wrap" style={{ maxWidth: 760 }}>
+            <h2 id="h-author" className="label c-rust" style={{ marginBottom: 26 }}>Who wrote this</h2>
+            <p className="d-m it hi-d">
+              “I'm not a therapist. I'm not a life coach. What I have is this — I've been the person
+              you are right now. The 2am person. I also know, because I've been here more than once,
+              how to get out.”
+            </p>
+            <div style={{ marginTop: 44 }}><Buy /></div>
+          </div>
+        </section>
+
+        {/* ── EMAIL — only renders once there is somewhere to send it ── */}
+        {LIST_ENDPOINT && (
+          <section className="sec on-paper" aria-labelledby="h-list">
+            <div className="wrap" style={{ maxWidth: 560 }}>
+              <span className="label c-rust">Free download</span>
+              <h2 id="h-list" className="d-l hi-d" style={{ marginTop: 18, marginBottom: 18 }}>
+                Get the free<br />habit tracker.
+              </h2>
+              <p className="body" style={{ marginBottom: 34 }}>
+                A companion to the book. Twelve months of habit tracking, progress charts and weekly
+                reflections. Free when you join the list.
+              </p>
+              {sent ? (
+                <p className="lead hi-d" role="status">Done. It's on its way to {email}.</p>
+              ) : (
+                <form onSubmit={submit} noValidate className="field">
+                  <label htmlFor="email">Email address</label>
+                  <input
+                    id="email" name="email" type="email" autoComplete="email" inputMode="email"
+                    placeholder="you@example.com" value={email}
+                    aria-invalid={err ? "true" : undefined}
+                    aria-describedby={err ? "email-err" : "email-help"}
+                    onChange={(e) => { setEmail(e.target.value); if (err) setErr(""); }}
+                  />
+                  {err
+                    ? <p className="err" id="email-err" role="alert">{err}</p>
+                    : <p className="help" id="email-help">No spam. One email with your tracker. That's it.</p>}
+                  <button className="cta" type="submit" style={{ marginTop: 20 }}>
+                    Send it<Arrow size={18} />
+                  </button>
+                </form>
+              )}
+            </div>
+          </section>
+        )}
+      </main>
+
+      <footer className="on-paper" style={{ padding: "40px var(--gut)" }}>
+        <div className="wrap" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
+          <span className="small lo-d">© {new Date().getFullYear()} How to Get Over a Breakup</span>
+          <span className="small it c-t700">“Go live your life.”</span>
+        </div>
       </footer>
     </div>
   );

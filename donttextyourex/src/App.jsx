@@ -17,9 +17,9 @@ export default function LandingPage() {
   }, []);
 
   const problems = [
-    { icon: "🌙", text: "It's 2am and you can't stop checking their Instagram." },
+    { icon: "🌙", text: "It's 2am and you can't stop checking her Instagram." },
     { icon: "🔄", text: "The same thoughts on loop. Every conversation replayed." },
-    { icon: "📱", text: "Your thumb hovering over their name for the hundredth time." },
+    { icon: "📱", text: "Your thumb hovering over her name for the hundredth time." },
     { icon: "🪞", text: "Not recognising the person staring back at you." },
   ];
 
@@ -92,7 +92,7 @@ export default function LandingPage() {
         <h1 className="fu fu2" style={{ fontSize:"clamp(44px,7vw,84px)", fontWeight:"normal", lineHeight:1.05, color:light1, marginBottom:18, maxWidth:680 }}>A Survival Guide<br/>For Men</h1>
         <p className="fu fu3" style={{ fontSize:"clamp(15px,2vw,20px)", color:"rgba(58,125,74,0.9)", fontStyle:"italic", marginBottom:28, letterSpacing:0.5 }}>Written by someone who's been there.</p>
         <p className="fu fu4" style={{ fontSize:15, lineHeight:1.95, color:"rgba(240,237,230,0.45)", maxWidth:500, marginBottom:52, fontStyle:"italic" }}>
-          You're not sleeping. You're checking their Instagram at midnight.<br/>
+          You're not sleeping. You're checking her Instagram at midnight.<br/>
           You're replaying conversations that go nowhere.<br/>
           This book — and this app — were built for that moment.
         </p>
@@ -111,7 +111,7 @@ export default function LandingPage() {
         <div style={{ maxWidth:900, margin:"0 auto", textAlign:"center" }}>
           <div style={{ fontSize:9, letterSpacing:4, color:green, textTransform:"uppercase", marginBottom:18 }}>Sound familiar?</div>
           <h2 style={{ fontSize:"clamp(28px,4vw,50px)", fontWeight:"normal", color:light1, lineHeight:1.2, marginBottom:18 }}>You know exactly<br/>what this feels like.</h2>
-          <p style={{ fontSize:15, color:"rgba(240,237,230,0.4)", fontStyle:"italic", lineHeight:1.9, maxWidth:480, margin:"0 auto 52px" }}>And you also know you shouldn't text them. But knowing and doing are two different things at 2am.</p>
+          <p style={{ fontSize:15, color:"rgba(240,237,230,0.4)", fontStyle:"italic", lineHeight:1.9, maxWidth:480, margin:"0 auto 52px" }}>And you also know you shouldn't text her. But knowing and doing are two different things at 2am.</p>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(195px,1fr))", gap:14 }}>
             {problems.map((p,i) => (
               <div key={i} className="card" style={{ background:"rgba(233,69,96,0.04)", border:"1px solid rgba(233,69,96,0.1)", borderRadius:20, padding:"28px 22px", textAlign:"left" }}>

@@ -56,7 +56,7 @@ export default function LandingPage() {
   // Commerce — swap BUY_URL for the real product link (Gumroad / Etsy / etc.)
   const BUY_URL = "";            // TODO: paste the product URL here
   const PRICE = "$24.99";
-  const COVER_SRC = "/cover.jpg"; // TODO: drop the real cover art at public/cover.jpg
+  const COVER_SRC = "/cover.jpg"; // served from public/cover.jpg (800x1280)
 
   return (
     <div style={{ margin:0, padding:0, fontFamily:"Georgia,serif", overflowX:"hidden" }}>

@@ -175,7 +175,7 @@ export default function LandingPage() {
         <div style={{ maxWidth:680, margin:"0 auto" }}>
           <div style={{ width:36, height:1, background:greenLight, margin:"0 auto 32px" }}/>
           <p style={{ fontSize:"clamp(19px,3vw,32px)", fontStyle:"italic", lineHeight:1.65, color:light1, marginBottom:20 }}>"The pain is fuel. The only question is what you point it at."</p>
-          <p style={{ fontSize:11, color:greenLight, letterSpacing:3 }}>— CHAPTER 4, REBUILDING YOUR LIFE</p>
+          <p style={{ fontSize:11, color:greenLight, letterSpacing:3 }}>— CHAPTER 2, DISCIPLINE</p>
         </div>
       </section>
 

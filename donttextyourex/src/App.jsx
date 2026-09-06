@@ -140,7 +140,7 @@ export default function LandingPage() {
                 {coverOk ? (
                   <img
                     src={COVER_SRC}
-                    alt="How to Get Over a Breakup — A Survival Guide For Men by Kamil Zalenski"
+                    alt="How to Get Over a Breakup — A Survival Guide For Men by Kamil Zaleński"
                     onError={() => setCoverOk(false)}
                     style={{ width:160, borderRadius:8, boxShadow:"0 20px 60px rgba(0,0,0,0.6), 0 4px 16px rgba(233,69,96,0.2)", display:"block" }}
                   />
@@ -158,7 +158,7 @@ export default function LandingPage() {
           <div className="card" style={{ background:"rgba(240,237,230,0.04)", border:"1px solid rgba(240,237,230,0.1)", borderRadius:24, padding:"32px 28px" }}>
             <div style={{ fontSize:8, letterSpacing:3, color:greenLight, marginBottom:18 }}>WHAT'S INSIDE</div>
             <div style={{ fontSize:19, color:light1, marginBottom:6, fontWeight:"normal" }}>How to Get Over a Breakup</div>
-            <div style={{ fontSize:11, color:greenLight, marginBottom:26, letterSpacing:1 }}>A Survival Guide For Men — Kamil Zalenski</div>
+            <div style={{ fontSize:11, color:greenLight, marginBottom:26, letterSpacing:1 }}>A Survival Guide For Men — Kamil Zaleński</div>
             {chapters.map((c,i) => (
               <div key={i} style={{ display:"flex", gap:14, alignItems:"flex-start", padding:"12px 0", borderBottom:"1px solid rgba(240,237,230,0.07)", fontSize:13, color:"rgba(240,237,230,0.58)", lineHeight:1.55 }}>
                 <span style={{ fontSize:9, color:greenLight, letterSpacing:2, minWidth:26, paddingTop:2 }}>{c.num}</span>
@@ -267,13 +267,13 @@ export default function LandingPage() {
           <p style={{ fontSize:"clamp(14px,2vw,17px)", fontStyle:"italic", lineHeight:1.9, color:"rgba(26,42,20,0.6)", marginBottom:24 }}>
             "I'm not a therapist. I'm not a life coach. What I have is this — I've been the person you are right now. The 2am person. I also know, because I've been here more than once, how to get out."
           </p>
-          <p style={{ fontSize:13, color:green, letterSpacing:1 }}>— Kamil Zalenski</p>
+          <p style={{ fontSize:13, color:green, letterSpacing:1 }}>— Kamil Zaleński</p>
         </div>
       </section>
 
       {/* ── FOOTER — WARM LIGHT ── */}
       <footer style={{ padding:"44px 40px", background:light1, borderTop:"1px solid rgba(26,42,20,0.08)", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:14 }}>
-        <div style={{ fontSize:11, color:"rgba(26,42,20,0.3)", letterSpacing:1 }}>© 2025 Kamil Zalenski · How to Get Over a Breakup</div>
+        <div style={{ fontSize:11, color:"rgba(26,42,20,0.3)", letterSpacing:1 }}>© 2025 Kamil Zaleński · How to Get Over a Breakup</div>
         <div style={{ fontSize:13, color:green, fontStyle:"italic" }}>"Go live your life."</div>
       </footer>
     </div>

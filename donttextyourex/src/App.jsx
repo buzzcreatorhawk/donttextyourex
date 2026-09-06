@@ -5,6 +5,7 @@ export default function LandingPage() {
   const [submitted, setSubmitted] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [coverOk, setCoverOk] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +53,11 @@ export default function LandingPage() {
   const greenLight = "#1ABFBF";  // bright teal accent
   const gold = "#E8622A";        // burnt orange — quotes and highlights
 
+  // Commerce — swap BUY_URL for the real product link (Gumroad / Etsy / etc.)
+  const BUY_URL = "";            // TODO: paste the product URL here
+  const PRICE = "$24.99";
+  const COVER_SRC = "/cover.jpg"; // TODO: drop the real cover art at public/cover.jpg
+
   return (
     <div style={{ margin:0, padding:0, fontFamily:"Georgia,serif", overflowX:"hidden" }}>
       <style>{`
@@ -72,7 +78,7 @@ export default function LandingPage() {
       {/* NAV */}
       <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, padding:"14px 40px", display:"flex", justifyContent:"space-between", alignItems:"center", background: navVisible ? "rgba(18,18,14,0.96)" : "transparent", backdropFilter: navVisible ? "blur(16px)" : "none", borderBottom: navVisible ? "1px solid rgba(58,125,74,0.15)" : "none", transition:"all 0.4s ease" }}>
         <div style={{ fontSize:10, letterSpacing:4, color: navVisible ? green : "rgba(240,237,230,0.5)", textTransform:"uppercase", transition:"color 0.4s ease" }}>Survival Guide</div>
-        <button className="btn" style={{ background:accent, color:"#fff", border:"none", borderRadius:100, padding:"10px 22px", fontSize:12, fontFamily:"Georgia,serif", letterSpacing:0.5 }}>Get the Book →</button>
+        <a className="btn" href={BUY_URL || undefined} style={{ display:"inline-block", background:accent, color:"#fff", border:"none", borderRadius:100, padding:"10px 22px", fontSize:12, fontFamily:"Georgia,serif", letterSpacing:0.5, textDecoration:"none" }}>Get the Book — {PRICE} →</a>
       </nav>
 
       {/* ── HERO — DARK ── */}
@@ -91,7 +97,7 @@ export default function LandingPage() {
           This book — and this app — were built for that moment.
         </p>
         <div className="fu fu5" style={{ display:"flex", gap:12, flexWrap:"wrap", justifyContent:"center" }}>
-          <button className="btn" style={{ background:accent, color:"#fff", border:"none", borderRadius:100, padding:"17px 38px", fontSize:14, fontFamily:"Georgia,serif", boxShadow:"0 8px 32px rgba(233,69,96,0.28)" }}>Get the Book on Amazon →</button>
+          <a className="btn" href={BUY_URL || undefined} style={{ display:"inline-block", background:accent, color:"#fff", border:"none", borderRadius:100, padding:"17px 38px", fontSize:14, fontFamily:"Georgia,serif", boxShadow:"0 8px 32px rgba(233,69,96,0.28)", textDecoration:"none" }}>Get the Book — {PRICE} →</a>
           <button className="btn" style={{ background:"transparent", color:"rgba(58,125,74,0.9)", border:"1px solid rgba(58,125,74,0.3)", borderRadius:100, padding:"17px 38px", fontSize:14, fontFamily:"Georgia,serif" }}>Download the App</button>
         </div>
         <div style={{ position:"absolute", bottom:38, display:"flex", flexDirection:"column", alignItems:"center", gap:8, color:"rgba(240,237,230,0.2)", fontSize:9, letterSpacing:3 }}>
@@ -131,15 +137,23 @@ export default function LandingPage() {
             {/* Book cover */}
             <div style={{ marginBottom:36 }}>
               <div style={{ position:"relative", display:"inline-block" }}>
-                <img
-                  src="https://m.media-amazon.com/images/I/8155kpdVNkL._SY522_.jpg"
-                  alt="How to Get Over a Breakup — A Survival Guide For Men by Kamil Zalenski"
-                  style={{ width:160, borderRadius:8, boxShadow:"0 20px 60px rgba(0,0,0,0.6), 0 4px 16px rgba(233,69,96,0.2)", display:"block" }}
-                />
-                <div style={{ position:"absolute", top:-8, right:-8, background:accent, color:"#fff", borderRadius:100, padding:"4px 10px", fontSize:9, letterSpacing:1, fontWeight:"bold", fontFamily:"Georgia,serif" }}>ON AMAZON</div>
+                {coverOk ? (
+                  <img
+                    src={COVER_SRC}
+                    alt="How to Get Over a Breakup — A Survival Guide For Men by Kamil Zalenski"
+                    onError={() => setCoverOk(false)}
+                    style={{ width:160, borderRadius:8, boxShadow:"0 20px 60px rgba(0,0,0,0.6), 0 4px 16px rgba(233,69,96,0.2)", display:"block" }}
+                  />
+                ) : (
+                  <div style={{ width:160, height:240, borderRadius:8, background:`linear-gradient(160deg,${transition2} 0%,${dark} 100%)`, border:`1px solid ${transition3}33`, boxShadow:"0 20px 60px rgba(0,0,0,0.6)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"0 18px", textAlign:"center", gap:10 }}>
+                    <div style={{ fontSize:13, color:light1, lineHeight:1.4 }}>How to Get Over a Breakup</div>
+                    <div style={{ fontSize:9, letterSpacing:2, color:greenLight, textTransform:"uppercase" }}>A Survival Guide For Men</div>
+                  </div>
+                )}
+                <div style={{ position:"absolute", top:-8, right:-8, background:accent, color:"#fff", borderRadius:100, padding:"4px 10px", fontSize:9, letterSpacing:1, fontWeight:"bold", fontFamily:"Georgia,serif" }}>{PRICE}</div>
               </div>
             </div>
-            <button className="btn" style={{ background:accent, color:"#fff", border:"none", borderRadius:100, padding:"15px 34px", fontSize:14, fontFamily:"Georgia,serif", boxShadow:"0 6px 24px rgba(233,69,96,0.25)" }}>Read on Amazon →</button>
+            <a className="btn" href={BUY_URL || undefined} style={{ display:"inline-block", background:accent, color:"#fff", border:"none", borderRadius:100, padding:"15px 34px", fontSize:14, fontFamily:"Georgia,serif", boxShadow:"0 6px 24px rgba(233,69,96,0.25)", textDecoration:"none" }}>Get the PDF — {PRICE} →</a>
           </div>
           <div className="card" style={{ background:"rgba(240,237,230,0.04)", border:"1px solid rgba(240,237,230,0.1)", borderRadius:24, padding:"32px 28px" }}>
             <div style={{ fontSize:8, letterSpacing:3, color:greenLight, marginBottom:18 }}>WHAT'S INSIDE</div>

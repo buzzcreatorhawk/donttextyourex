@@ -8,7 +8,13 @@
 // Used for <link rel=canonical>, og:url, the absolute og:image, sitemap.xml and
 // every @id in the JSON-LD. Absolute URLs are not optional in any of those
 // places: a relative og:image is silently dropped by most link-preview crawlers.
-export const SITE_URL = "https://donttextyourex.com";
+// NOT donttextyourex.com. That domain is live and belongs to someone else - a
+// competing breakup-recovery site, whose premise (get back together with your
+// ex) is the opposite of this book's. Pointing canonical, og:url, og:image and
+// every JSON-LD @id at it told search engines her page was the canonical
+// version of this one. Corrected 2026-09-07, before it ever reached production.
+// Change this only to a domain Kamil actually controls.
+export const SITE_URL = "https://donttextyourex.vercel.app";
 
 export const abs = (path) => `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 
@@ -21,11 +27,13 @@ export const PRICE_CURRENCY = "USD";
 export const COVER_SRC = "/cover.jpg";
 
 // ── Identity ────────────────────────────────────────────────────────────────
-// The author is deliberately unnamed - see commit f3c1109, which removed the
-// name from the site on purpose. The schema follows that decision rather than
-// quietly reversing it, so the publisher is an Organization and there is no
-// Person author. If the positioning ever changes, add a `Person` node here and
-// set it as the Book's `author`; nothing else needs to move.
+// The author is named. Commit f3c1109 had removed the name from the site, and
+// the schema deliberately followed that; Kamil reversed it on 2026-09-07,
+// choosing `Kamil Zaleński` with the ń, to match the cover and the standing
+// position that his public work ships under his own name. This is the change
+// the previous comment said to make: a Person node, set as the Book's author.
+// The ń is intentional - do not transliterate it.
+export const AUTHOR = "Kamil Zaleński";
 export const TITLE = "How to Get Over a Breakup — A Survival Guide For Men";
 export const TAGLINE = "A Survival Guide For Men";
 export const BRAND = "How to Get Over a Breakup";
@@ -76,7 +84,9 @@ export const faqs = [
 //
 //   * `offers` appears only once BUY_URL is set. An Offer pointing at nothing is
 //     a structured claim that the book is purchasable, which right now it is not.
-//   * There is no `author` Person, by decision (see Identity above).
+//   * The `author` Person is named (see Identity above). No ISBN and no page
+//     count: nobody has established them, and a fabricated fact is at its worst
+//     in a format built for machines to trust.
 //   * No page count and no ISBN - I do not know them, and inventing either would
 //     put a fabricated fact into a machine-readable format, which is the worst
 //     possible place to put one.
@@ -85,6 +95,7 @@ export function buildJsonLd() {
   const siteId = abs("/#website");
   const pageId = abs("/#webpage");
   const bookId = abs("/#book");
+  const authorId = abs("/#author");
 
   const book = {
     "@type": "Book",
@@ -97,6 +108,7 @@ export function buildJsonLd() {
     image: abs(COVER_SRC),
     url: abs("/"),
     publisher: { "@id": orgId },
+    author: { "@id": authorId },
     genre: "Self-help",
     about: [
       { "@type": "Thing", name: "Breakup recovery" },
@@ -127,6 +139,11 @@ export function buildJsonLd() {
   return {
     "@context": "https://schema.org",
     "@graph": [
+      {
+        "@type": "Person",
+        "@id": authorId,
+        name: AUTHOR,
+      },
       {
         "@type": "Organization",
         "@id": orgId,

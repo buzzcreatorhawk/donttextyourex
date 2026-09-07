@@ -214,7 +214,10 @@ export default function LandingPage() {
                 </h1>
               </Reveal>
               <Reveal delay={160}>
-                <p className="lead it c-teal" style={{ marginBottom: 22 }}>Written by someone who's been there.</p>
+                <p className="lead it c-teal" style={{ marginBottom: 10 }}>Written by someone who's been there.</p>
+              </Reveal>
+              <Reveal delay={190}>
+                <p className="label lo" style={{ marginBottom: 22 }}>Kamil Zaleński</p>
               </Reveal>
               <Reveal delay={220}>
                 <p className="lead" style={{ marginBottom: 44 }}>
@@ -229,7 +232,7 @@ export default function LandingPage() {
               {coverOk ? (
                 <img
                   src={COVER_SRC} width="800" height="1280"
-                  alt="Cover of How to Get Over a Breakup — A Survival Guide For Men"
+                  alt="Cover of How to Get Over a Breakup — A Survival Guide For Men, by Kamil Zaleński"
                   onError={() => setCoverOk(false)}
                   style={{ width: "min(320px,72vw)", height: "auto", borderRadius: 3, boxShadow: "0 34px 70px -20px rgba(7,24,35,0.85)" }}
                 />
@@ -485,7 +488,7 @@ export default function LandingPage() {
 
       <footer className="on-paper" style={{ padding: "40px var(--gut)" }}>
         <div className="wrap" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
-          <span className="small lo-d">© {new Date().getFullYear()} How to Get Over a Breakup</span>
+          <span className="small lo-d">© {new Date().getFullYear()} Kamil Zaleński · How to Get Over a Breakup</span>
           <span className="small it c-t700">“Go live your life.”</span>
         </div>
       </footer>

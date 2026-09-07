@@ -3,14 +3,41 @@ import { CSS } from "./styles";
 import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } from "./icons";
 
 // ── Commerce ────────────────────────────────────────────────────────────────
-const BUY_URL = "";       // TODO: paste the Gumroad product URL here
+const BUY_URL = "";       // TODO: paste the Gumroad (or Stripe Payment Link) URL here
 const APP_URL = "";       // TODO: app store / download link, when there is one
-const LIST_ENDPOINT = ""; // TODO: POST target for the email list. While this is
-                          // empty the signup section does not render at all -
-                          // a form that silently discards an address is worse
-                          // than no form.
 const PRICE = "$24.99";
 const COVER_SRC = "/cover.jpg";
+
+// ── Email list ──────────────────────────────────────────────────────────────
+// Provider-agnostic on purpose - the provider is not chosen yet, and the shape
+// of the request is the only thing that actually differs between them. Fill in
+// `endpoint` and the section appears; leave it empty and the section does not
+// render at all, because a form that silently discards an address is worse than
+// no form.
+//
+// `encoding` is the setting that decides whether this works in a browser at all:
+//
+//   "form" - application/x-www-form-urlencoded. A CORS "simple request", so the
+//            browser sends it with no preflight. Hosted form endpoints are built
+//            to receive exactly this. It is the right default.
+//   "json" - application/json. Triggers a CORS preflight OPTIONS request that a
+//            hosted form endpoint typically will not answer - so it fails in the
+//            browser while working fine from curl, which is a miserable thing to
+//            debug. Use it only for an endpoint you control (a serverless
+//            function), not a provider's public form URL.
+//
+// `field` is the name the provider expects the address under; providers disagree
+// ("email", "email_address", "fields[email]"). Copy the name attribute out of
+// the provider's own embed HTML rather than guessing.
+//
+// All of that is vendor-specific and changes without notice - check the current
+// docs of whichever provider is chosen before trusting these defaults.
+const LIST = {
+  endpoint: "",       // TODO: the provider's POST target
+  encoding: "form",   // "form" | "json"
+  field: "email",     // the provider's field name for the address
+  extra: {},          // fixed fields the provider requires alongside the address
+};
 
 // ── Content ─────────────────────────────────────────────────────────────────
 const problems = [
@@ -88,6 +115,8 @@ export default function LandingPage() {
   const [email, setEmail] = useState("");
   const [err, setErr] = useState("");
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const trap = useRef(null);
   const [coverOk, setCoverOk] = useState(true);
   // Computed once, before first paint, so the page never flashes visible then hides.
   const [enhance] = useState(enhanceOK);
@@ -107,17 +136,43 @@ export default function LandingPage() {
 
   const submit = useCallback(async (e) => {
     e.preventDefault();
+    if (busy) return;
+    // A bot fills every field it can find, including the one parked off-screen.
+    // A human never touches it, so anything in it is not a signup. Fail silently
+    // and show the success state - telling a bot why it was rejected only helps
+    // it come back better.
+    if (trap.current?.value) { setSent(true); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr("Enter a valid email address."); return; }
     setErr("");
+    setBusy(true);
     try {
-      await fetch(LIST_ENDPOINT, {
+      const payload = { ...LIST.extra, [LIST.field]: email };
+      const res = await fetch(LIST.endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        headers: { "Content-Type": LIST.encoding === "json"
+          ? "application/json"
+          : "application/x-www-form-urlencoded" },
+        body: LIST.encoding === "json"
+          ? JSON.stringify(payload)
+          : new URLSearchParams(payload).toString(),
       });
+      // fetch only rejects on a network failure - a 422 or a 500 resolves like
+      // any other response. Without this check a rejected address still showed
+      // "Done. It's on its way", which is the same lie as a form that never
+      // made a request.
+      if (!res.ok) {
+        setErr(res.status === 429
+          ? "Too many attempts. Give it a minute and try again."
+          : "That didn't go through. Try again in a moment.");
+        return;
+      }
       setSent(true);
-    } catch { setErr("That didn't send. Try again in a moment."); }
-  }, [email]);
+    } catch {
+      setErr("That didn't send - check your connection and try again.");
+    } finally {
+      setBusy(false);
+    }
+  }, [email, busy]);
 
   return (
     <div className={enhance ? "page js" : "page"}>
@@ -350,7 +405,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── EMAIL — only renders once there is somewhere to send it ── */}
-        {LIST_ENDPOINT && (
+        {LIST.endpoint && (
           <section className="sec on-paper" aria-labelledby="h-list">
             <div className="wrap" style={{ maxWidth: 560 }}>
               <span className="label c-rust">Free download</span>
@@ -368,16 +423,27 @@ export default function LandingPage() {
                   <label htmlFor="email">Email address</label>
                   <input
                     id="email" name="email" type="email" autoComplete="email" inputMode="email"
-                    placeholder="you@example.com" value={email}
+                    placeholder="you@example.com" value={email} disabled={busy}
                     aria-invalid={err ? "true" : undefined}
                     aria-describedby={err ? "email-err" : "email-help"}
                     onChange={(e) => { setEmail(e.target.value); if (err) setErr(""); }}
                   />
+                  {/* Honeypot. Off-screen rather than display:none, because some
+                      bots skip anything the CSS hides. Never shown, never focused,
+                      never announced. */}
+                  <input
+                    ref={trap} type="text" name="website" defaultValue=""
+                    tabIndex={-1} autoComplete="off" aria-hidden="true"
+                    style={{ position: "absolute", left: "-9999px", width: 1, height: 1, padding: 0, border: 0, opacity: 0 }}
+                  />
                   {err
                     ? <p className="err" id="email-err" role="alert">{err}</p>
                     : <p className="help" id="email-help">No spam. One email with your tracker. That's it.</p>}
-                  <button className="cta" type="submit" style={{ marginTop: 20 }}>
-                    Send it<Arrow size={18} />
+                  <button
+                    className="cta" type="submit" style={{ marginTop: 20 }}
+                    disabled={busy} aria-disabled={busy || undefined}
+                  >
+                    {busy ? "Sending…" : "Send it"}<Arrow size={18} />
                   </button>
                 </form>
               )}

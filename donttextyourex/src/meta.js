@@ -52,15 +52,23 @@ export const PAGES = 42;
 export const FORMAT = "PDF";
 export const READ_TIME = "about half an hour";
 
-// The refund position. Kamil's standing problem is shipping nothing that has a
-// visible flaw; the answer that lets a product ship anyway is honest positioning,
-// a fair price and a refund that costs the buyer no argument. That only works if
-// the promise is on the sales page, in plain words, before the money moves.
+// The refund position. EMPTY, and every line that would state one is gated on it
+// being non-empty - the same rule as BUY_URL and the email endpoint. Kamil took
+// the refund promise off the page on 2026-09-07, having not agreed the 30-day
+// no-questions wording that was proposed for him.
 //
-// NOT YET CONFIRMED BY KAMIL. Thirty days, no questions, is the ordinary term for
-// a digital product and it is what both Payhip and Stripe can action. If he wants
-// different terms, this constant is the only place to change them.
-export const REFUND = "30-day refund, no questions asked.";
+// Empty means the page makes no refund claim at all, which is the honest state
+// while no policy has been decided. It does NOT mean "no refunds": under UK
+// consumer law a digital download can carry an express waiver of the 14-day
+// cancellation right, but that waiver has to be obtained at checkout, and if it
+// is not, the right stands whatever this page says. So the page staying silent
+// is also the safe state - a "no refunds" line here could be an unenforceable
+// claim, which is worse than saying nothing. Not legal advice; check the current
+// rules, and check what the store actually presents at checkout.
+//
+// Set this to a sentence and it reappears under every buy button, in the FAQ and
+// in the footer. Nothing else needs changing.
+export const REFUND = "";
 
 // Buyers of a digital product need a route to a human. Empty until Kamil decides
 // which address to publish - his personal Gmail is not that decision to make for
@@ -110,14 +118,17 @@ export const faqs = [
     q: "What is actually in the book?",
     a: "Six chapters and one exercise, across 42 pages. The five stages named so you can recognise where you are; discipline used as a place to put the pain; goal-setting that starts from the floor rather than from motivation; rebuilding; the support system you probably have not asked for yet; and moving forward. It closes with a two-list exercise: twenty-five qualities you want in the woman you end up with, and then, on the facing page, the twenty-five that woman would want in a partner. The second list is the one that does the work. It is short on purpose - it does not dwell on what went wrong, it deals with the hole you are in now.",
   },
-  // Two claims in this answer are promises about a shop that does not exist yet:
-  // how the file reaches the buyer, and the refund window. Check both against the
-  // store's own settings on the day BUY_URL is filled in - a delivery promise the
-  // checkout does not keep is the exact failure the gated email form exists to
-  // prevent, only with the buyer's money already taken.
+  // The delivery claim here is a promise about a shop that does not exist yet.
+  // Check it against the store's own settings on the day BUY_URL is filled in - a
+  // delivery promise the checkout does not keep is the exact failure the gated
+  // email form exists to prevent, only with the buyer's money already taken.
+  //
+  // The refund half of this entry was removed with REFUND (see above). The
+  // question no longer asks about refunds, because a question the page raises and
+  // then does not answer is worse than one it never raised.
   {
-    q: "What exactly do I get for $24.99, and can I get a refund?",
-    a: "A 42-page PDF, downloadable the moment you have paid - no app to install, no account to make, nothing recurring. It reads in about half an hour. There is no paperback and no audiobook. If it is not what you needed, you have 30 days to ask for your money back, and you will not be asked to justify it. The book is short and the price is not small, so that promise is deliberate: you should be able to find out whether it helps you without gambling anything on it.",
+    q: "What exactly do I get for $24.99?",
+    a: "A 42-page PDF, downloadable the moment you have paid - no app to install, no account to make, nothing recurring. It reads in about half an hour. There is no paperback and no audiobook. It is six chapters and one closing exercise, and it is deliberately short: the whole argument of the book is that at 2am you need something you can finish, not something you can start.",
   },
   {
     q: "Is this therapy, or a replacement for it?",

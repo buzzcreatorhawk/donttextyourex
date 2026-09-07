@@ -91,9 +91,10 @@ img{max-width:100%;display:block}
 .row{border-top-color:rgba(252,250,231,0.14)}
 .row:last-child{border-bottom:1px solid rgba(252,250,231,0.14)}
 
-/* The line under every buy button: length, format, delivery, refund. Small and
-   quiet by design - it is not a selling point competing with the CTA, it is the
-   answer to "what am I actually getting", placed where the question is asked. */
+/* The line under every buy button: length, format and delivery, plus the refund
+   terms if REFUND is ever set. Small and quiet by design - it is not a selling
+   point competing with the CTA, it is the answer to "what am I actually
+   getting", placed where the question is asked. */
 .terms{font-size:13px;line-height:1.6;margin-top:14px;max-width:46ch}
 
 /* The prologue's terms. A left rule rather than a card: the page's whole visual

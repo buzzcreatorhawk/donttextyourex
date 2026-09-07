@@ -133,18 +133,44 @@ img{max-width:100%;display:block}
   font-size:12px;border:1px solid rgba(252,250,231,0.12);color:var(--on-dark-lo)}
 .tile.done{color:var(--teal300);border-color:rgba(40,188,157,0.42);background:rgba(40,188,157,0.10)}
 
+/* ── faq ──────────────────────────────────────────────────────────────── */
+/* Native <details>, so every answer is in the DOM and readable whether or not
+   JavaScript runs - which is the entire reason this section is worth marking up
+   as FAQPage. A crawler that executes nothing still gets all six answers. */
+.faq{border-top:1px solid rgba(9,26,34,0.16)}
+.faq:last-of-type{border-bottom:1px solid rgba(9,26,34,0.16)}
+.faq>summary{list-style:none;cursor:pointer;display:flex;align-items:flex-start;
+  justify-content:space-between;gap:24px;padding:22px 0;min-height:44px;
+  color:var(--on-light-hi)}
+.faq>summary::-webkit-details-marker{display:none}
+.faq>summary:focus-visible{outline:2px solid var(--rust);outline-offset:4px}
+.faq-q{font-family:var(--display);font-size:clamp(17px,2vw,22px);
+  line-height:1.4;color:var(--on-light-hi)}
+/* A plus that becomes a minus. Drawn with pseudo-elements rather than an icon so
+   it costs nothing and inherits colour. */
+.faq-mark{position:relative;flex-shrink:0;width:15px;height:15px;margin-top:6px}
+.faq-mark::before,.faq-mark::after{content:"";position:absolute;background:currentColor;
+  left:0;top:7px;width:15px;height:1.5px;transition:transform 260ms cubic-bezier(.2,.7,.3,1)}
+.faq-mark::after{transform:rotate(90deg)}
+.faq[open] .faq-mark::after{transform:rotate(0deg)}
+.faq-a{padding:0 0 26px;max-width:64ch;font-size:16px;line-height:1.7;
+  color:var(--on-light-mid)}
+
 /* ── motion ───────────────────────────────────────────────────────────── */
-/* Visible is the DEFAULT. The hidden state is only applied once JS has
-   confirmed IntersectionObserver exists (.page.js), so a throttled observer,
-   a background tab or a JS failure can never leave the page blank. */
+/* Visible is the DEFAULT. The hidden state is only applied once the inline
+   script in index.html has confirmed IntersectionObserver exists (html.js), so a
+   throttled observer, a background tab or a JS failure can never leave the page
+   blank. The gate is on <html> rather than on .page because it has to be set
+   before the first paint of the prerendered markup - if React owned it, the
+   static content would paint and then be hidden again on mount. */
 .rv{transition:opacity 700ms cubic-bezier(.2,.7,.3,1),transform 700ms cubic-bezier(.2,.7,.3,1)}
-.page.js .rv{opacity:0;transform:translateY(18px)}
-.page.js .rv.in{opacity:1;transform:none}
+html.js .rv{opacity:0;transform:translateY(18px)}
+html.js .rv.in{opacity:1;transform:none}
 .float{animation:float 5s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0.001ms!important;animation-iteration-count:1!important;
     transition-duration:0.001ms!important;scroll-behavior:auto!important}
-  .page.js .rv{opacity:1;transform:none}
+  html.js .rv{opacity:1;transform:none}
 }
 `;

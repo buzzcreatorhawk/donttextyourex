@@ -4,16 +4,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0A2130" />
+
     <title>How to Get Over a Breakup — A Survival Guide For Men</title>
     <meta name="description" content="You're not sleeping. You're checking her Instagram at midnight. You're replaying conversations that go nowhere. A short, direct book for that moment." />
+
+    <!-- Canonical and og:url must be absolute. Keep them in step with SITE_URL
+         in src/meta.js - that constant is the origin of every other absolute URL
+         on the page, including the ones inside the JSON-LD. -->
+    <link rel="canonical" href="https://donttextyourex.com/" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+
+    <meta property="og:site_name" content="How to Get Over a Breakup" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:type" content="book" />
+    <meta property="og:url" content="https://donttextyourex.com/" />
     <meta property="og:title" content="How to Get Over a Breakup — A Survival Guide For Men" />
     <meta property="og:description" content="Six chapters. Written by someone who's been on the floor and figured out how to get back up." />
-    <meta property="og:type" content="book" />
-    <meta property="og:image" content="/cover.jpg" />
+    <!-- Absolute, not /cover.jpg. Most link-preview crawlers drop a relative
+         og:image without reporting an error - which is the likeliest reason a
+         shared link would have come through with no artwork. I have not tested
+         a live share, so treat that as the probable cause, not a confirmed one. -->
+    <meta property="og:image" content="https://donttextyourex.com/cover.jpg" />
+    <meta property="og:image:alt" content="Cover of How to Get Over a Breakup — A Survival Guide For Men" />
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Get Over a Breakup — A Survival Guide For Men" />
+    <meta name="twitter:description" content="Six chapters. Written by someone who's been on the floor and figured out how to get back up." />
+    <meta name="twitter:image" content="https://donttextyourex.com/cover.jpg" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- The reveal-animation gate. This runs before the body paints, so the
+         prerendered markup is hidden from its very first frame rather than
+         appearing and then being hidden again once React mounts.
+
+         Not-blanking is the property being protected: no JS, an old browser
+         without IntersectionObserver, or a script that fails to load all leave
+         the class unset, and unset means every section is visible. The page can
+         fail in a number of ways but it cannot fail to blank. -->
+    <script>
+      try {
+        if (typeof IntersectionObserver !== "undefined" &&
+            !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.documentElement.className += " js";
+        }
+      } catch (e) {}
+    </script>
+
+    <!--JSONLD-->
   </head>
   <body>
     <div id="root"></div>

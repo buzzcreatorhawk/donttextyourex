@@ -7,4 +7,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://donttextyourex.com/sitemap.xml
+Sitemap: https://donttextyourex.vercel.app/sitemap.xml

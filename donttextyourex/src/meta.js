@@ -14,17 +14,59 @@
 // every JSON-LD @id at it told search engines her page was the canonical
 // version of this one. Corrected 2026-09-07, before it ever reached production.
 // Change this only to a domain Kamil actually controls.
-export const SITE_URL = "https://donttextyourex.vercel.app";
+//
+// THEdonttextyourex.com - with the "the" - is a different domain, and it is
+// Kamil's. It is where the site is actually served. Verified 2026-09-07 with
+// curl, not assumed: the apex 301s to the www host, and both the www host and
+// donttextyourex.vercel.app return 200 serving the same bundle. www is the host
+// visitors land on, so www is what canonical, og:url and the sitemap must name -
+// pointing them at the vercel.app origin while the traffic arrives at the custom
+// domain splits the page's identity across two origins for no gain.
+export const SITE_URL = "https://www.thedonttextyourex.com";
 
 export const abs = (path) => `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 
 // ── Commerce ────────────────────────────────────────────────────────────────
-export const BUY_URL = "";       // TODO: paste the Gumroad (or Stripe Payment Link) URL here
+export const BUY_URL = "";       // TODO: paste the Payhip (or Stripe Payment Link) URL here
 export const APP_URL = "";       // TODO: app store / download link, when there is one
 export const PRICE = "$24.99";
 export const PRICE_AMOUNT = "24.99";
 export const PRICE_CURRENCY = "USD";
 export const COVER_SRC = "/cover.jpg";
+
+// ── What the buyer actually receives ───────────────────────────────────────
+// A $24.99 digital product with no stated length is the shape of a refund. These
+// three facts go on the page next to every buy button, and PAGES also becomes
+// `numberOfPages` in the Book schema.
+//
+// PAGES is counted, not estimated: `How To Get Over A Breakup.pdf` in the parent
+// folder is 42 pages, front cover through the closing exercise, read in full
+// 2026-09-07. If the manuscript grows before launch, recount - do not adjust this
+// by feel.
+//
+// READ_TIME is derived and labelled as such: 6,631 words (STATE.md, counted from
+// the manuscript) at 200-250 wpm is 27-33 minutes, so "about half an hour" is the
+// honest way to say it. It is not a measured figure and the copy does not pretend
+// it is.
+export const PAGES = 42;
+export const FORMAT = "PDF";
+export const READ_TIME = "about half an hour";
+
+// The refund position. Kamil's standing problem is shipping nothing that has a
+// visible flaw; the answer that lets a product ship anyway is honest positioning,
+// a fair price and a refund that costs the buyer no argument. That only works if
+// the promise is on the sales page, in plain words, before the money moves.
+//
+// NOT YET CONFIRMED BY KAMIL. Thirty days, no questions, is the ordinary term for
+// a digital product and it is what both Payhip and Stripe can action. If he wants
+// different terms, this constant is the only place to change them.
+export const REFUND = "30-day refund, no questions asked.";
+
+// Buyers of a digital product need a route to a human. Empty until Kamil decides
+// which address to publish - his personal Gmail is not that decision to make for
+// him - and the contact line does not render while it is empty, rather than
+// printing a mailto: that goes nowhere.
+export const CONTACT_EMAIL = "";  // TODO: the address that receives buyer email
 
 // ── Identity ────────────────────────────────────────────────────────────────
 // The author is named. Commit f3c1109 had removed the name from the site, and
@@ -66,7 +108,16 @@ export const faqs = [
   },
   {
     q: "What is actually in the book?",
-    a: "Six chapters and one exercise. The five stages named so you can recognise where you are; discipline used as a place to put the pain; goal-setting that starts from the floor rather than from motivation; rebuilding; the support system you probably have not asked for yet; and moving forward. Plus the 25-quality exercise. It is short on purpose - it does not dwell on what went wrong, it deals with the hole you are in now.",
+    a: "Six chapters and one exercise, across 42 pages. The five stages named so you can recognise where you are; discipline used as a place to put the pain; goal-setting that starts from the floor rather than from motivation; rebuilding; the support system you probably have not asked for yet; and moving forward. It closes with a two-list exercise: twenty-five qualities you want in the woman you end up with, and then, on the facing page, the twenty-five that woman would want in a partner. The second list is the one that does the work. It is short on purpose - it does not dwell on what went wrong, it deals with the hole you are in now.",
+  },
+  // Two claims in this answer are promises about a shop that does not exist yet:
+  // how the file reaches the buyer, and the refund window. Check both against the
+  // store's own settings on the day BUY_URL is filled in - a delivery promise the
+  // checkout does not keep is the exact failure the gated email form exists to
+  // prevent, only with the buyer's money already taken.
+  {
+    q: "What exactly do I get for $24.99, and can I get a refund?",
+    a: "A 42-page PDF, downloadable the moment you have paid - no app to install, no account to make, nothing recurring. It reads in about half an hour. There is no paperback and no audiobook. If it is not what you needed, you have 30 days to ask for your money back, and you will not be asked to justify it. The book is short and the price is not small, so that promise is deliberate: you should be able to find out whether it helps you without gambling anything on it.",
   },
   {
     q: "Is this therapy, or a replacement for it?",
@@ -84,12 +135,14 @@ export const faqs = [
 //
 //   * `offers` appears only once BUY_URL is set. An Offer pointing at nothing is
 //     a structured claim that the book is purchasable, which right now it is not.
-//   * The `author` Person is named (see Identity above). No ISBN and no page
-//     count: nobody has established them, and a fabricated fact is at its worst
-//     in a format built for machines to trust.
-//   * No page count and no ISBN - I do not know them, and inventing either would
-//     put a fabricated fact into a machine-readable format, which is the worst
-//     possible place to put one.
+//   * The `author` Person is named (see Identity above).
+//   * `numberOfPages` is emitted because the number is now known: the finished
+//     PDF exists and was read page by page (see PAGES). It was previously
+//     omitted, correctly, while nobody had counted it - the rule was never
+//     "omit page counts", it was "never put a fact into a machine-readable
+//     format unless someone has actually established it".
+//   * Still no ISBN. Nobody has one, and inventing one here would be that same
+//     mistake in the worst possible place.
 export function buildJsonLd() {
   const orgId = abs("/#publisher");
   const siteId = abs("/#website");
@@ -104,6 +157,8 @@ export function buildJsonLd() {
     alternateName: TAGLINE,
     description: DESCRIPTION,
     bookFormat: "https://schema.org/EBook",
+    numberOfPages: PAGES,
+    bookEdition: "Revised edition",
     inLanguage: "en",
     image: abs(COVER_SRC),
     url: abs("/"),
@@ -120,7 +175,7 @@ export function buildJsonLd() {
       "Discipline as self-sacrifice - give your pain a job.",
       "The power of goals - starting from the floor.",
       "Rebuilding - the diamond under the coal.",
-      "Support system - the message Mark almost didn't send.",
+      "Support system - the message I almost didn't answer.",
       "Moving forward - protecting what's yours.",
     ].map((name, i) => ({ "@type": "Chapter", position: i + 1, name })),
   };

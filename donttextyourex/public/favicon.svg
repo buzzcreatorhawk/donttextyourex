@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Don't text your ex">
+  <!-- A speech bubble with a line struck through it: the one instruction the
+       domain name gives. Ink ground and orange mark are the cover's own colours
+       (see src/styles.js), so the tab icon belongs to the same object as the
+       page. Drawn rather than cropped from the cover, because a 16px crop of
+       cover art reads as a smudge. -->
+  <rect width="64" height="64" rx="12" fill="#0A2130"/>
+  <path d="M14 20h36v22H32l-10 8v-8h-8z"
+        fill="none" stroke="#FCFAE7" stroke-width="3.4"
+        stroke-linejoin="round" opacity="0.9"/>
+  <path d="M13 47 51 15" fill="none" stroke="#EF693E" stroke-width="5"
+        stroke-linecap="round"/>
+</svg>

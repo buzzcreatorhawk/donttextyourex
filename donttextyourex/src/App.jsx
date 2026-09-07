@@ -6,7 +6,11 @@ import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } fr
 // the JSON-LD builder need the same values and a second copy would drift out of
 // step with the page - which for the FAQ specifically would turn valid markup
 // into a spam signal.
-import { BUY_URL, APP_URL, PRICE, COVER_SRC, faqs } from "./meta";
+import {
+  BUY_URL, APP_URL, PRICE, COVER_SRC, faqs,
+  PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR,
+} from "./meta";
+import { WeatherSystem } from "./diagram";
 
 // ── Email list ──────────────────────────────────────────────────────────────
 // Provider-agnostic on purpose - the provider is not chosen yet, and the shape
@@ -52,7 +56,7 @@ const chapters = [
   { num: "02", title: "Discipline as self-sacrifice — give your pain a job." },
   { num: "03", title: "The power of goals — starting from the floor." },
   { num: "04", title: "Rebuilding — the diamond under the coal." },
-  { num: "05", title: "Support system — the message Mark almost didn't send." },
+  { num: "05", title: "Support system — the message I almost didn't answer." },
   { num: "06", title: "Moving forward — protecting what's yours." },
 ];
 
@@ -111,6 +115,23 @@ const Buy = ({ label = `Get the book — ${PRICE}` }) =>
   BUY_URL
     ? <a className="cta" href={BUY_URL}>{label}<Arrow size={18} /></a>
     : <span className="cta" role="link" aria-disabled="true">{label}<Arrow size={18} /></span>;
+
+// The CTA plus what the money actually buys. Every buy button on the page uses
+// this rather than the bare Buy, because "$24.99" on its own does not say whether
+// the thing is forty pages or four hundred, a download or a subscription - and a
+// buyer who finds out afterwards asks for his money back. Stating the length is
+// the argument for the price, not an admission against it: short is the promise
+// the book makes on its own first page.
+const BuyBlock = ({ label, light = false }) => (
+  <div>
+    <Buy label={label} />
+    <p className={`terms ${light ? "lo-d" : "lo"}`}>
+      {PAGES}-page {FORMAT} · {READ_TIME} · instant download
+      <br />
+      {REFUND}
+    </p>
+  </div>
+);
 
 export default function LandingPage() {
   const [navOn, setNavOn] = useState(false);
@@ -214,7 +235,7 @@ export default function LandingPage() {
                 </h1>
               </Reveal>
               <Reveal delay={160}>
-                <p className="lead it c-teal" style={{ marginBottom: 10 }}>Written by someone who's been there.</p>
+                <p className="lead it c-teal" style={{ marginBottom: 10 }}>Written by a man who's been there.</p>
               </Reveal>
               <Reveal delay={190}>
                 <p className="label lo" style={{ marginBottom: 22 }}>Kamil Zaleński</p>
@@ -225,7 +246,7 @@ export default function LandingPage() {
                   You're replaying conversations that go nowhere. This book was built for that moment.
                 </p>
               </Reveal>
-              <Reveal delay={300}><Buy /></Reveal>
+              <Reveal delay={300}><BuyBlock /></Reveal>
             </div>
 
             <Reveal delay={240} style={{ justifySelf: "center" }}>
@@ -280,6 +301,70 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── THE HARD PART ──
+            The two ideas that separate this book from every other breakup page,
+            and neither was on the site. The first is the most arresting page in
+            the manuscript (p.11) and the second is its one genuinely unusual
+            claim (p.12) - the site was selling six chapter titles while keeping
+            its best material behind the paywall, which is backwards. Give away
+            the ideas; the book is the working-through.
+
+            Darkest ground on the page, on purpose. This is the section that says
+            the unwelcome thing, and it sits between the description of the floor
+            and the first light in the next section.
+
+            The prose is lifted close to the manuscript's own wording rather than
+            rewritten as marketing, so the voice a visitor meets here is the voice
+            he gets if he buys. */}
+        <section className="sec on-abyss" aria-labelledby="h-truth">
+          <div className="wrap">
+            <div className="g-split-r" style={{ marginBottom: "clamp(40px,6vw,72px)" }}>
+              <div>
+                <span className="label c-orange">The hard part</span>
+                <h2 id="h-truth" className="d-l hi" style={{ marginTop: 18 }}>
+                  Two things<br />nobody will<br />say to you.
+                </h2>
+              </div>
+              <p className="lead" style={{ alignSelf: "end" }}>
+                They are both in the first twelve pages. They are not there to hurt you — they are
+                there because you cannot build on ground you refuse to stand on.
+              </p>
+            </div>
+
+            <div className="stack-l">
+              <Reveal>
+                <p className="label c-teal" style={{ marginBottom: 20 }}>One</p>
+                <h3 className="d-m hi it" style={{ marginBottom: 22 }}>
+                  She's probably already moved on.
+                </h3>
+                <p className="lead">
+                  Women don't leave suddenly. They clock out slowly. Emotionally, mentally, she began
+                  the process of leaving long before she said the words — so by the time she ended
+                  it, she had already grieved it. You hadn't. That's why you're on the floor and she
+                  seems fine. It isn't that she didn't care. It's that she had a head start.
+                </p>
+              </Reveal>
+
+              <Reveal delay={90}>
+                <p className="label c-teal" style={{ marginBottom: 20 }}>Two</p>
+                <h3 className="d-m hi it" style={{ marginBottom: 22 }}>
+                  What broke isn't the love. It's the respect.
+                </h3>
+                <p className="lead">
+                  A woman runs on love at eighty per cent and respect at twenty. A man is the other
+                  way round. So when she leaves, he doesn't only grieve the relationship — he grieves
+                  his own sense of worth, because somewhere in losing her he lost the version of
+                  himself he respected most. That is what's actually crushing you. Not the absence of
+                  love. The collapse of self-respect.
+                </p>
+                <p className="lead c-teal it" style={{ marginTop: 22 }}>
+                  Which is the good news, because self-respect is a thing you can rebuild.
+                </p>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
         {/* ── QUOTE 1 — first light ── */}
         <section className="sec on-t900">
           <Reveal>
@@ -306,7 +391,7 @@ export default function LandingPage() {
                   Short on purpose. We won't dwell on what went wrong. We'll focus on how to get out
                   of the hole you're in.
                 </p>
-                <Buy label={`Get the PDF — ${PRICE}`} />
+                <BuyBlock label={`Get the ${FORMAT} — ${PRICE}`} />
               </div>
 
               <div>
@@ -319,8 +404,23 @@ export default function LandingPage() {
                   ))}
                 </ol>
                 <p className="small lo it" style={{ marginTop: 22 }}>
-                  Plus the 25-quality exercise that changes everything.
+                  It closes with a two-list exercise. The second list is the one that does the work.
                 </p>
+
+                {/* The prologue's terms (p.6), which were nowhere on a site named
+                    after them. This is the book's only demand of the reader and
+                    it is also, said out loud, the sharpest thing the page can
+                    say about what it is for. Set as a bordered strip rather than
+                    a section: it belongs to the book description, and the page is
+                    already long. */}
+                <Reveal delay={140} className="deal">
+                  <p className="label c-orange" style={{ marginBottom: 14 }}>Before you start</p>
+                  <p className="hi" style={{ fontSize: "clamp(17px,1.7vw,20px)", lineHeight: 1.6 }}>
+                    There's a deal. No calling. No texting. No watching her every story hoping she'll
+                    notice — not until you've finished the book. That's it. It's a small ask, and it
+                    isn't long. Short on purpose.
+                  </p>
+                </Reveal>
               </div>
             </div>
           </div>
@@ -394,15 +494,53 @@ export default function LandingPage() {
           </Reveal>
         </section>
 
+        {/* ── A PAGE FROM INSIDE ──
+            The page sold a 42-page PDF and showed none of it. This is the figure
+            from page 10, on the paper colour the book is actually set on, so a
+            visitor can see the object before he pays for it rather than taking
+            "six chapters" on faith.
+
+            Chosen over the other two figures (the juggling sequence, the two-list
+            exercise) because it illustrates the claim made highest up the page -
+            chapter one, the five stages named - and because it gives away nothing
+            that makes buying the book pointless. It is a map, not the territory:
+            useless on its own, which is exactly the book's own argument about it. */}
+        <section className="sec on-paper" aria-labelledby="h-inside">
+          <div className="wrap g-split">
+            <div>
+              <span className="label c-rust">A page from inside</span>
+              <h2 id="h-inside" className="d-l hi-d" style={{ marginTop: 18, marginBottom: 22 }}>
+                Grief isn't<br />a straight line.
+              </h2>
+              <p className="body" style={{ marginBottom: 20 }}>
+                You'll feel denial and anger in the same hour. You'll think you've reached acceptance
+                and wake up bargaining the next morning. That isn't failure — that's grief doing what
+                grief does.
+              </p>
+              <p className="body">
+                The book asks one thing of you here: when you notice one of them, name it. Say it out
+                loud if you have to. A feeling you can name is a feeling you can work with. A feeling
+                you can't name just runs you.
+              </p>
+            </div>
+
+            <Reveal delay={140} className="figure-d" style={{ color: "var(--on-light-hi)" }}>
+              <WeatherSystem titleId="ws-title" descId="ws-desc" />
+            </Reveal>
+          </div>
+        </section>
+
         {/* ── AUTHOR ── */}
         <section className="sec on-cream" aria-labelledby="h-author">
           <div className="wrap" style={{ maxWidth: 760 }}>
             <h2 id="h-author" className="label c-rust" style={{ marginBottom: 26 }}>Who wrote this</h2>
             <p className="d-m it hi-d">
-              “I'm not a therapist. I'm not a life coach. What I have is this — I've been the person
-              you are right now. The 2am person. I also know, because I've been here more than once,
-              how to get out.”
+              “I'm not a therapist. I'm not a life coach. I don't have a degree in psychology or a
+              podcast with a million subscribers. What I have is this — I've been the guy you are
+              right now. The 2am guy. I also know, because I've been here more than once and each
+              time had to find my way out, how to get out.”
             </p>
+            <p className="label c-rust" style={{ marginTop: 26 }}>{AUTHOR}</p>
             <div style={{ marginTop: 44 }}><Buy /></div>
           </div>
         </section>
@@ -434,7 +572,7 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div style={{ marginTop: "clamp(40px,6vw,64px)" }}><Buy /></div>
+            <div style={{ marginTop: "clamp(40px,6vw,64px)" }}><BuyBlock light /></div>
           </div>
         </section>
 
@@ -486,10 +624,21 @@ export default function LandingPage() {
         )}
       </main>
 
-      <footer className="on-paper" style={{ padding: "40px var(--gut)" }}>
-        <div className="wrap" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
-          <span className="small lo-d">© {new Date().getFullYear()} Kamil Zaleński · How to Get Over a Breakup</span>
-          <span className="small it c-t700">“Go live your life.”</span>
+      <footer className="on-paper" style={{ padding: "clamp(40px,6vw,64px) var(--gut)" }}>
+        <div className="wrap stack-m">
+          <p className="small lo-d" style={{ maxWidth: "62ch" }}>
+            {REFUND} A {PAGES}-page {FORMAT}, downloadable as soon as you've paid — no subscription
+            and nothing recurring. This book is not therapy and makes no clinical claims; if you
+            aren't sleeping or eating for weeks, or you're having thoughts of harming yourself,
+            please talk to a doctor rather than to a book.
+          </p>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 14 }}>
+            <span className="small lo-d">
+              © {new Date().getFullYear()} {AUTHOR} · How to Get Over a Breakup
+              {CONTACT_EMAIL && <> · <a className="foot-link" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></>}
+            </span>
+            <span className="small it c-t700">“Go live your life.”</span>
+          </div>
         </div>
       </footer>
     </div>

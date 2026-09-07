@@ -68,6 +68,11 @@ img{max-width:100%;display:block}
 .stack-l>*+*{margin-top:44px}
 
 /* ── grounds ──────────────────────────────────────────────────────────── */
+/* abyss is a text-bearing ground here. It was extrapolated one step under ink
+   (see the header note), and cream-white at 78% sits on it at roughly 15:1 -
+   comfortably past AA. Reserved for the one section that says the unwelcome
+   thing, so the page gets darker exactly where the copy does. */
+.on-abyss {background:var(--abyss);  color:var(--on-dark-mid)}
 .on-ink   {background:var(--ink);    color:var(--on-dark-mid)}
 .on-t900  {background:var(--teal900);color:var(--on-dark-mid)}
 .on-t700  {background:var(--teal700);color:var(--on-dark-mid)}
@@ -85,6 +90,24 @@ img{max-width:100%;display:block}
      align-items:start;padding:clamp(22px,3vw,34px) 0;border-top:1px solid currentColor}
 .row{border-top-color:rgba(252,250,231,0.14)}
 .row:last-child{border-bottom:1px solid rgba(252,250,231,0.14)}
+
+/* The line under every buy button: length, format, delivery, refund. Small and
+   quiet by design - it is not a selling point competing with the CTA, it is the
+   answer to "what am I actually getting", placed where the question is asked. */
+.terms{font-size:13px;line-height:1.6;margin-top:14px;max-width:46ch}
+
+/* The prologue's terms. A left rule rather than a card: the page's whole visual
+   grammar is rules and grounds, and a rounded box here would read as a component
+   borrowed from somewhere else. */
+.deal{margin-top:clamp(30px,4vw,44px);padding:22px 0 4px 24px;
+      border-left:2px solid var(--orange)}
+
+/* The interior figure. It inherits colour from this wrapper, so the whole drawing
+   moves with the ground rather than being a black stamp on it. */
+.figure-d{width:100%;max-width:620px;justify-self:center}
+
+.foot-link{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.foot-link:hover{color:var(--rust)}
 
 /* ── controls ─────────────────────────────────────────────────────────── */
 .cta{display:inline-flex;align-items:center;gap:10px;

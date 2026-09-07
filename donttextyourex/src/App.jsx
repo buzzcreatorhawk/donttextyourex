@@ -2,11 +2,11 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { CSS } from "./styles";
 import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } from "./icons";
 
-// ── Commerce ────────────────────────────────────────────────────────────────
-const BUY_URL = "";       // TODO: paste the Gumroad (or Stripe Payment Link) URL here
-const APP_URL = "";       // TODO: app store / download link, when there is one
-const PRICE = "$24.99";
-const COVER_SRC = "/cover.jpg";
+// Commerce, copy and the FAQ now live in meta.js, because the prerender pass and
+// the JSON-LD builder need the same values and a second copy would drift out of
+// step with the page - which for the FAQ specifically would turn valid markup
+// into a spam signal.
+import { BUY_URL, APP_URL, PRICE, COVER_SRC, faqs } from "./meta";
 
 // ── Email list ──────────────────────────────────────────────────────────────
 // Provider-agnostic on purpose - the provider is not chosen yet, and the shape
@@ -64,17 +64,19 @@ const features = [
 ];
 
 // ── Reveal on scroll ────────────────────────────────────────────────────────
-// The hidden state only exists while .page.js is set, and that class is only
-// set when IntersectionObserver is available. On top of that every element has
-// a hard fallback timer: if the observer is throttled (background tab, hidden
-// window) and never fires, the content still appears. Content must never be
-// able to get stuck invisible.
+// The hidden state only exists while <html class="js"> is set, and that class is
+// set by an inline script in index.html - not by React. On top of that every
+// element has a hard fallback timer: if the observer is throttled (background
+// tab, hidden window) and never fires, the content still appears. Content must
+// never be able to get stuck invisible.
+//
+// The gate moved out of React for prerendering. It used to be React state, which
+// meant the server rendered `page` and the browser then rendered `page js`. With
+// static markup in the HTML that ordering produces a real flash: the content
+// paints, React mounts, and the reveal class hides it again. Setting the class in
+// <head> before first paint removes the window in which that can happen, and it
+// also means a crawler that runs no JS gets the unhidden page for free.
 const REVEAL_FALLBACK_MS = 1400;
-
-const enhanceOK = () =>
-  typeof window !== "undefined" &&
-  typeof IntersectionObserver !== "undefined" &&
-  !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 function useReveal() {
   const ref = useRef(null);
@@ -118,8 +120,6 @@ export default function LandingPage() {
   const [busy, setBusy] = useState(false);
   const trap = useRef(null);
   const [coverOk, setCoverOk] = useState(true);
-  // Computed once, before first paint, so the page never flashes visible then hides.
-  const [enhance] = useState(enhanceOK);
 
   // rAF-throttled, passive. The old handler stored scrollY in state on every
   // scroll event and re-rendered the whole page; that value was never read.
@@ -175,7 +175,7 @@ export default function LandingPage() {
   }, [email, busy]);
 
   return (
-    <div className={enhance ? "page js" : "page"}>
+    <div className="page">
       <style>{CSS}</style>
 
       {/* ── NAV ── */}
@@ -401,6 +401,37 @@ export default function LandingPage() {
               how to get out.”
             </p>
             <div style={{ marginTop: 44 }}><Buy /></div>
+          </div>
+        </section>
+
+        {/* ── FAQ ──
+            The questions are the ones actually typed into a phone at 2am, which
+            is the point: this is the section an answer engine can lift from, and
+            it only earns that by being visible here. The same array drives the
+            FAQPage JSON-LD - see meta.js. Native <details>, so it works with no
+            JavaScript at all and stays keyboard-operable for free. */}
+        <section className="sec on-cream" aria-labelledby="h-faq" id="faq">
+          <div className="wrap" style={{ maxWidth: 820 }}>
+            <span className="label c-rust">Straight answers</span>
+            <h2 id="h-faq" className="d-l hi-d" style={{ marginTop: 18, marginBottom: "clamp(34px,5vw,54px)" }}>
+              The questions<br />you're actually asking.
+            </h2>
+
+            <div>
+              {faqs.map(({ q, a }, i) => (
+                <Reveal key={q} delay={i * 50}>
+                  <details className="faq" name="faq">
+                    <summary>
+                      <span className="faq-q">{q}</span>
+                      <span className="faq-mark" aria-hidden="true" />
+                    </summary>
+                    <p className="faq-a">{a}</p>
+                  </details>
+                </Reveal>
+              ))}
+            </div>
+
+            <div style={{ marginTop: "clamp(40px,6vw,64px)" }}><Buy /></div>
           </div>
         </section>
 

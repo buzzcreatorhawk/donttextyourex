@@ -1,0 +1,10 @@
+# Everything is public and there is nothing here worth hiding from a crawler.
+# Answer-engine crawlers (GPTBot, PerplexityBot, ClaudeBot and the rest) are
+# allowed by this file precisely because being quoted in an AI answer is the
+# distribution this book is going after. Disallow them here and the FAQ section
+# and its schema stop earning anything.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://donttextyourex.com/sitemap.xml

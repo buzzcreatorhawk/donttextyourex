@@ -127,8 +127,7 @@ const BuyBlock = ({ label, light = false }) => (
     <Buy label={label} />
     <p className={`terms ${light ? "lo-d" : "lo"}`}>
       {PAGES}-page {FORMAT} · {READ_TIME} · instant download
-      <br />
-      {REFUND}
+      {REFUND && <><br />{REFUND}</>}
     </p>
   </div>
 );
@@ -627,10 +626,10 @@ export default function LandingPage() {
       <footer className="on-paper" style={{ padding: "clamp(40px,6vw,64px) var(--gut)" }}>
         <div className="wrap stack-m">
           <p className="small lo-d" style={{ maxWidth: "62ch" }}>
-            {REFUND} A {PAGES}-page {FORMAT}, downloadable as soon as you've paid — no subscription
-            and nothing recurring. This book is not therapy and makes no clinical claims; if you
-            aren't sleeping or eating for weeks, or you're having thoughts of harming yourself,
-            please talk to a doctor rather than to a book.
+            {REFUND && `${REFUND} `}A {PAGES}-page {FORMAT}, downloadable as soon as you've paid — no
+            subscription and nothing recurring. This book is not therapy and makes no clinical
+            claims; if you aren't sleeping or eating for weeks, or you're having thoughts of harming
+            yourself, please talk to a doctor rather than to a book.
           </p>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 14 }}>
             <span className="small lo-d">

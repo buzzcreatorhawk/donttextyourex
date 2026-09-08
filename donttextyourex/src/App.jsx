@@ -51,13 +51,21 @@ const problems = [
   { Icon: Mirror, text: "Not recognising the person staring back at you." },
 ];
 
+// The six chapters plus the three sections around them. Listing only the
+// chapters undersold the book: the Note, the Prologue and the Epilogue are
+// three of its nine sections, and the Epilogue carries the closing exercise
+// this page already promises. `num` is empty for those three so they read as
+// what they are rather than as chapters seven, eight and nine.
 const chapters = [
-  { num: "01", title: "What's in your mind right now — the five stages, named." },
-  { num: "02", title: "Discipline as self-sacrifice — give your pain a job." },
-  { num: "03", title: "The power of goals — starting from the floor." },
-  { num: "04", title: "Rebuilding — the diamond under the coal." },
-  { num: "05", title: "Support system — the message I almost didn't answer." },
-  { num: "06", title: "Moving forward — protecting what's yours." },
+  { id: "note", num: "",   title: "A note from the author — who wrote this, and why." },
+  { id: "prol", num: "",   title: "Prologue — the deal, before you read a word." },
+  { id: "ch1",  num: "01", title: "What's in your mind right now — the five stages, named." },
+  { id: "ch2",  num: "02", title: "Discipline as self-sacrifice — give your pain a job." },
+  { id: "ch3",  num: "03", title: "The power of goals — starting from the floor." },
+  { id: "ch4",  num: "04", title: "Rebuilding — the diamond under the coal." },
+  { id: "ch5",  num: "05", title: "Support system — the message I almost didn't answer." },
+  { id: "ch6",  num: "06", title: "Moving forward — protecting what's yours." },
+  { id: "epil", num: "",   title: "Epilogue — and the two-list exercise that closes it." },
 ];
 
 const features = [
@@ -394,16 +402,22 @@ export default function LandingPage() {
               </div>
 
               <div>
-                <ol style={{ listStyle: "none" }}>
+                {/* A ul, not an ol: three of these nine sections are not
+                    numbered chapters, and an ordered list that skips numbers
+                    reads as a mistake. Keyed on id because num is no longer
+                    unique - three entries share an empty one. */}
+                <ul style={{ listStyle: "none" }}>
                   {chapters.map((ch, i) => (
-                    <Reveal as="li" key={ch.num} delay={i * 60} className="row" style={{ alignItems: "baseline" }}>
-                      <span className="label c-orange" style={{ minWidth: 28 }}>{ch.num}</span>
-                      <span className="hi" style={{ fontSize: "clamp(16px,1.7vw,20px)", lineHeight: 1.5 }}>{ch.title}</span>
+                    <Reveal as="li" key={ch.id} delay={i * 60} className="row" style={{ alignItems: "baseline" }}>
+                      <span className="label c-orange" style={{ minWidth: 28 }} aria-hidden={!ch.num}>
+                        {ch.num || "—"}
+                      </span>
+                      <span className={ch.num ? "hi" : "lo"} style={{ fontSize: "clamp(16px,1.7vw,20px)", lineHeight: 1.5 }}>{ch.title}</span>
                     </Reveal>
                   ))}
-                </ol>
+                </ul>
                 <p className="small lo it" style={{ marginTop: 22 }}>
-                  It closes with a two-list exercise. The second list is the one that does the work.
+                  Six chapters, and the three sections around them.
                 </p>
 
                 {/* The prologue's terms (p.6), which were nowhere on a site named
@@ -494,7 +508,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── A PAGE FROM INSIDE ──
-            The page sold a 42-page PDF and showed none of it. This is the figure
+            The page sold a 43-page PDF and showed none of it. This is the figure
             from page 10, on the paper colour the book is actually set on, so a
             visitor can see the object before he pays for it rather than taking
             "six chapters" on faith.

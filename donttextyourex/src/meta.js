@@ -27,7 +27,14 @@ export const SITE_URL = "https://www.thedonttextyourex.com";
 export const abs = (path) => `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 
 // ── Commerce ────────────────────────────────────────────────────────────────
-export const BUY_URL = "";       // TODO: paste the Payhip (or Stripe Payment Link) URL here
+// Payhip product page. Payhip is the reseller of record for digital EU/UK VAT,
+// which is why the checkout is not a bare Stripe Payment Link: a UK seller owes
+// EU VAT from the first sale with no threshold, and Stripe would leave that
+// registration and the quarterly filings with Kamil. Payhip also delivers the
+// file; Stripe has no mechanism to attach one to a product.
+// Verified live 2026-09-08: $24.99 USD, 43-page PDF, 411KB - the same bytes as
+// "How To Get Over A Breakup.pdf" in the parent folder.
+export const BUY_URL = "https://payhip.com/b/vwtZb";
 export const APP_URL = "";       // TODO: app store / download link, when there is one
 export const PRICE = "$24.99";
 export const PRICE_AMOUNT = "24.99";
@@ -40,7 +47,7 @@ export const COVER_SRC = "/cover.jpg";
 // `numberOfPages` in the Book schema.
 //
 // PAGES is counted, not estimated: `How To Get Over A Breakup.pdf` in the parent
-// folder is 42 pages, front cover through the closing exercise, read in full
+// folder is 43 pages, front cover through the closing exercise, read in full
 // 2026-09-07. If the manuscript grows before launch, recount - do not adjust this
 // by feel.
 //
@@ -48,7 +55,7 @@ export const COVER_SRC = "/cover.jpg";
 // the manuscript) at 200-250 wpm is 27-33 minutes, so "about half an hour" is the
 // honest way to say it. It is not a measured figure and the copy does not pretend
 // it is.
-export const PAGES = 42;
+export const PAGES = 43;
 export const FORMAT = "PDF";
 export const READ_TIME = "about half an hour";
 
@@ -116,7 +123,7 @@ export const faqs = [
   },
   {
     q: "What is actually in the book?",
-    a: "Six chapters and one exercise, across 42 pages. The five stages named so you can recognise where you are; discipline used as a place to put the pain; goal-setting that starts from the floor rather than from motivation; rebuilding; the support system you probably have not asked for yet; and moving forward. It closes with a two-list exercise: twenty-five qualities you want in the woman you end up with, and then, on the facing page, the twenty-five that woman would want in a partner. The second list is the one that does the work. It is short on purpose - it does not dwell on what went wrong, it deals with the hole you are in now.",
+    a: "Six chapters and one exercise, across 43 pages. The five stages named so you can recognise where you are; discipline used as a place to put the pain; goal-setting that starts from the floor rather than from motivation; rebuilding; the support system you probably have not asked for yet; and moving forward. It closes with a two-list exercise: twenty-five qualities you want in the woman you end up with, and then, on the facing page, the twenty-five that woman would want in a partner. The second list is the one that does the work. It is short on purpose - it does not dwell on what went wrong, it deals with the hole you are in now.",
   },
   // The delivery claim here is a promise about a shop that does not exist yet.
   // Check it against the store's own settings on the day BUY_URL is filled in - a
@@ -128,7 +135,7 @@ export const faqs = [
   // then does not answer is worse than one it never raised.
   {
     q: "What exactly do I get for $24.99?",
-    a: "A 42-page PDF, downloadable the moment you have paid - no app to install, no account to make, nothing recurring. It reads in about half an hour. There is no paperback and no audiobook. It is six chapters and one closing exercise, and it is deliberately short: the whole argument of the book is that at 2am you need something you can finish, not something you can start.",
+    a: "A 43-page PDF, downloadable the moment you have paid - no app to install, no account to make, nothing recurring. It reads in about half an hour. There is no paperback and no audiobook. It is six chapters and one closing exercise, and it is deliberately short: the whole argument of the book is that at 2am you need something you can finish, not something you can start.",
   },
   {
     q: "Is this therapy, or a replacement for it?",

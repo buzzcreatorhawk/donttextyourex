@@ -233,11 +233,16 @@ export default function LandingPage() {
           style={{ minHeight: "100dvh", display: "flex", alignItems: "center", paddingTop: "clamp(110px,15vh,180px)" }}>
           <div className="wrap g-split">
             <div>
-              <Reveal style={{ marginBottom: 26 }}>
-                <span className="label c-orange">How to Get Over a Breakup</span>
-              </Reveal>
-              <Reveal delay={80}>
+              {/* The primary query belongs inside the H1, not in a sibling
+                  span above it. It read "A Survival Guide For Men" alone, so
+                  the most important heading on the page did not contain the
+                  thing people search for. Same pixels, different markup: the
+                  kicker is now a block-level span inside the heading.
+                  One Reveal, not two - `.rv` animates translateY, which an
+                  inline span inside a heading will not honour. */}
+              <Reveal>
                 <h1 id="h-hero" className="d-xl hi" style={{ marginBottom: 24 }}>
+                  <span className="h1-kicker">How to Get Over a Breakup</span>
                   A Survival<br />Guide For Men
                 </h1>
               </Reveal>

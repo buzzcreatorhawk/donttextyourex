@@ -56,6 +56,10 @@ export const COVER_SRC = "/cover.jpg";
 // honest way to say it. It is not a measured figure and the copy does not pretend
 // it is.
 export const PAGES = 43;
+// The day the book actually went on sale - the Payhip listing went live and
+// BUY_URL was wired on 2026-09-08. Recency is one of the stronger signals for
+// being cited by an answer engine, and this is a real date, not a guess.
+export const PUBLISHED = "2026-09-08";
 export const FORMAT = "PDF";
 export const READ_TIME = "about half an hour";
 
@@ -177,6 +181,9 @@ export function buildJsonLd() {
     bookFormat: "https://schema.org/EBook",
     numberOfPages: PAGES,
     bookEdition: "Revised edition",
+    datePublished: PUBLISHED,
+    // Stated on the cover, so it is a claim the product already makes.
+    audience: { "@type": "PeopleAudience", suggestedGender: "male" },
     inLanguage: "en",
     image: abs(COVER_SRC),
     url: abs("/"),

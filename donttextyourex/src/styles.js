@@ -53,6 +53,9 @@ img{max-width:100%;display:block}
 .body{font-size:16px;line-height:1.72;max-width:64ch}
 .small{font-size:14px;line-height:1.6}
 .label{font-family:var(--text);font-size:12px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;line-height:1}
+/* Visually identical to .label + .c-orange, but it lives inside the H1.
+   No backticks in here - this whole stylesheet is a template literal. */
+.h1-kicker{display:block;font-family:var(--text);font-size:12px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;line-height:1;color:var(--orange);margin-bottom:26px}
 .num{font-family:var(--display);font-size:clamp(40px,5vw,68px);line-height:0.8;font-style:italic}
 .it{font-style:italic}
 

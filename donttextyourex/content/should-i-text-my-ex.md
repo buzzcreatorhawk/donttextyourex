@@ -97,6 +97,9 @@ Thirty days of not texting while checking her Instagram every night isn't no
 contact. It's contact with extra steps, and it will leave you exactly where you
 started, thirty days older.
 
+The longer answer — what the rule actually is, and whether it brings her back —
+is here: [How long does the no contact rule actually take?](/how-long-does-no-contact-take/)
+
 ## What should I do with the urge instead?
 
 The urge is real and it needs somewhere to go. Willpower alone is a bad plan at

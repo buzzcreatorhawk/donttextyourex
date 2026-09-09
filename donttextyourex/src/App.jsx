@@ -8,7 +8,7 @@ import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } fr
 // into a spam signal.
 import {
   BUY_URL, APP_URL, PRICE, COVER_SRC, faqs,
-  PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR,
+  PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR, ARTICLES,
 } from "./meta";
 import { WeatherSystem } from "./diagram";
 
@@ -217,8 +217,19 @@ export default function LandingPage() {
           transition: "background 320ms ease",
         }}
       >
-        <span className="label" style={{ color: navOn ? "var(--teal300)" : "var(--on-dark-lo)" }}>
-          Survival Guide
+        <span style={{ display: "flex", alignItems: "baseline", gap: 20 }}>
+          <span className="label" style={{ color: navOn ? "var(--teal300)" : "var(--on-dark-lo)" }}>
+            Survival Guide
+          </span>
+          {/* The articles were live but unreachable: the only link to them was
+              inside a collapsed FAQ accordion, which a crawler follows and a
+              person never finds. */}
+          {ARTICLES.length > 0 && (
+            <a className="label" href="#reading"
+               style={{ color: navOn ? "var(--on-dark-mid)" : "var(--on-dark-lo)", textDecoration: "none" }}>
+              Read First
+            </a>
+          )}
         </span>
         <div style={{ opacity: navOn ? 1 : 0, pointerEvents: navOn ? "auto" : "none", transition: "opacity 320ms ease" }}>
           {BUY_URL
@@ -562,6 +573,41 @@ export default function LandingPage() {
             <div style={{ marginTop: 44 }}><Buy /></div>
           </div>
         </section>
+
+        {/* ── READING ──
+            Free, useful, and the only human-visible route to the articles.
+            Sits directly above the FAQ because a man deciding whether to trust
+            a stranger's book should be able to read the stranger first. */}
+        {ARTICLES.length > 0 && (
+          <section className="sec on-t700" aria-labelledby="h-reading" id="reading">
+            <div className="wrap" style={{ maxWidth: 900 }}>
+              <span className="label c-teal">Free to read</span>
+              <h2 id="h-reading" className="d-l hi" style={{ marginTop: 18, marginBottom: 18 }}>
+                Start here.<br />No payment, no email.
+              </h2>
+              <p className="body" style={{ marginBottom: "clamp(34px,5vw,52px)" }}>
+                Two of the questions men actually type at 2am, answered in full.
+                If they help, the book is the rest of it.
+              </p>
+              <ul style={{ listStyle: "none" }}>
+                {ARTICLES.map((a, i) => (
+                  <Reveal as="li" key={a.slug} delay={i * 70}
+                          style={{ borderTop: "1px solid rgba(252,250,231,0.18)" }}>
+                    <a href={`/${a.slug}/`}
+                       style={{ display: "block", padding: "26px 0", textDecoration: "none" }}>
+                      <span className="d-m hi" style={{ display: "block", marginBottom: 8 }}>
+                        {a.title}
+                      </span>
+                      <span className="small lo" style={{ display: "block", maxWidth: "62ch" }}>
+                        {a.description}
+                      </span>
+                    </a>
+                  </Reveal>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
 
         {/* ── FAQ ──
             The questions are the ones actually typed into a phone at 2am, which

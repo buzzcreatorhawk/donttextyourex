@@ -120,6 +120,17 @@ export const ARTICLES = [
     published: "2026-09-09",
     updated: "2026-09-09",
   },
+  {
+    slug: "how-long-does-no-contact-take",
+    file: "how-long-does-no-contact-take.md",
+    title: "How Long Does the No Contact Rule Actually Take?",
+    description:
+      "There is no correct number - thirty days is a convention, not a mechanism. " +
+      "What no contact actually is, why watching her stories still counts, and the " +
+      "honest answer to whether it brings her back.",
+    published: "2026-09-09",
+    updated: "2026-09-09",
+  },
 ];
 
 // ── FAQ ─────────────────────────────────────────────────────────────────────
@@ -141,6 +152,7 @@ export const faqs = [
   {
     q: "How long does the no contact rule actually take?",
     a: "Thirty days is the number people repeat, but the number is not the mechanism. No contact works because it stops you re-opening the wound, so the honest answer is that it takes as long as it takes you to stop reaching for your phone as a reflex. Most men notice the pull weakening somewhere in the third or fourth week. Counting the days helps - not because day 30 is a finish line, but because a rising number is evidence you are doing something.",
+    more: { href: "/how-long-does-no-contact-take/", label: "Read the full answer" },
   },
   {
     q: "Why does this hurt so much more than I expected?",

@@ -131,6 +131,17 @@ export const ARTICLES = [
     published: "2026-09-09",
     updated: "2026-09-09",
   },
+  {
+    slug: "why-does-a-breakup-hurt-so-much",
+    file: "why-does-a-breakup-hurt-so-much.md",
+    title: "Why Does a Breakup Hurt More Than You Expected?",
+    description:
+      "Because you did not only lose her - you lost the version of yourself you " +
+      "respected most. Why it outsizes the relationship, why it is not linear, and " +
+      "why she seems fine while you are on the floor.",
+    published: "2026-09-09",
+    updated: "2026-09-09",
+  },
 ];
 
 // ── FAQ ─────────────────────────────────────────────────────────────────────
@@ -157,6 +168,7 @@ export const faqs = [
   {
     q: "Why does this hurt so much more than I expected?",
     a: "Because you did not only lose a person, you lost a structure - the shape of your week, the assumed future, the person you were when you were with her. Grief attaches to all of it at once. That is also why it does not fade in a straight line: you will have a good Tuesday and a wrecked Thursday for no visible reason. It is not a relapse and it is not weakness. It is what the process looks like from the inside.",
+    more: { href: "/why-does-a-breakup-hurt-so-much/", label: "Read the full answer" },
   },
   {
     q: "What is actually in the book?",

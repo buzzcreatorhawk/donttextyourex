@@ -3,4 +3,6 @@
 // It exists only to gather App.jsx's default export and the few values the
 // prerenderer needs into one module, so there is a single thing to import.
 export { default } from "./App.jsx";
-export { jsonLdString, SITE_URL } from "./meta.js";
+export { jsonLdString, SITE_URL, ARTICLES, AUTHOR, BRAND, TITLE, BUY_URL,
+         PRICE, PAGES, FORMAT, READ_TIME, abs, COVER_SRC } from "./meta.js";
+export { CSS } from "./styles.js";

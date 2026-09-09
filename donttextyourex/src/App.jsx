@@ -68,6 +68,11 @@ const chapters = [
   { id: "epil", num: "",   title: "Epilogue — and the two-list exercise that closes it." },
 ];
 
+// Spelled out because "3 of the questions" reads like a spec sheet. Falls back
+// to the numeral past ten, by which point the section wants rethinking anyway.
+const COUNT_WORD = { 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six",
+                     7: "Seven", 8: "Eight", 9: "Nine", 10: "Ten" };
+
 const features = [
   { Icon: Block, title: "Don't Text Your Ex", desc: "Intercepts the urge and redirects it into something real. Instantly." },
   { Icon: Bars,  title: "No Contact Counter", desc: "Track every day of distance. Watch the number grow. That number is you." },
@@ -227,7 +232,7 @@ export default function LandingPage() {
           {ARTICLES.length > 0 && (
             <a className="label" href="#reading"
                style={{ color: navOn ? "var(--on-dark-mid)" : "var(--on-dark-lo)", textDecoration: "none" }}>
-              Read First
+              Read for free
             </a>
           )}
         </span>
@@ -585,8 +590,13 @@ export default function LandingPage() {
               <h2 id="h-reading" className="d-l hi" style={{ marginTop: 18, marginBottom: 18 }}>
                 Start here.<br />No payment, no email.
               </h2>
+              {/* Derived, never typed. This said "Two" and went stale the moment
+                  a third article shipped - a wrong number on a live page, of
+                  exactly the kind this project keeps out of the copy. */}
               <p className="body" style={{ marginBottom: "clamp(34px,5vw,52px)" }}>
-                Two of the questions men actually type at 2am, answered in full.
+                {ARTICLES.length === 1
+                  ? "One of the questions men actually type at 2am, answered in full."
+                  : `${COUNT_WORD[ARTICLES.length] || ARTICLES.length} of the questions men actually type at 2am, answered in full.`}{" "}
                 If they help, the book is the rest of it.
               </p>
               <ul style={{ listStyle: "none" }}>

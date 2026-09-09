@@ -141,6 +141,9 @@ export function articleJsonLd(md, meta, ctx) {
   return JSON.stringify({ "@context": "https://schema.org", "@graph": graph });
 }
 
+// NOTE: everything this function returns is inside a template literal, so a
+// backtick anywhere below - including in a CSS comment - ends the string and
+// breaks the build. Twice now.
 export function articlePage(md, meta, ctx) {
   const { SITE_URL, CSS, BRAND, AUTHOR, BUY_URL, PRICE, PAGES, FORMAT, READ_TIME, abs, COVER_SRC } = ctx;
   const { html, h1 } = renderMarkdown(md);
@@ -198,7 +201,12 @@ export function articlePage(md, meta, ctx) {
         background:var(--orange)}
       .art li strong{color:var(--on-dark-hi);font-weight:600}
       .art hr{border:0;border-top:1px solid rgba(252,250,231,0.14);margin:52px 0}
-      .art a{color:var(--teal300)}
+      /* Style links in the PROSE only. A blanket .art a rule beat both
+         .cta and .back on specificity: it painted teal on the orange
+         button (1.30:1, unreadable) and turned the back link teal too.
+         Naming the containers keeps the button ink-on-orange at 5.31:1
+         and leaves .back its orange. */
+      .art p a, .art li a{color:var(--teal300)}
       .art .meta{font-family:var(--text);font-size:12px;font-weight:600;letter-spacing:0.2em;
         text-transform:uppercase;color:var(--on-dark-lo);margin-bottom:22px}
       .art .back{display:inline-block;margin-bottom:38px;font-family:var(--text);font-size:12px;

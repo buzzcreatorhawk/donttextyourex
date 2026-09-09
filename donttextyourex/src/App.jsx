@@ -577,7 +577,7 @@ export default function LandingPage() {
             </h2>
 
             <div>
-              {faqs.map(({ q, a }, i) => (
+              {faqs.map(({ q, a, more }, i) => (
                 <Reveal key={q} delay={i * 50}>
                   <details className="faq" name="faq">
                     <summary>
@@ -585,6 +585,15 @@ export default function LandingPage() {
                       <span className="faq-mark" aria-hidden="true" />
                     </summary>
                     <p className="faq-a">{a}</p>
+                    {/* An answer that has a full article behind it links to it.
+                        This is the only internal link into the article, so it
+                        is also the crawl path - do not remove it without
+                        putting one somewhere else. */}
+                    {more && (
+                      <p className="faq-a" style={{ marginTop: 14 }}>
+                        <a className="c-orange" href={more.href}>{more.label} →</a>
+                      </p>
+                    )}
                   </details>
                 </Reveal>
               ))}

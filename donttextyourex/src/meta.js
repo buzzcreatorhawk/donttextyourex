@@ -102,6 +102,26 @@ export const DESCRIPTION =
   "You're not sleeping. You're checking her Instagram at midnight. You're replaying " +
   "conversations that go nowhere. A short, direct book for that moment.";
 
+// ── Articles ────────────────────────────────────────────────────────────────
+// One entry per file in content/. The prose lives in Markdown, not in JSX, so
+// Kamil can edit the words without touching code and a rebuild picks them up.
+//
+// `updated` is the honest freshness signal. Bump it when the words actually
+// change - not on every deploy, which would be a lie told to a crawler.
+export const ARTICLES = [
+  {
+    slug: "should-i-text-my-ex",
+    file: "should-i-text-my-ex.md",
+    title: "Should I Text My Ex? The Honest Answer",
+    description:
+      "No - not tonight, and not for the reason you are telling yourself. What the " +
+      "text will actually get you, why closure is not something she can hand over, " +
+      "and what to do with the urge instead.",
+    published: "2026-09-09",
+    updated: "2026-09-09",
+  },
+];
+
 // ── FAQ ─────────────────────────────────────────────────────────────────────
 // These are rendered visibly on the page AND emitted as FAQPage JSON-LD, from
 // this one array. Google's guidance is that FAQ markup must describe content the
@@ -116,6 +136,7 @@ export const faqs = [
   {
     q: "Should I text my ex?",
     a: "No - not tonight, and not for the reason you are telling yourself. The urge to text is almost never about her; it is about wanting the discomfort to stop. Sending the message trades a week of slow healing for about ninety seconds of relief, and then restarts the clock. If you need to say it, write it somewhere she will never read it. The sending is the part that costs you.",
+    more: { href: "/should-i-text-my-ex/", label: "Read the full answer" },
   },
   {
     q: "How long does the no contact rule actually take?",

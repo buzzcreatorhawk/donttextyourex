@@ -21,6 +21,7 @@ import { dirname, resolve } from "node:path";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as esbuild from "esbuild";
+import { articlePage } from "./article.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
@@ -55,7 +56,8 @@ await esbuild.build({
   external: ["react", "react-dom", "react/jsx-runtime", "react-dom/server"],
 });
 
-const { default: App, jsonLdString, SITE_URL } = await import(pathToFileURL(entryOut).href);
+const ctx = await import(pathToFileURL(entryOut).href);
+const { default: App, jsonLdString, SITE_URL, ARTICLES } = ctx;
 
 // renderToStaticMarkup, not renderToString: the client uses createRoot rather
 // than hydrateRoot, so React throws this markup away and mounts fresh. That is
@@ -87,19 +89,46 @@ html = html.replace("<!--JSONLD-->", ld);
 
 writeFileSync(htmlPath, html, "utf8");
 
+// ── Articles ──────────────────────────────────────────────────────────────
+// Written before the sitemap, because the sitemap lists whatever was built.
+const built = [];
+for (const meta of ARTICLES) {
+  const md = readFileSync(resolve(root, "content", meta.file), "utf8");
+  const outDir = resolve(dist, meta.slug);
+  mkdirSync(outDir, { recursive: true });
+  const page = articlePage(md, meta, ctx);
+  writeFileSync(resolve(outDir, "index.html"), page, "utf8");
+  built.push(meta);
+  console.log(`[prerender] ${meta.slug}/index.html ${(page.length / 1024).toFixed(1)}kb`);
+}
+
 // Sitemap. Generated rather than committed so lastmod is the real build date
-// instead of a date someone typed once and then stopped updating.
+// instead of a date someone typed once and then stopped updating. Articles
+// carry their own `updated`, which is the date the words changed - not the
+// date of the last deploy.
 const lastmod = new Date().toISOString().slice(0, 10);
-writeFileSync(
-  resolve(dist, "sitemap.xml"),
-  `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
+const urls = [
+  `  <url>
     <loc>${SITE_URL}/</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
-  </url>
+  </url>`,
+  ...built.map(
+    (a) => `  <url>
+    <loc>${SITE_URL}/${a.slug}/</loc>
+    <lastmod>${a.updated}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>`
+  ),
+].join("\n");
+
+writeFileSync(
+  resolve(dist, "sitemap.xml"),
+  `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
 </urlset>
 `,
   "utf8"
@@ -114,6 +143,12 @@ const problems = [];
 if (!markup.includes("<h1")) problems.push("no <h1> in the rendered markup");
 if (!markup.includes("Should I text my ex?")) problems.push("FAQ questions missing from markup");
 if (!html.includes("application/ld+json")) problems.push("JSON-LD not injected");
+for (const a of built) {
+  const f = readFileSync(resolve(dist, a.slug, "index.html"), "utf8");
+  if (!f.includes("<h1")) problems.push(`${a.slug}: no <h1>`);
+  if (!f.includes("application/ld+json")) problems.push(`${a.slug}: no JSON-LD`);
+  if (f.length < 4000) problems.push(`${a.slug}: suspiciously short`);
+}
 if (problems.length) {
   console.error(`[prerender] FAILED: ${problems.join("; ")}`);
   process.exit(1);

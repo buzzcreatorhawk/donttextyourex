@@ -174,6 +174,14 @@ export const faqs = [
     q: "What is actually in the book?",
     a: "Six chapters and one exercise, across 43 pages. The five stages named so you can recognise where you are; discipline used as a place to put the pain; goal-setting that starts from the floor rather than from motivation; rebuilding; the support system you probably have not asked for yet; and moving forward. It closes with a two-list exercise: twenty-five qualities you want in the woman you end up with, and then, on the facing page, the twenty-five that woman would want in a partner. The second list is the one that does the work. It is short on purpose - it does not dwell on what went wrong, it deals with the hole you are in now.",
   },
+  // VERIFIED 2026-09-09 by a real card purchase, not by reading Payhip's docs:
+  // the download works with NO account required, and the file delivered is the
+  // 43-page PDF. This claim is true as written. The statement descriptor came
+  // through as "donttext Payhip" - the DONTTEXT prefix set on the Stripe account
+  // plus a suffix Payhip supplies - so a buyer sees something recognisable.
+  // Re-check if the store or its checkout settings change.
+  //
+  // The original note follows, kept because it is the right instinct:
   // The delivery claim here is a promise about a shop that does not exist yet.
   // Check it against the store's own settings on the day BUY_URL is filled in - a
   // delivery promise the checkout does not keep is the exact failure the gated

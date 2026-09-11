@@ -98,6 +98,40 @@ export const AUTHOR = "Kamil Zaleński";
 export const TITLE = "How to Get Over a Breakup — A Survival Guide For Men";
 export const TAGLINE = "A Survival Guide For Men";
 export const BRAND = "How to Get Over a Breakup";
+
+// The name in the DOMAIN, which is not the name on the PAGE. Until 2026-09-11
+// the built HTML contained the string "Don't Text Your Ex" ZERO times: the site
+// called itself "How to Get Over a Breakup" and nothing anywhere connected that
+// to thedonttextyourex.com. The first AEO baseline caught what that costs -
+// asked "what is thedonttextyourex.com", Perplexity answered, confidently and
+// wrongly, that it is a 2022 short film by a Montreal filmmaker, citing a
+// Linktree page that DOES claim the name. See AEO/baseline-2026-09-11.md.
+//
+// A crawler had no on-page evidence to tie the domain to this book, and a
+// competing claimant had plenty. ALT_NAME and IDENTITY are that evidence. They
+// are stated as a fact about what this domain is, NOT as positioning - the
+// positioning line is still Kamil's to write, and nothing here pre-empts it.
+export const ALT_NAME = "Don't Text Your Ex";
+
+// One self-contained sentence, quotable out of context - which is the whole
+// point of it. It is rendered visibly in the footer of every page AND used as
+// the schema `description` for the Organization and the WebSite, because the
+// rule at the top of this file holds: never state a fact here that the page
+// does not also show.
+//
+// The last clause disclaims OUR affiliation rather than asserting anything
+// about anyone else's film, song or app. We have not verified what those are,
+// only that engines confuse them with us, so the honest claim is the negative
+// one about ourselves.
+// ALT_NAME is written into this sentence rather than only into the schema, so
+// that `alternateName` describes something the page actually shows - the rule
+// at the top of this file, applied to the fix for the problem it was written
+// about.
+export const IDENTITY =
+  `thedonttextyourex.com, sometimes written ${ALT_NAME}, is the home of ${BRAND} - ` +
+  `a ${PAGES}-page ${FORMAT} for men written by ${AUTHOR}. It is not connected to ` +
+  `any other book, film, app or song of a similar name.`;
+
 export const DESCRIPTION =
   "You're not sleeping. You're checking her Instagram at midnight. You're replaying " +
   "conversations that go nowhere. A short, direct book for that moment.";
@@ -276,11 +310,23 @@ export function buildJsonLd() {
         "@type": "Person",
         "@id": authorId,
         name: AUTHOR,
+        // Stated because the page states it: the byline reads "Written by a man
+        // who's been there. Kamil Zaleński". A Person node carrying nothing but
+        // a name is a thin entity - it gives a model no way to tell this Kamil
+        // from any other, and no reason to attach the book to him.
+        description: `Author of ${BRAND}.`,
+        // `sameAs` is deliberately ABSENT, not forgotten. It is the strongest
+        // disambiguation signal available here, and it must list profiles that
+        // actually exist and actually belong to him - a sameAs pointing at a 404
+        // or at someone else lowers confidence rather than raising it. Kamil has
+        // to supply the real URLs. Do not invent or guess them.
       },
       {
         "@type": "Organization",
         "@id": orgId,
         name: BRAND,
+        alternateName: ALT_NAME,
+        description: IDENTITY,
         url: abs("/"),
         logo: abs(COVER_SRC),
       },
@@ -289,6 +335,7 @@ export function buildJsonLd() {
         "@id": siteId,
         url: abs("/"),
         name: TITLE,
+        alternateName: ALT_NAME,
         description: DESCRIPTION,
         inLanguage: "en",
         publisher: { "@id": orgId },

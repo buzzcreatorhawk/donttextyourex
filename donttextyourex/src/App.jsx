@@ -8,7 +8,7 @@ import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } fr
 // into a spam signal.
 import {
   BUY_URL, APP_URL, PRICE, COVER_SRC, faqs,
-  PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR, ARTICLES,
+  PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR, ARTICLES, IDENTITY,
 } from "./meta";
 import { WeatherSystem } from "./diagram";
 
@@ -715,6 +715,13 @@ export default function LandingPage() {
             claims; if you aren't sleeping or eating for weeks, or you're having thoughts of harming
             yourself, please talk to a doctor rather than to a book.
           </p>
+          {/* The identity line. Visible on purpose: until 2026-09-11 this site
+              never wrote its own domain's name anywhere, and an answer engine
+              asked what thedonttextyourex.com is attributed it to someone
+              else's short film. This sentence is the on-page evidence that was
+              missing, and it is the same string the schema uses as its
+              description. See AEO/baseline-2026-09-11.md. */}
+          <p className="small lo-d" style={{ maxWidth: "62ch" }}>{IDENTITY}</p>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 14 }}>
             <span className="small lo-d">
               © {new Date().getFullYear()} {AUTHOR} · How to Get Over a Breakup

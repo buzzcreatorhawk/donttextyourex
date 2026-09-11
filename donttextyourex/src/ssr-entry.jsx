@@ -5,5 +5,5 @@
 export { default } from "./App.jsx";
 export { jsonLdString, SITE_URL, ARTICLES, AUTHOR, BRAND, TITLE, BUY_URL,
          PRICE, PAGES, FORMAT, READ_TIME, abs, COVER_SRC,
-         IDENTITY, ALT_NAME } from "./meta.js";
+         IDENTITY, ALT_NAME, POSITIONING, DESCRIPTION } from "./meta.js";
 export { CSS } from "./styles.js";

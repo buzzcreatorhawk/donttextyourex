@@ -100,17 +100,18 @@ export const TAGLINE = "A Survival Guide For Men";
 export const BRAND = "How to Get Over a Breakup";
 
 // The name in the DOMAIN, which is not the name on the PAGE. Until 2026-09-11
-// the built HTML contained the string "Don't Text Your Ex" ZERO times: the site
-// called itself "How to Get Over a Breakup" and nothing anywhere connected that
-// to thedonttextyourex.com. The first AEO baseline caught what that costs -
+// nothing on the site identified it by the domain's own name. The phrase
+// "Don't Text Your Ex" appeared once, as the title of an APP FEATURE - never as
+// a statement that this site is called that - and the site called itself "How
+// to Get Over a Breakup". The first AEO baseline caught what that costs -
 // asked "what is thedonttextyourex.com", Perplexity answered, confidently and
 // wrongly, that it is a 2022 short film by a Montreal filmmaker, citing a
 // Linktree page that DOES claim the name. See AEO/baseline-2026-09-11.md.
 //
 // A crawler had no on-page evidence to tie the domain to this book, and a
 // competing claimant had plenty. ALT_NAME and IDENTITY are that evidence. They
-// are stated as a fact about what this domain is, NOT as positioning - the
-// positioning line is still Kamil's to write, and nothing here pre-empts it.
+// state a FACT about what this domain is; the separate claim about what the
+// book is FOR lives in POSITIONING below.
 export const ALT_NAME = "Don't Text Your Ex";
 
 // One self-contained sentence, quotable out of context - which is the whole
@@ -132,9 +133,32 @@ export const IDENTITY =
   `a ${PAGES}-page ${FORMAT} for men written by ${AUTHOR}. It is not connected to ` +
   `any other book, film, app or song of a similar name.`;
 
+// ── Positioning ─────────────────────────────────────────────────────────────
+// The one thing this book is to be known for, everywhere, in these words.
+// Decided 2026-09-11 (DECISIONS.md), derived rather than chosen: the first AEO
+// baseline showed the obvious claims already occupied - an engine calls Nick
+// Dawson's book "the definitive breakup book for men", and Susan J. Elliott's
+// "explicitly not about reconciliation", which is the exact sentence this book
+// would otherwise have led with. What nothing in the results claimed was the
+// ACUTE MOMENT: every competitor sells recovery as a process begun afterwards.
+//
+// It is true of the book, not aspirational about it. `build/blocks.json`: the
+// prologue's opening move is a pact - "No calling. No texting. No watching her
+// every story hoping she'll notice. Not until you've finished this book" - and
+// the book is short enough for that to be physically possible, which a 300-page
+// therapist manual is not. That length IS the moat, which is why PAGES and
+// READ_TIME sit next to this line wherever it appears.
+//
+// Repeat it VERBATIM - site, Payhip, Goodreads, social bios, outreach, podcast
+// bios. The mechanism is entity consistency; a model reading four different
+// descriptions of one thing lowers its confidence in all four. Variety is the
+// failure mode here, not the goal.
+export const POSITIONING =
+  "the breakup book you finish at 2am instead of sending the text";
+
 export const DESCRIPTION =
   "You're not sleeping. You're checking her Instagram at midnight. You're replaying " +
-  "conversations that go nowhere. A short, direct book for that moment.";
+  `conversations that go nowhere. This is ${POSITIONING}.`;
 
 // ── Articles ────────────────────────────────────────────────────────────────
 // One entry per file in content/. The prose lives in Markdown, not in JSX, so
@@ -311,10 +335,11 @@ export function buildJsonLd() {
         "@id": authorId,
         name: AUTHOR,
         // Stated because the page states it: the byline reads "Written by a man
-        // who's been there. Kamil Zaleński". A Person node carrying nothing but
-        // a name is a thin entity - it gives a model no way to tell this Kamil
-        // from any other, and no reason to attach the book to him.
-        description: `Author of ${BRAND}.`,
+        // who's been there. Kamil Zaleński", and the hero paragraph directly
+        // beneath it carries POSITIONING word for word. A Person node holding
+        // nothing but a name is a thin entity - it gives a model no way to tell
+        // this Kamil from any other, and no reason to attach the book to him.
+        description: `Author of ${BRAND} — ${POSITIONING}.`,
         // `sameAs` is deliberately ABSENT, not forgotten. It is the strongest
         // disambiguation signal available here, and it must list profiles that
         // actually exist and actually belong to him - a sameAs pointing at a 404

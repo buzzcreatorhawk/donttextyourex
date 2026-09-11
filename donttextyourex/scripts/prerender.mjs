@@ -57,7 +57,7 @@ await esbuild.build({
 });
 
 const ctx = await import(pathToFileURL(entryOut).href);
-const { default: App, jsonLdString, SITE_URL, ARTICLES } = ctx;
+const { default: App, jsonLdString, SITE_URL, ARTICLES, DESCRIPTION } = ctx;
 
 // renderToStaticMarkup, not renderToString: the client uses createRoot rather
 // than hydrateRoot, so React throws this markup away and mounts fresh. That is
@@ -86,6 +86,31 @@ if (!html.includes("<!--JSONLD-->")) {
   process.exit(1);
 }
 html = html.replace("<!--JSONLD-->", ld);
+
+// ── One description, not three ────────────────────────────────────────────
+// `description`, `og:description` and `twitter:description` were hand-written
+// in index.html and had drifted apart: the meta description said one thing and
+// the two social ones said another, while DESCRIPTION in meta.js said a third.
+// None of them agreed. That is precisely the failure the AEO work exists to fix
+// - a model reading several different descriptions of one entity trusts every
+// one of them less - and it is invisible unless you diff the tags by hand.
+//
+// They are rewritten from meta.js HERE rather than replaced with placeholders,
+// so index.html keeps readable defaults for `vite dev` and `build:spa` while
+// the bytes that actually ship carry exactly one description. Refuses to guess
+// if a tag is missing, the same as the markup and JSON-LD steps above.
+const descAttr = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+for (const [attr, name] of [["name", "description"],
+                            ["property", "og:description"],
+                            ["name", "twitter:description"]]) {
+  const re = new RegExp(`(<meta ${attr}="${name}" content=")[^"]*(")`);
+  if (!re.test(html)) {
+    console.error(`[prerender] No <meta ${attr}="${name}"> in dist/index.html.`);
+    console.error("[prerender] Refusing to ship a page whose descriptions disagree.");
+    process.exit(1);
+  }
+  html = html.replace(re, `$1${descAttr(DESCRIPTION)}$2`);
+}
 
 writeFileSync(htmlPath, html, "utf8");
 

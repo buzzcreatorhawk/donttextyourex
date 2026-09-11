@@ -4,5 +4,6 @@
 // prerenderer needs into one module, so there is a single thing to import.
 export { default } from "./App.jsx";
 export { jsonLdString, SITE_URL, ARTICLES, AUTHOR, BRAND, TITLE, BUY_URL,
-         PRICE, PAGES, FORMAT, READ_TIME, abs, COVER_SRC } from "./meta.js";
+         PRICE, PAGES, FORMAT, READ_TIME, abs, COVER_SRC,
+         IDENTITY, ALT_NAME } from "./meta.js";
 export { CSS } from "./styles.js";

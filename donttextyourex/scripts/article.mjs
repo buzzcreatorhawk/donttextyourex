@@ -145,7 +145,7 @@ export function articleJsonLd(md, meta, ctx) {
 // backtick anywhere below - including in a CSS comment - ends the string and
 // breaks the build. Twice now.
 export function articlePage(md, meta, ctx) {
-  const { SITE_URL, CSS, BRAND, AUTHOR, BUY_URL, PRICE, PAGES, FORMAT, READ_TIME, abs, COVER_SRC } = ctx;
+  const { SITE_URL, CSS, BRAND, AUTHOR, BUY_URL, PRICE, PAGES, FORMAT, READ_TIME, abs, COVER_SRC, IDENTITY } = ctx;
   const { html, h1 } = renderMarkdown(md);
   const url = `${SITE_URL}/${meta.slug}/`;
   const ld = articleJsonLd(md, meta, ctx);
@@ -214,6 +214,10 @@ export function articlePage(md, meta, ctx) {
         text-decoration:none}
       .art .end{margin-top:60px;padding-top:38px;border-top:1px solid rgba(252,250,231,0.14)}
       .art .end .cta{margin-top:6px}
+      .art .site-id{margin-top:46px;padding-top:22px;
+        border-top:1px solid rgba(252,250,231,0.14);
+        font-family:var(--text);font-size:13px;line-height:1.6;
+        color:var(--on-dark-lo);max-width:62ch}
     </style>
     <script type="application/ld+json">${ld}</script>
   </head>
@@ -228,6 +232,11 @@ export function articlePage(md, meta, ctx) {
           how to rebuild, and the exercise that closes it — is in the book.</p>
           ${cta}
         </div>
+        <!-- The identity line, same string the home page footer and the schema
+             carry. Article pages had no footer at all, so an engine arriving
+             here by deep link had nothing tying the page to the site's own
+             name. See AEO/baseline-2026-09-11.md. -->
+        <p class="site-id">${esc(IDENTITY)}</p>
       </article>
     </div>
   </body>

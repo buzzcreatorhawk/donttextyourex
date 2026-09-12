@@ -95,7 +95,8 @@ distance is being used for anything.
 
 Thirty days of not texting while checking her Instagram every night isn't no
 contact. It's contact with extra steps, and it will leave you exactly where you
-started, thirty days older.
+started, thirty days older. That habit has its own page:
+[how do I stop checking my ex's Instagram?](/how-to-stop-checking-your-exs-instagram/)
 
 The longer answer — what the rule actually is, and whether it brings her back —
 is here: [How long does the no contact rule actually take?](/how-long-does-no-contact-take/)

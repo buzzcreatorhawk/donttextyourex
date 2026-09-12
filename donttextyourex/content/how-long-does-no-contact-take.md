@@ -67,6 +67,9 @@ Mute her. Don't announce it, don't block if you don't want the drama — just ma
 it require effort. The urge is strongest when the profile is one thumb-swipe
 away.
 
+Which of the three to use, and what to do at the moment you reach for the app,
+is here: [How do I stop checking my ex's Instagram?](/how-to-stop-checking-your-exs-instagram/)
+
 ## Will no contact make her come back?
 
 This is the question underneath the other one, so let's do it properly.

@@ -195,7 +195,7 @@ export const ARTICLES = [
       "text will actually get you, why closure is not something she can hand over, " +
       "and what to do with the urge instead.",
     published: "2026-09-09",
-    updated: "2026-09-09",
+    updated: "2026-09-12",
   },
   {
     slug: "how-long-does-no-contact-take",
@@ -206,7 +206,18 @@ export const ARTICLES = [
       "What no contact actually is, why watching her stories still counts, and the " +
       "honest answer to whether it brings her back.",
     published: "2026-09-09",
-    updated: "2026-09-09",
+    updated: "2026-09-12",
+  },
+  {
+    slug: "how-to-stop-checking-your-exs-instagram",
+    file: "how-to-stop-checking-your-exs-instagram.md",
+    title: "How Do I Stop Checking My Ex's Instagram?",
+    description:
+      "Willpower is not the tool - friction is. Why checking costs you more than " +
+      "texting does, whether to mute, unfollow or block, and what to do at the " +
+      "moment your thumb starts moving on its own.",
+    published: "2026-09-12",
+    updated: "2026-09-12",
   },
   {
     slug: "why-does-a-breakup-hurt-so-much",
@@ -241,6 +252,11 @@ export const faqs = [
     q: "How long does the no contact rule actually take?",
     a: "Thirty days is the number people repeat, but the number is not the mechanism. No contact works because it stops you re-opening the wound, so the honest answer is that it takes as long as it takes you to stop reaching for your phone as a reflex. Most men notice the pull weakening somewhere in the third or fourth week. Counting the days helps - not because day 30 is a finish line, but because a rising number is evidence you are doing something.",
     more: { href: "/how-long-does-no-contact-take/", label: "Read the full answer" },
+  },
+  {
+    q: "How do I stop checking my ex's Instagram?",
+    a: "Make it require effort, because willpower is lowest at exactly the hour you reach for the app. Mute her to stop the feed reaching you, unfollow if you arrive on her profile without deciding to, and block if you have started typing her name into the search bar - that is the line where the other two have stopped being enough. Checking is worse than texting in one specific way: a text ends, and checking has no end state, so you can do it forty times a day and never once get the thing you are looking for. Watching her stories is contact, and it is the loophole that wastes the whole month.",
+    more: { href: "/how-to-stop-checking-your-exs-instagram/", label: "Read the full answer" },
   },
   {
     q: "Why does this hurt so much more than I expected?",

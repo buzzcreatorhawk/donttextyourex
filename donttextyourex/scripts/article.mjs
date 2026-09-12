@@ -145,7 +145,19 @@ export function articleJsonLd(md, meta, ctx) {
 // backtick anywhere below - including in a CSS comment - ends the string and
 // breaks the build. Twice now.
 export function articlePage(md, meta, ctx) {
-  const { SITE_URL, CSS, BRAND, AUTHOR, BUY_URL, PRICE, PAGES, FORMAT, READ_TIME, abs, COVER_SRC, IDENTITY } = ctx;
+  const { SITE_URL, CSS, BRAND, AUTHOR, BUY_URL, PRICE, PAGES, FORMAT, READ_TIME,
+          LISTEN_TIME, INCLUDED, abs, COVER_SRC, IDENTITY } = ctx;
+  // Fail the build rather than interpolate the word "undefined" into a live
+  // page. Everything above comes off ctx, which only carries what ssr-entry.jsx
+  // re-exports, so a value added to meta.js and forgotten there is otherwise
+  // invisible until someone reads the rendered page.
+  for (const [k, v] of Object.entries({ SITE_URL, BRAND, AUTHOR, PRICE, PAGES,
+                                        FORMAT, READ_TIME, LISTEN_TIME, INCLUDED })) {
+    if (v === undefined) {
+      throw new Error(`articlePage: ${k} is undefined - add it to the export list in src/ssr-entry.jsx`);
+    }
+  }
+
   const { html, h1 } = renderMarkdown(md);
   const url = `${SITE_URL}/${meta.slug}/`;
   const ld = articleJsonLd(md, meta, ctx);
@@ -153,10 +165,19 @@ export function articlePage(md, meta, ctx) {
     day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
   });
 
+  // These three article pages are standalone HTML, not part of the SPA, so they
+  // do NOT pick up changes to the Buy component - they build their own CTA here.
+  // That is how they went on saying "Get the PDF" and advertising a PDF-only
+  // product for two deploys after the audiobook shipped. Any change to the buy
+  // wording in App.jsx has to be made here too; there is no shared component to
+  // lean on. The NBSP before the price keeps the em dash off the end of a line
+  // when the label wraps on a narrow screen.
+  const ctaLabel = `Get the book + audiobook — ${PRICE}`;
   const cta = BUY_URL
-    ? `<a class="cta" href="${BUY_URL}">Get the ${FORMAT} — ${PRICE}</a>
-       <p class="terms lo">${PAGES}-page ${FORMAT} · ${READ_TIME} · instant download</p>`
-    : `<span class="cta" role="link" aria-disabled="true">Get the ${FORMAT} — ${PRICE}</span>`;
+    ? `<a class="cta" href="${BUY_URL}">${ctaLabel}</a>
+       <p class="included hi">${INCLUDED}</p>
+       <p class="terms lo" style="margin-top:4px">${PAGES}-page ${FORMAT} · ${READ_TIME} to read · ${LISTEN_TIME} audiobook · instant download</p>`
+    : `<span class="cta" role="link" aria-disabled="true">${ctaLabel}</span>`;
 
   return `<!DOCTYPE html>
 <html lang="en">

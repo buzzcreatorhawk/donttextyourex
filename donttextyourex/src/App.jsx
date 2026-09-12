@@ -125,7 +125,12 @@ const Reveal = ({ children, delay = 0, as: Tag = "div", className = "", style, .
 
 // Primary CTA. When BUY_URL is unset it stays visible but is honestly inert
 // rather than looking clickable and doing nothing.
-const Buy = ({ label = `Get the book — ${PRICE}` }) =>
+//
+// The label names BOTH formats (Kamil, 2026-09-12). One default feeds every buy
+// button on the page, so this string is the only place the CTA wording lives -
+// if a second label is ever passed in, it has to carry the audiobook too, which
+// is what went wrong when one caller said "Get the PDF".
+const Buy = ({ label = `Get the book + audiobook — ${PRICE}` }) =>
   BUY_URL
     ? <a className="cta" href={BUY_URL}>{label}<Arrow size={18} /></a>
     : <span className="cta" role="link" aria-disabled="true">{label}<Arrow size={18} /></span>;

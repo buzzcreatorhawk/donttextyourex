@@ -9,7 +9,7 @@ import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } fr
 import {
   BUY_URL, APP_URL, PRICE, COVER_SRC, faqs,
   PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR, ARTICLES, IDENTITY,
-  POSITIONING,
+  POSITIONING, LISTEN_TIME, INCLUDED,
 } from "./meta";
 import { WeatherSystem } from "./diagram";
 
@@ -140,7 +140,9 @@ const BuyBlock = ({ label, light = false }) => (
   <div>
     <Buy label={label} />
     <p className={`terms ${light ? "lo-d" : "lo"}`}>
-      {PAGES}-page {FORMAT} · {READ_TIME} · instant download
+      {INCLUDED}
+      <br />
+      {PAGES}-page {FORMAT} · {READ_TIME} to read · {LISTEN_TIME} audiobook · instant download
       {REFUND && <><br />{REFUND}</>}
     </p>
   </div>
@@ -716,8 +718,8 @@ export default function LandingPage() {
       <footer className="on-paper" style={{ padding: "clamp(40px,6vw,64px) var(--gut)" }}>
         <div className="wrap stack-m">
           <p className="small lo-d" style={{ maxWidth: "62ch" }}>
-            {REFUND && `${REFUND} `}A {PAGES}-page {FORMAT}, downloadable as soon as you've paid — no
-            subscription and nothing recurring. This book is not therapy and makes no clinical
+            {REFUND && `${REFUND} `}A {PAGES}-page {FORMAT} and a {LISTEN_TIME} audiobook, both
+            downloadable as soon as you've paid — no subscription and nothing recurring. This book is not therapy and makes no clinical
             claims; if you aren't sleeping or eating for weeks, or you're having thoughts of harming
             yourself, please talk to a doctor rather than to a book.
           </p>

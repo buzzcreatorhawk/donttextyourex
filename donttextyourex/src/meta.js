@@ -43,7 +43,7 @@ export const COVER_SRC = "/cover.jpg";
 
 // ── What the buyer actually receives ───────────────────────────────────────
 // A $24.99 digital product with no stated length is the shape of a refund. These
-// three facts go on the page next to every buy button, and PAGES also becomes
+// facts go on the page next to every buy button, and PAGES also becomes
 // `numberOfPages` in the Book schema.
 //
 // PAGES is counted, not estimated: `How To Get Over A Breakup.pdf` in the parent
@@ -62,6 +62,25 @@ export const PAGES = 43;
 export const PUBLISHED = "2026-09-08";
 export const FORMAT = "PDF";
 export const READ_TIME = "about half an hour";
+
+// The audiobook, included in the same purchase from 2026-09-12. Not an upsell
+// and deliberately not called a "bonus": that is the vocabulary of a cheap
+// product padded with extras, and it invites the reader to price the book at
+// $24.99 MINUS something. Two formats of one thing is the honest description
+// and the better offer.
+//
+// LISTEN_TIME is MEASURED, not derived - the one number on this page that was
+// read off the artefact rather than reasoned about. `ffprobe` reports
+// 2785.30s for `Audiobook/V3/How To Get Over A Breakup.m4b`, which is 46:25.
+// Re-measure with ffprobe if the audio is ever re-rendered. Do not adjust by
+// feel, and do not round it down to make it match READ_TIME.
+//
+// READ_TIME and LISTEN_TIME disagree (about 30 min vs 46) because reading is
+// faster than listening. That is normal and the copy says "to read" next to
+// READ_TIME so the two numbers cannot be mistaken for a contradiction.
+export const LISTEN_TIME = "46-minute";
+export const LISTEN_DURATION = "PT46M25S";   // ISO 8601, for schema only
+export const INCLUDED = "Read it or listen to it — both included";
 
 // The refund position. EMPTY, and every line that would state one is gated on it
 // being non-empty - the same rule as BUY_URL and the email endpoint. Kamil took
@@ -306,6 +325,17 @@ export function buildJsonLd() {
       { "@type": "Thing", name: "No contact rule" },
       { "@type": "Thing", name: "Mens mental health" },
     ],
+    // The audiobook is the same work in a second format, which is exactly what
+    // `workExample` is for - not a separate Book node, which would tell an
+    // engine there are two books. No `readBy`: the narration is synthesised,
+    // and naming a human narrator here would be a fabricated credit.
+    workExample: {
+      "@type": "Audiobook",
+      name: TITLE,
+      bookFormat: "https://schema.org/AudiobookFormat",
+      duration: LISTEN_DURATION,
+      inLanguage: "en",
+    },
     hasPart: [
       "What's in your mind right now - the five stages, named.",
       "Discipline as self-sacrifice - give your pain a job.",

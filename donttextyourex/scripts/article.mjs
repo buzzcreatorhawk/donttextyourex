@@ -51,12 +51,24 @@ export function renderMarkdown(md) {
       continue;
     }
 
-    if (block.split("\n").every((l) => l.trim().startsWith("- "))) {
-      const items = block
-        .split("\n")
-        .map((l) => `<li>${inline(l.trim().slice(2).trim())}</li>`)
-        .join("");
-      html.push(`<ul>${items}</ul>`);
+    // A list is a block whose FIRST line is "- ". Continuation lines fold into
+    // the item above, because the prose is hard-wrapped at 80 columns and a
+    // two-line bullet is the normal case, not the exception.
+    //
+    // This used to require EVERY line to start with "- ", which no wrapped list
+    // in content/ has ever satisfied - so every summary list on the site fell
+    // through to the paragraph branch and shipped as one run-on <p> with literal
+    // hyphens in it. That was the "short version" block on all three articles:
+    // the exact chunk an answer engine lifts. Found 2026-09-12 by reading the
+    // BUILT bytes rather than the Markdown, which is the only way it is visible.
+    if (block.startsWith("- ")) {
+      const items = [];
+      for (const line of block.split("\n")) {
+        const t = line.trim();
+        if (t.startsWith("- ")) items.push(t.slice(2).trim());
+        else if (t) items[items.length - 1] += " " + t;
+      }
+      html.push("<ul>" + items.map((i) => "<li>" + inline(i) + "</li>").join("") + "</ul>");
       continue;
     }
 

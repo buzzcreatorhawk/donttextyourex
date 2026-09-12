@@ -182,5 +182,6 @@ barrier — free and low-cost options exist; a search will find them.
 
 *This is one night's worth of it. The full thing — the five stages, what to do
 with the pain, how to rebuild, and the exercise that closes it — is in* **How to
-Get Over a Breakup: A Survival Guide For Men** *, a 43-page PDF that reads in
+Get Over a Breakup: A Survival Guide For Men** *, a 43-page PDF (plus the
+46-minute audiobook, included) that reads in
 about half an hour.*

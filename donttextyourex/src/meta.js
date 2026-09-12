@@ -267,9 +267,18 @@ export const faqs = [
   // The refund half of this entry was removed with REFUND (see above). The
   // question no longer asks about refunds, because a question the page raises and
   // then does not answer is worse than one it never raised.
+  //
+  // 2026-09-12: this answer said "There is no paperback and no audiobook" and
+  // went on shipping that sentence for one deploy AFTER the audiobook was added
+  // to the buy blocks - the page contradicted itself, and the FAQ was the half
+  // that was simply false. Found by Kamil looking at the page, not by the byte
+  // checks, which only ever looked for strings that had been ADDED. When a
+  // product fact changes, grep for the OLD fact and every denial of the new one
+  // before shipping; adding the truth in one place does not remove a lie in
+  // another. "There is no paperback" is kept because it is still true.
   {
     q: "What exactly do I get for $24.99?",
-    a: "A 43-page PDF, downloadable the moment you have paid - no app to install, no account to make, nothing recurring. It reads in about half an hour. There is no paperback and no audiobook. It is six chapters and one closing exercise, and it is deliberately short: the whole argument of the book is that at 2am you need something you can finish, not something you can start.",
+    a: "A 43-page PDF and a 46-minute audiobook - read it or listen to it, both included in the one price. Downloadable the moment you have paid: no app to install, no account to make, nothing recurring. The PDF reads in about half an hour; the audiobook is chaptered, as an M4B for audiobook apps and as MP3s that play on anything. There is no paperback. It is six chapters and one closing exercise, and it is deliberately short: the whole argument of the book is that at 2am you need something you can finish, not something you can start.",
   },
   {
     q: "Is this therapy, or a replacement for it?",

@@ -99,6 +99,11 @@ img{max-width:100%;display:block}
    point competing with the CTA, it is the answer to "what am I actually
    getting", placed where the question is asked. */
 .terms{font-size:13px;line-height:1.6;margin-top:14px;max-width:46ch}
+/* The second format is an OFFER, not small print. It sat inside .terms at 13px
+   and 60% opacity for one deploy and Kamil could not see it on the page. Same
+   size, full opacity, 600 weight - loud enough to read, quiet enough not to
+   compete with the CTA above it. */
+.included{font-size:13px;font-weight:600;line-height:1.6;margin-top:14px;max-width:46ch}
 
 /* The prologue's terms. A left rule rather than a card: the page's whole visual
    grammar is rules and grounds, and a rounded box here would read as a component

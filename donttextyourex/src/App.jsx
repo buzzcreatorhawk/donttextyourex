@@ -139,9 +139,8 @@ const Buy = ({ label = `Get the book — ${PRICE}` }) =>
 const BuyBlock = ({ label, light = false }) => (
   <div>
     <Buy label={label} />
-    <p className={`terms ${light ? "lo-d" : "lo"}`}>
-      {INCLUDED}
-      <br />
+    <p className={`included ${light ? "hi-d" : "hi"}`}>{INCLUDED}</p>
+    <p className={`terms ${light ? "lo-d" : "lo"}`} style={{ marginTop: 4 }}>
       {PAGES}-page {FORMAT} · {READ_TIME} to read · {LISTEN_TIME} audiobook · instant download
       {REFUND && <><br />{REFUND}</>}
     </p>
@@ -427,7 +426,7 @@ export default function LandingPage() {
                   Short on purpose. We won't dwell on what went wrong. We'll focus on how to get out
                   of the hole you're in.
                 </p>
-                <BuyBlock label={`Get the ${FORMAT} — ${PRICE}`} />
+                <BuyBlock />
               </div>
 
               <div>

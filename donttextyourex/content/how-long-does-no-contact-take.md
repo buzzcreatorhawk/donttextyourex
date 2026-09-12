@@ -176,6 +176,6 @@ barrier — free and low-cost options exist; a search will find them.
 [Should I text my ex?](/should-i-text-my-ex/)
 
 *The full thing — the five stages, what to do with the pain, how to rebuild, and
-the exercise that closes it — is in* **How to Get Over a Breakup: A Survival
-Guide For Men** *, a 43-page PDF that reads in about half an hour, with the
+the exercise that closes it — is in* **Don't Text Your Ex: A Survival Guide
+For Men After A Breakup** *, a 43-page PDF that reads in about half an hour, with the
 46-minute audiobook included.*

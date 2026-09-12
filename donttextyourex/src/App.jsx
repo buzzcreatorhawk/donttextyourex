@@ -9,7 +9,7 @@ import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } fr
 import {
   BUY_URL, APP_URL, PRICE, COVER_SRC, faqs,
   PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR, ARTICLES, IDENTITY,
-  POSITIONING, LISTEN_TIME, INCLUDED,
+  POSITIONING, LISTEN_TIME, INCLUDED, BRAND, TITLE,
 } from "./meta";
 import { WeatherSystem } from "./diagram";
 
@@ -265,8 +265,8 @@ export default function LandingPage() {
                   inline span inside a heading will not honour. */}
               <Reveal>
                 <h1 id="h-hero" className="d-xl hi" style={{ marginBottom: 24 }}>
-                  <span className="h1-kicker">How to Get Over a Breakup</span>
-                  A Survival<br />Guide For Men
+                  <span className="h1-kicker">{BRAND}</span>
+                  A Survival Guide For<br />Men After A Breakup
                 </h1>
               </Reveal>
               <Reveal delay={160}>
@@ -293,7 +293,7 @@ export default function LandingPage() {
               {coverOk ? (
                 <img
                   src={COVER_SRC} width="800" height="1280"
-                  alt="Cover of How to Get Over a Breakup — A Survival Guide For Men, by Kamil Zaleński"
+                  alt={`Cover of ${TITLE}`}
                   onError={() => setCoverOk(false)}
                   style={{ width: "min(320px,72vw)", height: "auto", borderRadius: 3, boxShadow: "0 34px 70px -20px rgba(7,24,35,0.85)" }}
                 />
@@ -736,7 +736,7 @@ export default function LandingPage() {
           <p className="small lo-d" style={{ maxWidth: "62ch" }}>{IDENTITY}</p>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 14 }}>
             <span className="small lo-d">
-              © {new Date().getFullYear()} {AUTHOR} · How to Get Over a Breakup
+              © {new Date().getFullYear()} {AUTHOR} · {BRAND}
               {CONTACT_EMAIL && <> · <a className="foot-link" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></>}
             </span>
             <span className="small it c-t700">“Go live your life.”</span>

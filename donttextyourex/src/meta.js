@@ -33,7 +33,7 @@ export const abs = (path) => `${SITE_URL}${path.startsWith("/") ? path : `/${pat
 // registration and the quarterly filings with Kamil. Payhip also delivers the
 // file; Stripe has no mechanism to attach one to a product.
 // Verified live 2026-09-08: $24.99 USD, 43-page PDF, 411KB - the same bytes as
-// "How To Get Over A Breakup.pdf" in the parent folder.
+// "Don't Text Your Ex.pdf" in the parent folder.
 export const BUY_URL = "https://payhip.com/b/vwtZb";
 export const APP_URL = "";       // TODO: app store / download link, when there is one
 export const PRICE = "$24.99";
@@ -46,7 +46,7 @@ export const COVER_SRC = "/cover.jpg";
 // facts go on the page next to every buy button, and PAGES also becomes
 // `numberOfPages` in the Book schema.
 //
-// PAGES is counted, not estimated: `How To Get Over A Breakup.pdf` in the parent
+// PAGES is counted, not estimated: `Don't Text Your Ex.pdf` in the parent
 // folder is 43 pages, front cover through the closing exercise, read in full
 // 2026-09-07. If the manuscript grows before launch, recount - do not adjust this
 // by feel.
@@ -71,7 +71,7 @@ export const READ_TIME = "about half an hour";
 //
 // LISTEN_TIME is MEASURED, not derived - the one number on this page that was
 // read off the artefact rather than reasoned about. `ffprobe` reports
-// 2785.30s for `Audiobook/V3/How To Get Over A Breakup.m4b`, which is 46:25.
+// 2785.30s for `Audiobook/V3/Don't Text Your Ex.m4b`, which is 46:25.
 // Re-measure with ffprobe if the audio is ever re-rendered. Do not adjust by
 // feel, and do not round it down to make it match READ_TIME.
 //
@@ -114,24 +114,29 @@ export const CONTACT_EMAIL = "";  // TODO: the address that receives buyer email
 // the previous comment said to make: a Person node, set as the Book's author.
 // The ń is intentional - do not transliterate it.
 export const AUTHOR = "Kamil Zaleński";
-export const TITLE = "How to Get Over a Breakup — A Survival Guide For Men";
-export const TAGLINE = "A Survival Guide For Men";
-export const BRAND = "How to Get Over a Breakup";
+export const TITLE = "Don't Text Your Ex — A Survival Guide For Men After A Breakup";
+export const TAGLINE = "A Survival Guide For Men After A Breakup";
+export const BRAND = "Don't Text Your Ex";
 
-// The name in the DOMAIN, which is not the name on the PAGE. Until 2026-09-11
-// nothing on the site identified it by the domain's own name. The phrase
-// "Don't Text Your Ex" appeared once, as the title of an APP FEATURE - never as
-// a statement that this site is called that - and the site called itself "How
-// to Get Over a Breakup". The first AEO baseline caught what that costs -
-// asked "what is thedonttextyourex.com", Perplexity answered, confidently and
-// wrongly, that it is a 2022 short film by a Montreal filmmaker, citing a
-// Linktree page that DOES claim the name. See AEO/baseline-2026-09-11.md.
+// The OLD title. This mapping was INVERTED on 2026-09-12.
 //
-// A crawler had no on-page evidence to tie the domain to this book, and a
-// competing claimant had plenty. ALT_NAME and IDENTITY are that evidence. They
-// state a FACT about what this domain is; the separate claim about what the
-// book is FOR lives in POSITIONING below.
-export const ALT_NAME = "Don't Text Your Ex";
+// Until then the book was called "How to Get Over a Breakup" while the domain
+// said something else, and ALT_NAME carried the domain's name to tie the two
+// together. The first AEO baseline caught what the mismatch cost - asked "what
+// is thedonttextyourex.com", Perplexity answered, confidently and wrongly, that
+// it is a 2022 short film by a Montreal filmmaker, citing a Linktree page that
+// DOES claim the name. See AEO/baseline-2026-09-11.md.
+//
+// Renaming the book removes the mismatch instead of annotating it: the title,
+// the domain and the brand are now one string, which is the strongest form of
+// the evidence ALT_NAME was standing in for. So ALT_NAME flips to the name the
+// book was SOLD under between 2026-09-08 and 2026-09-12. Anything that indexed
+// it then - the Payhip listing's history, an inbound link, a model's training
+// data - must resolve to this entity rather than fork into a second one.
+//
+// Do not delete it when the old name stops feeling current. That is exactly
+// when it is doing its job.
+export const ALT_NAME = "How to Get Over a Breakup";
 
 // One self-contained sentence, quotable out of context - which is the whole
 // point of it. It is rendered visibly in the footer of every page AND used as
@@ -146,11 +151,12 @@ export const ALT_NAME = "Don't Text Your Ex";
 // ALT_NAME is written into this sentence rather than only into the schema, so
 // that `alternateName` describes something the page actually shows - the rule
 // at the top of this file, applied to the fix for the problem it was written
-// about.
+// about. After the rename that clause carries the OLD title, which is the only
+// place on the site a reader is told the two names are one book.
 export const IDENTITY =
-  `thedonttextyourex.com, sometimes written ${ALT_NAME}, is the home of ${BRAND} - ` +
-  `a ${PAGES}-page ${FORMAT} for men written by ${AUTHOR}. It is not connected to ` +
-  `any other book, film, app or song of a similar name.`;
+  `thedonttextyourex.com is the home of ${BRAND} - a ${PAGES}-page ${FORMAT} for ` +
+  `men written by ${AUTHOR}, originally published as ${ALT_NAME}. It is not ` +
+  `connected to any other book, film, app or song of a similar name.`;
 
 // ── Positioning ─────────────────────────────────────────────────────────────
 // The one thing this book is to be known for, everywhere, in these words.
@@ -228,7 +234,7 @@ export const ARTICLES = [
       "respected most. Why it outsizes the relationship, why it is not linear, and " +
       "why she seems fine while you are on the floor.",
     published: "2026-09-09",
-    updated: "2026-09-09",
+    updated: "2026-09-12",
   },
 ];
 

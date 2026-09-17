@@ -10,6 +10,15 @@
 // NOTE: the page is one template literal, so a backtick anywhere in it -
 // including a CSS comment - ends the string. See article.mjs.
 
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+// The full YouTube description of each episode - summary, chapters, studies -
+// extracted from the upload docs (youtube videos/episodes/*/YOUTUBE-UPLOAD.md),
+// so the page carries the same words YouTube does. Visible text, not hidden
+// metadata: that is what both search engines and answer engines read.
+const DETAILS = JSON.parse(readFileSync(fileURLToPath(new URL("../content/videos.json", import.meta.url)), "utf8"));
+
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -37,6 +46,23 @@ export function videosPage(ctx) {
        <p class="terms lo" style="margin-top:4px">${PAGES}-page ${FORMAT} · ${READ_TIME} to read · ${LISTEN_TIME} audiobook · instant download</p>`
     : `<span class="cta" role="link" aria-disabled="true">${ctaLabel}</span>`;
 
+  const clock = (t) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
+  const details = (v) => {
+    const d = DETAILS[v.id];
+    if (!d) throw new Error(`videosPage: no entry for ${v.id} in content/videos.json`);
+    const chapters = d.chapters.map(([t, label]) =>
+      `<li><a href="https://www.youtube.com/watch?v=${esc(v.id)}&amp;t=${t}s"><span class="t">${clock(t)}</span>${esc(label)}</a></li>`).join("");
+    const studies = d.studies.map(([label, href]) =>
+      `<li>${href ? `<a href="${esc(href)}">${esc(label)}</a>` : esc(label)}</li>`).join("");
+    return `
+          ${d.about.map((p) => `<p>${esc(p)}</p>`).join("\n          ")}
+          <h3>Chapters</h3>
+          <ol class="chap">${chapters}</ol>
+          <h3>Studies mentioned</h3>
+          <ul class="stud">${studies}</ul>`;
+  };
+  const disclaimer = DETAILS[VIDEOS[0].id].disclaimer;
+
   const items = VIDEOS.map((v) => `
         <section class="vid" aria-labelledby="v-${esc(v.id)}">
           <p class="ep">Episode ${v.episode}</p>
@@ -46,7 +72,7 @@ export function videosPage(ctx) {
               loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           </div>
-          <p>${esc(v.description)}</p>
+          ${details(v)}
           <p class="yt"><a href="https://www.youtube.com/watch?v=${esc(v.id)}">Watch on YouTube →</a></p>
         </section>`).join("\n");
 
@@ -96,6 +122,18 @@ export function videosPage(ctx) {
         border-radius:6px;overflow:hidden}
       .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
       .art .yt a, .art .lede a{color:var(--teal300)}
+      .art h3{font-family:var(--text);font-size:12px;font-weight:600;letter-spacing:0.2em;
+        text-transform:uppercase;color:var(--on-dark-lo);margin:34px 0 14px}
+      .art ol, .art ul{list-style:none;margin:0 0 8px;padding:0}
+      .art li{font-size:16px;line-height:1.6;color:var(--on-dark-mid);margin-bottom:10px}
+      .chap a{display:flex;gap:16px;color:var(--on-dark-mid);text-decoration:none}
+      .chap a:hover{color:var(--on-dark-hi)}
+      .chap .t{flex:0 0 3.2em;font-variant-numeric:tabular-nums;color:var(--teal300)}
+      .stud li{padding-left:22px;position:relative;overflow-wrap:anywhere}
+      .stud li::before{content:"";position:absolute;left:0;top:12px;width:8px;height:2px;background:var(--orange)}
+      .stud a{color:var(--on-dark-mid);text-decoration-color:rgba(252,250,231,0.3)}
+      .art .yt{margin-top:26px}
+      .art .disc{margin-top:40px;font-size:14px;color:var(--on-dark-lo)}
       .art .end{margin-top:72px;padding-top:38px;border-top:1px solid rgba(252,250,231,0.14)}
       .art .end .cta{margin-top:6px}
       .art .site-id{margin-top:46px;padding-top:22px;
@@ -116,6 +154,7 @@ ${items}
           <p class="body">The videos cover one night each. The book covers the whole way out.</p>
           ${cta}
         </div>
+        ${disclaimer ? `<p class="disc">${esc(disclaimer)}</p>` : ""}
         <p class="site-id">${esc(IDENTITY)}</p>
       </main>
     </div>

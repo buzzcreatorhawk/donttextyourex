@@ -239,26 +239,38 @@ export const ARTICLES = [
 ];
 
 // ── Videos ──────────────────────────────────────────────────────────────────
-// The 2AM Guy episodes on YouTube, newest first. Rendered at /videos/ by
-// scripts/videos.mjs and linked from the home page's reading section.
-// Titles are as YouTube's oEmbed endpoint returned them on 2026-09-17, so the
-// page names each video the way YouTube does. The full description text
-// (summary, chapters, studies) is in content/videos.json. Embeds only: no MP4 is ever
-// committed here (the episodes are ~0.5-1 GB each).
-// No VideoObject JSON-LD yet, on purpose: it needs uploadDate, and the dates
-// could not be read from YouTube when this was written. Add it with real dates
-// from YouTube Studio, never guessed ones.
+// The 2AM Guy episodes on YouTube, newest first. scripts/videos.mjs renders
+// /videos/ (a grid of cards, no players) and one watch page per episode at
+// /videos/<slug>/ - Google only treats a page whose main purpose is ONE video
+// as a watch page, and only watch pages are eligible for video results
+// (developers.google.com/search/docs/appearance/video, read 2026-09-17).
+//
+// title:   as YouTube's oEmbed returned it on 2026-09-17.
+// summary: the one line on the card. The full description (paragraphs,
+//          chapters, studies) is content/videos.json, copied from the upload docs.
+// seconds: ffprobe on the uploaded MP4 (EP01 769.8s, EP02 1123.5s), rounded down.
+// uploaded: YYYY-MM-DD from YouTube Studio, or null. VideoObject JSON-LD is
+//          emitted only when this is set - never guess a date.
+// Embeds only: no MP4 is ever committed here.
 export const CHANNEL_URL = "https://www.youtube.com/@2amGuy-mk1";
 export const VIDEOS = [
   {
     id: "fqJn6C_O_0k",
+    slug: "drunk-text",
     episode: 2,
     title: "What Alcohol Does to the Text You Send Your Ex?",
+    summary: "One night, hour by hour: why the 2 AM message feels brilliant, and why it reads so differently at eleven.",
+    seconds: 1123,
+    uploaded: null,
   },
   {
     id: "jxcDBDvzu0c",
+    slug: "first-24-hours-after-a-breakup",
     episode: 1,
     title: "What Happens to Your Body in the First 24 Hours After a Breakup?",
+    summary: "The adrenaline alarm, the cortisol wave, and why the urge to text her feels so reasonable on night one.",
+    seconds: 769,
+    uploaded: null,
   },
 ];
 

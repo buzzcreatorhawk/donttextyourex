@@ -22,7 +22,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as esbuild from "esbuild";
 import { articlePage } from "./article.mjs";
-import { videosPage } from "./videos.mjs";
+import { videosIndexPage, videoWatchPage, DETAILS } from "./videos.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
@@ -128,13 +128,19 @@ for (const meta of ARTICLES) {
   console.log(`[prerender] ${meta.slug}/index.html ${(page.length / 1024).toFixed(1)}kb`);
 }
 
-// Videos page, built before the sitemap for the same reason.
+// Videos: the grid, then one watch page per episode. Before the sitemap too.
 if (ctx.VIDEOS.length) {
   const vdir = resolve(dist, "videos");
   mkdirSync(vdir, { recursive: true });
-  const vpage = videosPage(ctx);
+  const vpage = videosIndexPage(ctx);
   writeFileSync(resolve(vdir, "index.html"), vpage, "utf8");
   console.log(`[prerender] videos/index.html ${(vpage.length / 1024).toFixed(1)}kb`);
+  for (const v of ctx.VIDEOS) {
+    mkdirSync(resolve(vdir, v.slug), { recursive: true });
+    const w = videoWatchPage(v, ctx);
+    writeFileSync(resolve(vdir, v.slug, "index.html"), w, "utf8");
+    console.log(`[prerender] videos/${v.slug}/index.html ${(w.length / 1024).toFixed(1)}kb`);
+  }
 }
 
 // Sitemap. Generated rather than committed so lastmod is the real build date
@@ -157,12 +163,12 @@ const urls = [
     <priority>0.8</priority>
   </url>`
   ),
-  ...(ctx.VIDEOS.length ? [`  <url>
-    <loc>${SITE_URL}/videos/</loc>
+  ...(ctx.VIDEOS.length ? ["videos/", ...ctx.VIDEOS.map((v) => `videos/${v.slug}/`)].map((p) => `  <url>
+    <loc>${SITE_URL}/${p}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>`] : []),
+  </url>`) : []),
 ].join("\n");
 
 writeFileSync(
@@ -192,8 +198,14 @@ for (const a of built) {
 }
 if (ctx.VIDEOS.length) {
   const v = readFileSync(resolve(dist, "videos", "index.html"), "utf8");
-  for (const x of ctx.VIDEOS) if (!v.includes(`/embed/${x.id}`)) problems.push(`videos: no embed for ${x.id}`);
-  if ((v.match(/class="chap"/g) || []).length !== ctx.VIDEOS.length) problems.push("videos: chapters missing for an episode");
+  if ((v.match(/class="card"/g) || []).length !== ctx.VIDEOS.length) problems.push("videos: card count wrong");
+  if (v.includes("<iframe")) problems.push("videos: grid page loads a player (it must not)");
+  for (const x of ctx.VIDEOS) {
+    const w = readFileSync(resolve(dist, "videos", x.slug, "index.html"), "utf8");
+    if (!w.includes(`data-player="${x.id}"`)) problems.push(`videos/${x.slug}: no player`);
+    if ((w.match(/data-t="/g) || []).length !== DETAILS[x.id].chapters.length) problems.push(`videos/${x.slug}: chapters missing`);
+    if (!w.includes("<h1")) problems.push(`videos/${x.slug}: no <h1>`);
+  }
   if (!markup.includes('href="/videos/"')) problems.push("home page has no link to /videos/");
 }
 if (problems.length) {

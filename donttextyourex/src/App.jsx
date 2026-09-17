@@ -214,25 +214,36 @@ export default function LandingPage() {
     }
   }, [email, busy]);
 
+  const toTop = useCallback((e) => {
+    if (window.location.pathname !== "/") return;
+    e.preventDefault();
+    // An instant jump, not smooth: from the FAQ a smooth scroll crosses ~8,000px,
+    // and it is the one variant verified working (2026-09-17).
+    window.scrollTo({ top: 0, behavior: "auto" });
+    if (window.location.hash) history.replaceState(null, "", "/");
+  }, []);
+
   return (
     <div className="page">
       <style>{CSS}</style>
 
       {/* ── NAV ── */}
-      <header
+      <header className="nav-bar"
         style={{
           position: "fixed", inset: "0 0 auto 0", zIndex: 100,
-          padding: "14px var(--gut)", display: "flex",
-          justifyContent: "space-between", alignItems: "center", gap: 16,
+          padding: "14px var(--gut)",
           background: navOn ? "rgba(10,33,48,0.94)" : "transparent",
           backdropFilter: navOn ? "blur(14px)" : "none",
           transition: "background 320ms ease",
         }}
       >
-        <span style={{ display: "flex", alignItems: "baseline", gap: 20 }}>
-          <span className="label nav-l nav-kicker" style={{ color: navOn ? "var(--teal300)" : "var(--on-dark-lo)" }}>
-            Survival Guide
-          </span>
+        {/* Home link (Kamil, 2026-09-17). On the home page it scrolls back to the
+            top instead of reloading; href="/" keeps it working without JS. */}
+        <a className="label nav-l nav-home" href="/" onClick={toTop}
+           style={{ color: navOn ? "var(--teal300)" : "var(--on-dark-lo)", textDecoration: "none" }}>
+          Survival Guide
+        </a>
+        <span className="nav-links">
           {/* The articles were live but unreachable: the only link to them was
               inside a collapsed FAQ accordion, which a crawler follows and a
               person never finds. */}
@@ -249,7 +260,7 @@ export default function LandingPage() {
             </a>
           )}
         </span>
-        <div style={{ opacity: navOn ? 1 : 0, pointerEvents: navOn ? "auto" : "none", transition: "opacity 320ms ease" }}>
+        <div className="nav-buy" style={{ opacity: navOn ? 1 : 0, pointerEvents: navOn ? "auto" : "none", transition: "opacity 320ms ease" }}>
           {BUY_URL
             ? <a className="cta" style={{ padding: "12px 20px", minHeight: 44, fontSize: 14 }} href={BUY_URL}>{PRICE}<Arrow size={16} /></a>
             : <span className="cta" style={{ padding: "12px 20px", minHeight: 44, fontSize: 14 }} role="link" aria-disabled="true">{PRICE}<Arrow size={16} /></span>}

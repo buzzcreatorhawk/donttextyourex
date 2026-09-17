@@ -64,10 +64,15 @@ img{max-width:100%;display:block}
 .wrap{max-width:var(--wrap);margin-inline:auto;width:100%}
 .g-split{display:grid;gap:clamp(40px,6vw,88px);align-items:center;grid-template-columns:1fr}
 @media(min-width:900px){.g-split{grid-template-columns:1.15fr 0.85fr}}
-/* Header links never wrap. Below 560px the decorative kicker goes, so the two
-   tabs and the price button still fit one line on a 375px phone. */
+/* Header: one row on wide screens. Below 560px the three links and the price
+   button need ~490px against a 335px row, so it becomes two rows: home link and
+   price on top, the tabs underneath. Labels never wrap. */
+.nav-bar{display:flex;align-items:center;gap:12px 20px}
+.nav-links{display:flex;align-items:baseline;gap:20px}
+.nav-buy{margin-left:auto}
 .nav-l{white-space:nowrap}
-@media(max-width:559px){.nav-kicker{display:none}}
+.nav-home:hover,.nav-links a:hover{color:var(--on-dark-hi) !important}
+@media(max-width:559px){.nav-bar{flex-wrap:wrap}.nav-links{order:3;flex-basis:100%}}
 .g-split-r{display:grid;gap:clamp(40px,6vw,80px);align-items:start;grid-template-columns:1fr}
 @media(min-width:900px){.g-split-r{grid-template-columns:0.9fr 1.1fr}}
 .stack-s>*+*{margin-top:14px}

@@ -22,6 +22,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as esbuild from "esbuild";
 import { articlePage } from "./article.mjs";
+import { videosPage } from "./videos.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
@@ -127,6 +128,15 @@ for (const meta of ARTICLES) {
   console.log(`[prerender] ${meta.slug}/index.html ${(page.length / 1024).toFixed(1)}kb`);
 }
 
+// Videos page, built before the sitemap for the same reason.
+if (ctx.VIDEOS.length) {
+  const vdir = resolve(dist, "videos");
+  mkdirSync(vdir, { recursive: true });
+  const vpage = videosPage(ctx);
+  writeFileSync(resolve(vdir, "index.html"), vpage, "utf8");
+  console.log(`[prerender] videos/index.html ${(vpage.length / 1024).toFixed(1)}kb`);
+}
+
 // Sitemap. Generated rather than committed so lastmod is the real build date
 // instead of a date someone typed once and then stopped updating. Articles
 // carry their own `updated`, which is the date the words changed - not the
@@ -147,6 +157,12 @@ const urls = [
     <priority>0.8</priority>
   </url>`
   ),
+  ...(ctx.VIDEOS.length ? [`  <url>
+    <loc>${SITE_URL}/videos/</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`] : []),
 ].join("\n");
 
 writeFileSync(
@@ -173,6 +189,11 @@ for (const a of built) {
   if (!f.includes("<h1")) problems.push(`${a.slug}: no <h1>`);
   if (!f.includes("application/ld+json")) problems.push(`${a.slug}: no JSON-LD`);
   if (f.length < 4000) problems.push(`${a.slug}: suspiciously short`);
+}
+if (ctx.VIDEOS.length) {
+  const v = readFileSync(resolve(dist, "videos", "index.html"), "utf8");
+  for (const x of ctx.VIDEOS) if (!v.includes(`/embed/${x.id}`)) problems.push(`videos: no embed for ${x.id}`);
+  if (!markup.includes('href="/videos/"')) problems.push("home page has no link to /videos/");
 }
 if (problems.length) {
   console.error(`[prerender] FAILED: ${problems.join("; ")}`);

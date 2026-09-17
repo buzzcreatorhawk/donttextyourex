@@ -64,6 +64,10 @@ img{max-width:100%;display:block}
 .wrap{max-width:var(--wrap);margin-inline:auto;width:100%}
 .g-split{display:grid;gap:clamp(40px,6vw,88px);align-items:center;grid-template-columns:1fr}
 @media(min-width:900px){.g-split{grid-template-columns:1.15fr 0.85fr}}
+/* Header links never wrap. Below 560px the decorative kicker goes, so the two
+   tabs and the price button still fit one line on a 375px phone. */
+.nav-l{white-space:nowrap}
+@media(max-width:559px){.nav-kicker{display:none}}
 .g-split-r{display:grid;gap:clamp(40px,6vw,80px);align-items:start;grid-template-columns:1fr}
 @media(min-width:900px){.g-split-r{grid-template-columns:0.9fr 1.1fr}}
 .stack-s>*+*{margin-top:14px}

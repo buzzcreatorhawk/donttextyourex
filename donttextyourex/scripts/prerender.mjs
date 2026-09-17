@@ -193,6 +193,7 @@ for (const a of built) {
 if (ctx.VIDEOS.length) {
   const v = readFileSync(resolve(dist, "videos", "index.html"), "utf8");
   for (const x of ctx.VIDEOS) if (!v.includes(`/embed/${x.id}`)) problems.push(`videos: no embed for ${x.id}`);
+  if ((v.match(/class="chap"/g) || []).length !== ctx.VIDEOS.length) problems.push("videos: chapters missing for an episode");
   if (!markup.includes('href="/videos/"')) problems.push("home page has no link to /videos/");
 }
 if (problems.length) {

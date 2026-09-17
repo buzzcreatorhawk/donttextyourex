@@ -242,7 +242,8 @@ export const ARTICLES = [
 // The 2AM Guy episodes on YouTube, newest first. Rendered at /videos/ by
 // scripts/videos.mjs and linked from the home page's reading section.
 // Titles are as YouTube's oEmbed endpoint returned them on 2026-09-17, so the
-// page names each video the way YouTube does. Embeds only: no MP4 is ever
+// page names each video the way YouTube does. The full description text
+// (summary, chapters, studies) is in content/videos.json. Embeds only: no MP4 is ever
 // committed here (the episodes are ~0.5-1 GB each).
 // No VideoObject JSON-LD yet, on purpose: it needs uploadDate, and the dates
 // could not be read from YouTube when this was written. Add it with real dates
@@ -253,19 +254,11 @@ export const VIDEOS = [
     id: "fqJn6C_O_0k",
     episode: 2,
     title: "What Alcohol Does to the Text You Send Your Ex?",
-    description:
-      "One night, hour by hour: why a few beers calm you at the pub and wind you " +
-      "up at home, why you feel sober before you can stop yourself, and why the " +
-      "message reads so differently at eleven the next morning.",
   },
   {
     id: "jxcDBDvzu0c",
     episode: 1,
     title: "What Happens to Your Body in the First 24 Hours After a Breakup?",
-    description:
-      "The adrenaline alarm, the cortisol wave, why heartbreak registers partly " +
-      "like physical pain, and why the urge to text her feels so reasonable on " +
-      "night one.",
   },
 ];
 

@@ -230,16 +230,22 @@ export default function LandingPage() {
         }}
       >
         <span style={{ display: "flex", alignItems: "baseline", gap: 20 }}>
-          <span className="label" style={{ color: navOn ? "var(--teal300)" : "var(--on-dark-lo)" }}>
+          <span className="label nav-l nav-kicker" style={{ color: navOn ? "var(--teal300)" : "var(--on-dark-lo)" }}>
             Survival Guide
           </span>
           {/* The articles were live but unreachable: the only link to them was
               inside a collapsed FAQ accordion, which a crawler follows and a
               person never finds. */}
           {ARTICLES.length > 0 && (
-            <a className="label" href="#reading"
+            <a className="label nav-l" href="#reading"
                style={{ color: navOn ? "var(--on-dark-mid)" : "var(--on-dark-lo)", textDecoration: "none" }}>
               Read for free
+            </a>
+          )}
+          {VIDEOS.length > 0 && (
+            <a className="label nav-l" href="/videos/"
+               style={{ color: navOn ? "var(--on-dark-mid)" : "var(--on-dark-lo)", textDecoration: "none" }}>
+              Videos
             </a>
           )}
         </span>

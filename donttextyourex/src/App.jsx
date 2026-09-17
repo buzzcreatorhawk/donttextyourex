@@ -9,7 +9,7 @@ import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } fr
 import {
   BUY_URL, APP_URL, PRICE, COVER_SRC, faqs,
   PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR, ARTICLES, IDENTITY,
-  POSITIONING, LISTEN_TIME, INCLUDED, BRAND, TITLE,
+  POSITIONING, LISTEN_TIME, INCLUDED, BRAND, TITLE, VIDEOS,
 } from "./meta";
 import { WeatherSystem } from "./diagram";
 
@@ -627,6 +627,14 @@ export default function LandingPage() {
                   </Reveal>
                 ))}
               </ul>
+              {/* The only link into /videos/ - the crawl path for that page. */}
+              {VIDEOS.length > 0 && (
+                <p className="body" style={{ marginTop: "clamp(34px,5vw,52px)" }}>
+                  <a className="c-orange" href="/videos/">
+                    Or watch: {VIDEOS.length} {VIDEOS.length === 1 ? "episode" : "episodes"} of The 2AM Guy →
+                  </a>
+                </p>
+              )}
             </div>
           </section>
         )}

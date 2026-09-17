@@ -264,9 +264,14 @@ export function videoWatchPage(v, ctx) {
     graph.push({
       "@type": "VideoObject", "@id": `${url}#video`, name: v.title,
       description: [v.summary, ...d.about].join(" "),
-      thumbnailUrl: [thumb(v.id)], uploadDate: v.uploaded, duration: `PT${m}M${s}S`,
+      // Google's Rich Results Test (2026-09-17) flagged a bare date: "missing a
+      // timezone". Only the day is known, so this is the start of that day in
+      // UK summer time - the day is real, the hour is a convention.
+      thumbnailUrl: [thumb(v.id)], uploadDate: `${v.uploaded}T00:00:00+01:00`, duration: `PT${m}M${s}S`,
       embedUrl: `https://www.youtube.com/embed/${v.id}`, url,
-      publisher: { "@id": ctx.abs("/#publisher") },
+      // Named inline: the #publisher node lives on the home page, so on its own
+      // this page's reference resolved to an untyped "Thing" in the test.
+      publisher: { "@type": "Organization", "@id": ctx.abs("/#publisher"), name: BRAND, url: `${SITE_URL}/` },
     });
   }
   const ld = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/<\/script/gi, "<\\/script");

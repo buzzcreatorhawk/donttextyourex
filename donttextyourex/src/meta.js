@@ -261,7 +261,7 @@ export const VIDEOS = [
     title: "What Alcohol Does to the Text You Send Your Ex?",
     summary: "One night, hour by hour: why the 2 AM message feels brilliant, and why it reads so differently at eleven.",
     seconds: 1123,
-    uploaded: null,
+    uploaded: "2026-09-17",   // Kamil, 2026-09-17
   },
   {
     id: "jxcDBDvzu0c",
@@ -270,7 +270,7 @@ export const VIDEOS = [
     title: "What Happens to Your Body in the First 24 Hours After a Breakup?",
     summary: "The adrenaline alarm, the cortisol wave, and why the urge to text her feels so reasonable on night one.",
     seconds: 769,
-    uploaded: null,
+    uploaded: "2026-09-15",   // Kamil, 2026-09-17
   },
 ];
 

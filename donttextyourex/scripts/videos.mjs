@@ -39,7 +39,8 @@ const watchUrl = (id, t) => `https://www.youtube.com/watch?v=${id}${t ? `&t=${t}
 
 function check(ctx) {
   const need = ["SITE_URL", "BRAND", "AUTHOR", "PRICE", "PAGES", "FORMAT", "READ_TIME",
-                "LISTEN_TIME", "INCLUDED", "IDENTITY", "VIDEOS", "CHANNEL_URL", "CSS"];
+                "LISTEN_TIME", "INCLUDED", "IDENTITY", "VIDEOS", "CHANNEL_URL", "CSS",
+                "analyticsTag", "buyEventAttrs"];
   for (const k of need) {
     if (ctx[k] === undefined) {
       throw new Error(`videos.mjs: ${k} is undefined - add it to the export list in src/ssr-entry.jsx`);
@@ -58,7 +59,7 @@ function cta(ctx) {
   // Same wording as the article CTA; there is no shared component (see article.mjs).
   const label = `Get the book + audiobook — ${PRICE}`;
   return BUY_URL
-    ? `<a class="cta" href="${BUY_URL}">${label}</a>
+    ? `<a class="cta" href="${BUY_URL}" ${ctx.buyEventAttrs("video")}>${label}</a>
        <p class="included hi">${INCLUDED}</p>
        <p class="terms lo" style="margin-top:4px">${PAGES}-page ${FORMAT} · ${READ_TIME} to read · ${LISTEN_TIME} audiobook · instant download</p>`
     : `<span class="cta" role="link" aria-disabled="true">${label}</span>`;
@@ -141,7 +142,7 @@ function page({ ctx, url, title, description, ogType, image, css, ld, body, scri
     <link rel="preconnect" href="https://i.ytimg.com" />
     <style>${CSS}</style>
     <style>${BASE_CSS}${css}</style>
-    <script type="application/ld+json">${ld}</script>
+    <script type="application/ld+json">${ld}</script>${ctx.analyticsTag()}
   </head>
   <body>
     <div class="page on-ink">

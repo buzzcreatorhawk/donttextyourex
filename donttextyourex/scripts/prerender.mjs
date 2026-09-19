@@ -88,6 +88,9 @@ if (!html.includes("<!--JSONLD-->")) {
 }
 html = html.replace("<!--JSONLD-->", ld);
 
+// Analytics: empty string while ANALYTICS.websiteId is unset (see meta.js).
+html = html.replace("</head>", `${ctx.analyticsTag()}</head>`);
+
 // ── One description, not three ────────────────────────────────────────────
 // `description`, `og:description` and `twitter:description` were hand-written
 // in index.html and had drifted apart: the meta description said one thing and

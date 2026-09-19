@@ -175,6 +175,11 @@ So the rule isn't don't look. You're going to look. The rule is: the moment you
 notice you're looking, phone face down, stand up. That's the whole intervention,
 and it's available to you mid-scroll.
 
+That whole night, from one story at 1:52 AM to an old photo liked by accident at
+3:17, is an episode of The 2AM Guy, with the research on why each step pulls you
+into the next one:
+[Why You Can't Stop Checking Her Instagram at 2 AM?](/videos/instagram-spiral/)
+
 ## How long until the urge goes away?
 
 Weeks, and it comes down in steps rather than on a slope. Most men find the

@@ -7,7 +7,7 @@ import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } fr
 // step with the page - which for the FAQ specifically would turn valid markup
 // into a spam signal.
 import {
-  BUY_URL, APP_URL, PRICE, COVER_SRC, faqs,
+  BUY_URL, APP_URL, PRICE, COVER_SRC, faqs, buyEvent,
   PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR, ARTICLES, IDENTITY,
   POSITIONING, LISTEN_TIME, INCLUDED, BRAND, TITLE, VIDEOS,
 } from "./meta";
@@ -130,9 +130,9 @@ const Reveal = ({ children, delay = 0, as: Tag = "div", className = "", style, .
 // button on the page, so this string is the only place the CTA wording lives -
 // if a second label is ever passed in, it has to carry the audiobook too, which
 // is what went wrong when one caller said "Get the PDF".
-const Buy = ({ label = `Get the book + audiobook — ${PRICE}` }) =>
+const Buy = ({ label = `Get the book + audiobook — ${PRICE}`, where }) =>
   BUY_URL
-    ? <a className="cta" href={BUY_URL}>{label}<Arrow size={18} /></a>
+    ? <a className="cta" href={BUY_URL} {...buyEvent(where)}>{label}<Arrow size={18} /></a>
     : <span className="cta" role="link" aria-disabled="true">{label}<Arrow size={18} /></span>;
 
 // The CTA plus what the money actually buys. Every buy button on the page uses
@@ -141,9 +141,9 @@ const Buy = ({ label = `Get the book + audiobook — ${PRICE}` }) =>
 // buyer who finds out afterwards asks for his money back. Stating the length is
 // the argument for the price, not an admission against it: short is the promise
 // the book makes on its own first page.
-const BuyBlock = ({ label, light = false }) => (
+const BuyBlock = ({ label, light = false, where }) => (
   <div>
-    <Buy label={label} />
+    <Buy label={label} where={where} />
     <p className={`included ${light ? "hi-d" : "hi"}`}>{INCLUDED}</p>
     <p className={`terms ${light ? "lo-d" : "lo"}`} style={{ marginTop: 4 }}>
       {PAGES}-page {FORMAT} · {READ_TIME} to read · {LISTEN_TIME} audiobook · instant download
@@ -262,7 +262,7 @@ export default function LandingPage() {
         </span>
         <div className="nav-buy" style={{ opacity: navOn ? 1 : 0, pointerEvents: navOn ? "auto" : "none", transition: "opacity 320ms ease" }}>
           {BUY_URL
-            ? <a className="cta" style={{ padding: "12px 20px", minHeight: 44, fontSize: 14 }} href={BUY_URL}>{PRICE}<Arrow size={16} /></a>
+            ? <a className="cta" style={{ padding: "12px 20px", minHeight: 44, fontSize: 14 }} href={BUY_URL} {...buyEvent("nav")}>{PRICE}<Arrow size={16} /></a>
             : <span className="cta" style={{ padding: "12px 20px", minHeight: 44, fontSize: 14 }} role="link" aria-disabled="true">{PRICE}<Arrow size={16} /></span>}
         </div>
       </header>
@@ -303,7 +303,7 @@ export default function LandingPage() {
                   You're replaying conversations that go nowhere. This is {POSITIONING}.
                 </p>
               </Reveal>
-              <Reveal delay={300}><BuyBlock /></Reveal>
+              <Reveal delay={300}><BuyBlock where="hero" /></Reveal>
             </div>
 
             <Reveal delay={240} style={{ justifySelf: "center" }}>
@@ -448,7 +448,7 @@ export default function LandingPage() {
                   Short on purpose. We won't dwell on what went wrong. We'll focus on how to get out
                   of the hole you're in.
                 </p>
-                <BuyBlock />
+                <BuyBlock where="book" />
               </div>
 
               <div>
@@ -604,7 +604,7 @@ export default function LandingPage() {
               time had to find my way out, how to get out.”
             </p>
             <p className="label c-rust" style={{ marginTop: 26 }}>{AUTHOR}</p>
-            <div style={{ marginTop: 44 }}><Buy /></div>
+            <div style={{ marginTop: 44 }}><Buy where="author" /></div>
           </div>
         </section>
 
@@ -692,7 +692,7 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div style={{ marginTop: "clamp(40px,6vw,64px)" }}><BuyBlock light /></div>
+            <div style={{ marginTop: "clamp(40px,6vw,64px)" }}><BuyBlock light where="final" /></div>
           </div>
         </section>
 

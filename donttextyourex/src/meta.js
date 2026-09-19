@@ -502,3 +502,35 @@ export function buildJsonLd() {
 // hand-embedded JSON-LD.
 export const jsonLdString = () =>
   JSON.stringify(buildJsonLd(), null, 2).replace(/<\/script/gi, "<\\/script");
+
+// ── Analytics: Umami Cloud (free Hobby tier), chosen 2026-09-19 ─────────────
+// Vercel Web Analytics was the obvious pick and was rejected: on Hobby it has
+// no UTM parameters and no custom events (vercel.com/docs/analytics/
+// limits-and-pricing, read 2026-09-19), so it could not answer the only two
+// questions this exists for - which bio link sent the visitor, and did they
+// press Buy. Umami markets itself as cookieless; NOT checked here whether that
+// fully removes the need for a UK/EU consent banner - check before relying on it.
+//
+// Same gate as LIST.endpoint: while websiteId is empty, NO script is emitted on
+// any page, and the data-umami-* attributes on the buy links are inert. Paste
+// the id (and src, if the dashboard snippet shows a different one) from Umami's
+// "Tracking code" and the three page generators pick it up on the next build.
+//
+// `domains` stops local builds, `vite preview` and Vercel preview URLs from
+// counting. It matches hostname exactly, and the apex 308s to www, so www only.
+//
+// What this CANNOT see: the sale. Payhip is a different domain, so the last
+// step we can observe is the click on a buy link. Sales still come from Payhip.
+export const ANALYTICS = {
+  src: "https://cloud.umami.is/script.js",
+  websiteId: "",      // TODO: Umami website id (Kamil creates the account)
+  domains: "www.thedonttextyourex.com",
+};
+export const analyticsTag = () => ANALYTICS.websiteId
+  ? `<script defer src="${ANALYTICS.src}" data-website-id="${ANALYTICS.websiteId}" data-domains="${ANALYTICS.domains}"></script>`
+  : "";
+// Attributes for a buy link, so every "Buy" click is one event named "buy",
+// split by where on the site it was pressed.
+export const buyEvent = (where) => ({ "data-umami-event": "buy", "data-umami-event-where": where });
+export const buyEventAttrs = (where) =>
+  `data-umami-event="buy" data-umami-event-where="${where}"`;

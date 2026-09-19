@@ -255,6 +255,15 @@ export const ARTICLES = [
 export const CHANNEL_URL = "https://www.youtube.com/@2amGuy-mk1";
 export const VIDEOS = [
   {
+    id: "arSoNFhVMlQ",
+    slug: "instagram-spiral",
+    episode: 3,
+    title: "Why You Can't Stop Checking Her Instagram at 2 AM?",
+    summary: "One night, minute by minute: why her brunch photo hurts, why you keep refreshing, and how a photo from June 2023 gets liked at 3:17 AM.",
+    seconds: 1060,
+    uploaded: "2026-09-19",   // Kamil, 2026-09-19
+  },
+  {
     id: "fqJn6C_O_0k",
     slug: "drunk-text",
     episode: 2,

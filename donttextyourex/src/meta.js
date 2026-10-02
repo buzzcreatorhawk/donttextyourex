@@ -223,7 +223,18 @@ export const ARTICLES = [
       "texting does, whether to mute, unfollow or block, and what to do at the " +
       "moment your thumb starts moving on its own.",
     published: "2026-09-12",
-    updated: "2026-09-12",
+    updated: "2026-10-02",
+  },
+  {
+    slug: "how-to-stop-thinking-about-your-ex",
+    file: "how-to-stop-thinking-about-your-ex.md",
+    title: "How Do I Stop Thinking About My Ex?",
+    description:
+      "Stop trying to stop - suppression rebounds. Why she is in your head all " +
+      "day, what the replaying is looking for, and what to do in the minute a " +
+      "thought of her arrives.",
+    published: "2026-10-02",
+    updated: "2026-10-02",
   },
   {
     slug: "why-does-a-breakup-hurt-so-much",
@@ -234,7 +245,7 @@ export const ARTICLES = [
       "respected most. Why it outsizes the relationship, why it is not linear, and " +
       "why she seems fine while you are on the floor.",
     published: "2026-09-09",
-    updated: "2026-09-12",
+    updated: "2026-10-02",
   },
 ];
 
@@ -308,6 +319,11 @@ export const faqs = [
     q: "How do I stop checking my ex's Instagram?",
     a: "Make it require effort, because willpower is lowest at exactly the hour you reach for the app. Mute her to stop the feed reaching you, unfollow if you arrive on her profile without deciding to, and block if you have started typing her name into the search bar - that is the line where the other two have stopped being enough. Checking is worse than texting in one specific way: a text ends, and checking has no end state, so you can do it forty times a day and never once get the thing you are looking for. Watching her stories is contact, and it is the loophole that wastes the whole month.",
     more: { href: "/how-to-stop-checking-your-exs-instagram/", label: "Read the full answer" },
+  },
+  {
+    q: "How do I stop thinking about my ex?",
+    a: "Stop trying to stop. Telling yourself not to think about her cannot work, because checking whether you are succeeding means thinking about her - in a well-known 1987 experiment, people told not to think about a white bear thought about it more afterwards than people who were allowed to. What helped was one specific other thing to think about, chosen in advance. So pick that thing now, while you are calm; give the thoughts a fixed fifteen-minute slot each evening instead of an open door; and stop feeding them new material from her profile. The constant version fades over weeks, in steps rather than a straight line.",
+    more: { href: "/how-to-stop-thinking-about-your-ex/", label: "Read the full answer" },
   },
   {
     q: "Why does this hurt so much more than I expected?",

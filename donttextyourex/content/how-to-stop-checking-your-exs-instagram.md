@@ -62,6 +62,10 @@ exactly why you keep going back.
 Here's the test for whether this is a habit or a search: a search ends when you
 find the thing. This one never ends. So it isn't a search.
 
+The same loop runs without the phone, too, as the replaying in your head. That
+one, and why telling yourself to stop makes it worse, is here:
+[How do I stop thinking about my ex?](/how-to-stop-thinking-about-your-ex/)
+
 ## Should I mute her, unfollow her, or block her?
 
 All three do different jobs, so choose by how bad it actually is rather than by

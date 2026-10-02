@@ -126,6 +126,10 @@ physical, most days. Something that occupies your hands at the hours you're
 worst. One person you actually speak to. Distance from her that you actually
 use, rather than distance you spend refreshing her profile.
 
+If the hardest part is that she's in your head all day, telling yourself to stop
+makes it worse, and there's a reason for that:
+[How do I stop thinking about my ex?](/how-to-stop-thinking-about-your-ex/)
+
 And before any of it, a decision — not a plan or a routine, just the decision
 that you're going to do something rather than lie there. Men who make that
 decision start to respect themselves in that exact moment. Not when they achieve

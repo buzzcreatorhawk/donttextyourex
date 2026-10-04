@@ -71,7 +71,8 @@ export const READ_TIME = "about half an hour";
 //
 // LISTEN_TIME is MEASURED, not derived - the one number on this page that was
 // read off the artefact rather than reasoned about. `ffprobe` reports
-// 2785.30s for `Audiobook/V3/Don't Text Your Ex.m4b`, which is 46:25.
+// 2735.12s for `Audiobook/Kamil/Don't Text Your Ex.m4b` (2026-10-04, read in
+// Kamil's cloned voice), which is 45:35 - rounds to 46 minutes.
 // Re-measure with ffprobe if the audio is ever re-rendered. Do not adjust by
 // feel, and do not round it down to make it match READ_TIME.
 //
@@ -79,7 +80,7 @@ export const READ_TIME = "about half an hour";
 // faster than listening. That is normal and the copy says "to read" next to
 // READ_TIME so the two numbers cannot be mistaken for a contradiction.
 export const LISTEN_TIME = "46-minute";
-export const LISTEN_DURATION = "PT46M25S";   // ISO 8601, for schema only
+export const LISTEN_DURATION = "PT45M35S";   // ISO 8601, for schema only
 export const INCLUDED = "Read it or listen to it — both included";
 
 // The refund position. EMPTY, and every line that would state one is gated on it

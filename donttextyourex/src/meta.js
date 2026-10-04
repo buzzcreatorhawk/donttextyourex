@@ -47,15 +47,15 @@ export const COVER_SRC = "/cover.jpg";
 // `numberOfPages` in the Book schema.
 //
 // PAGES is counted, not estimated: `Don't Text Your Ex.pdf` in the parent
-// folder is 43 pages, front cover through the closing exercise, read in full
-// 2026-09-07. If the manuscript grows before launch, recount - do not adjust this
+// folder is 55 pages, front cover through the closing exercise (blueprint edition,
+// counted 2026-10-04; was 43). If the manuscript grows again, recount - do not adjust this
 // by feel.
 //
 // READ_TIME is derived and labelled as such: 6,631 words (STATE.md, counted from
 // the manuscript) at 200-250 wpm is 27-33 minutes, so "about half an hour" is the
 // honest way to say it. It is not a measured figure and the copy does not pretend
 // it is.
-export const PAGES = 43;
+export const PAGES = 55;
 // The day the book actually went on sale - the Payhip listing went live and
 // BUY_URL was wired on 2026-09-08. Recency is one of the stronger signals for
 // being cited by an answer engine, and this is a real date, not a guess.
@@ -332,7 +332,7 @@ export const faqs = [
   },
   {
     q: "What is actually in the book?",
-    a: "Six chapters and one exercise, across 43 pages. The five stages named so you can recognise where you are; discipline used as a place to put the pain; goal-setting that starts from the floor rather than from motivation; rebuilding; the support system you probably have not asked for yet; and moving forward. It closes with a two-list exercise: twenty-five qualities you want in the woman you end up with, and then, on the facing page, the twenty-five that woman would want in a partner. The second list is the one that does the work. It is short on purpose - it does not dwell on what went wrong, it deals with the hole you are in now.",
+    a: "Six chapters and one exercise, across 55 pages. The five stages named so you can recognise where you are; discipline used as a place to put the pain; goal-setting that starts from the floor rather than from motivation; rebuilding; the support system you probably have not asked for yet; and moving forward. It closes with a two-list exercise: twenty-five qualities you want in the woman you end up with, and then, on the facing page, the twenty-five that woman would want in a partner. The second list is the one that does the work. It is short on purpose - it does not dwell on what went wrong, it deals with the hole you are in now.",
   },
   // VERIFIED 2026-09-09 by a real card purchase, not by reading Payhip's docs:
   // the download works with NO account required, and the file delivered is the
@@ -361,7 +361,7 @@ export const faqs = [
   // another. "There is no paperback" is kept because it is still true.
   {
     q: "What exactly do I get for $24.99?",
-    a: "A 43-page PDF and a 46-minute audiobook - read it or listen to it, both included in the one price. Downloadable the moment you have paid: no app to install, no account to make, nothing recurring. The PDF reads in about half an hour; the audiobook is chaptered, as an M4B for audiobook apps and as MP3s that play on anything. There is no paperback. It is six chapters and one closing exercise, and it is deliberately short: the whole argument of the book is that at 2am you need something you can finish, not something you can start.",
+    a: "A 55-page PDF and a 46-minute audiobook - read it or listen to it, both included in the one price. Downloadable the moment you have paid: no app to install, no account to make, nothing recurring. The PDF reads in about half an hour; the audiobook is chaptered, as an M4B for audiobook apps and as MP3s that play on anything. There is no paperback. It is six chapters and one closing exercise, and it is deliberately short: the whole argument of the book is that at 2am you need something you can finish, not something you can start.",
   },
   {
     q: "Is this therapy, or a replacement for it?",

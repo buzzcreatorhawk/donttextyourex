@@ -196,5 +196,5 @@ danger tonight, contact your local emergency number.
 
 *This is one habit's worth of it. The full thing — the five stages, what to do
 with the pain, how to rebuild, and the exercise that closes it — is in* **Don't
-Text Your Ex: A Survival Guide For Men After A Breakup** *, a 43-page PDF (plus
+Text Your Ex: A Survival Guide For Men After A Breakup** *, a 55-page PDF (plus
 the 46-minute audiobook, included) that reads in about half an hour.*

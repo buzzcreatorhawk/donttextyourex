@@ -540,7 +540,7 @@ export const jsonLdString = () =>
 // step we can observe is the click on a buy link. Sales still come from Payhip.
 export const ANALYTICS = {
   src: "https://cloud.umami.is/script.js",
-  websiteId: "",      // TODO: Umami website id (Kamil creates the account)
+  websiteId: "d2070f51-83a8-45c9-b2d7-153869321c31",   // Kamil, 2026-10-05
   domains: "www.thedonttextyourex.com",
 };
 export const analyticsTag = () => ANALYTICS.websiteId

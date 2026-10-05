@@ -7,7 +7,7 @@ import { Moon, Loop, Phone, Mirror, Block, Bars, Book, Check, Circle, Arrow } fr
 // step with the page - which for the FAQ specifically would turn valid markup
 // into a spam signal.
 import {
-  BUY_URL, APP_URL, PRICE, COVER_SRC, faqs, buyEvent,
+  BUY_URL, APP_URL, PRICE, COVER_SRC, faqs, buyEvent, appEvent,
   PAGES, FORMAT, READ_TIME, REFUND, CONTACT_EMAIL, AUTHOR, ARTICLES, IDENTITY,
   POSITIONING, LISTEN_TIME, INCLUDED, BRAND, TITLE, VIDEOS,
 } from "./meta";
@@ -77,7 +77,7 @@ const COUNT_WORD = { 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six",
 const features = [
   { Icon: Block, title: "Don't Text Your Ex", desc: "Intercepts the urge and redirects it into something real. Instantly." },
   { Icon: Bars,  title: "No Contact Counter", desc: "Track every day of distance. Watch the number grow. That number is you." },
-  { Icon: Book,  title: "Daily Thought",      desc: "One line from the book. Delivered when you need it most." },
+  { Icon: Book,  title: "Daily Thought",      desc: "One line from the book, on your screen every day." },
   { Icon: Check, title: "Habit Tracker",      desc: "Eight habits. One tap each. Small wins that build a life." },
 ];
 
@@ -511,7 +511,10 @@ export default function LandingPage() {
                   </Reveal>
                 ))}
                 {APP_URL
-                  ? <a className="ghost" href={APP_URL}>Download the app<Arrow size={16} /></a>
+                  ? <div style={{ display: "grid", gap: 12, justifyItems: "start" }}>
+                      <a className="ghost" href={APP_URL} {...appEvent("app-section")}>Open the app<Arrow size={16} /></a>
+                      <p className="small lo">Free. No account. Everything stays on your phone. Add it to your home screen and it works offline.</p>
+                    </div>
                   : <p className="small lo it">The app is still in build. The book stands on its own.</p>}
               </div>
 

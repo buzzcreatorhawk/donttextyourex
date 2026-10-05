@@ -35,7 +35,10 @@ export const abs = (path) => `${SITE_URL}${path.startsWith("/") ? path : `/${pat
 // Verified live 2026-09-08: $24.99 USD, 43-page PDF, 411KB - the same bytes as
 // "Don't Text Your Ex.pdf" in the parent folder.
 export const BUY_URL = "https://payhip.com/b/vwtZb";
-export const APP_URL = "";       // TODO: app store / download link, when there is one
+// The app is a web app (PWA): opened in the browser, then "Add to Home Screen". Free, no account, data stays on the
+// phone (its Settings say so). Subdomain pending Kamil's DNS record at Squarespace; old address keeps working.
+export const APP_URL = "https://app.thedonttextyourex.com/";
+export const appEvent = (where) => ({ "data-umami-event": "app", "data-umami-event-where": where });
 export const PRICE = "$24.99";
 export const PRICE_AMOUNT = "24.99";
 export const PRICE_CURRENCY = "USD";

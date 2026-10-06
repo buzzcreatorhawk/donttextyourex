@@ -158,14 +158,15 @@ export function articleJsonLd(md, meta, ctx) {
 // breaks the build. Twice now.
 export function articlePage(md, meta, ctx) {
   const { SITE_URL, CSS, BRAND, AUTHOR, BUY_URL, PRICE, PAGES, FORMAT, READ_TIME,
-          LISTEN_TIME, INCLUDED, abs, COVER_SRC, IDENTITY, analyticsTag, buyEventAttrs } = ctx;
+          LISTEN_TIME, INCLUDED, abs, COVER_SRC, IDENTITY, analyticsTag, buyEventAttrs,
+          appEventAttrs, APP_URL } = ctx;
   // Fail the build rather than interpolate the word "undefined" into a live
   // page. Everything above comes off ctx, which only carries what ssr-entry.jsx
   // re-exports, so a value added to meta.js and forgotten there is otherwise
   // invisible until someone reads the rendered page.
   for (const [k, v] of Object.entries({ SITE_URL, BRAND, AUTHOR, PRICE, PAGES,
                                         FORMAT, READ_TIME, LISTEN_TIME, INCLUDED,
-                                        analyticsTag, buyEventAttrs })) {
+                                        analyticsTag, buyEventAttrs, appEventAttrs, APP_URL })) {
     if (v === undefined) {
       throw new Error(`articlePage: ${k} is undefined - add it to the export list in src/ssr-entry.jsx`);
     }
@@ -188,8 +189,8 @@ export function articlePage(md, meta, ctx) {
   const ctaLabel = `Get the book + audiobook — ${PRICE}`;
   const cta = BUY_URL
     ? `<a class="cta" href="${BUY_URL}" ${buyEventAttrs("article")}>${ctaLabel}</a>
-       <p class="included hi">${INCLUDED}</p>
-       <p class="terms lo" style="margin-top:4px">${PAGES}-page ${FORMAT} · ${READ_TIME} to read · ${LISTEN_TIME} audiobook · instant download</p>`
+       <p class="included hi-d">${INCLUDED}</p>
+       <p class="terms lo-d" style="margin-top:4px">${PAGES}-page ${FORMAT} · ${READ_TIME} to read · ${LISTEN_TIME} audiobook · instant download</p>`
     : `<span class="cta" role="link" aria-disabled="true">${ctaLabel}</span>`;
 
   return `<!DOCTYPE html>
@@ -197,7 +198,7 @@ export function articlePage(md, meta, ctx) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0A2130" />
+    <meta name="theme-color" content="#FCF8DF" />
     <title>${esc(meta.title)}</title>
     <meta name="description" content="${esc(meta.description)}" />
     <link rel="canonical" href="${url}" />
@@ -223,45 +224,51 @@ export function articlePage(md, meta, ctx) {
     <style>
       .art{max-width:720px;margin-inline:auto;padding:var(--bay) var(--gut)}
       .art h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,5.2vw,60px);
-        line-height:1.03;letter-spacing:-0.015em;color:var(--on-dark-hi);margin-bottom:26px}
+        line-height:1.03;letter-spacing:-0.015em;color:var(--navy);margin-bottom:26px}
       .art h2{font-family:var(--display);font-weight:400;font-size:clamp(24px,3vw,34px);
-        line-height:1.15;color:var(--on-dark-hi);margin:52px 0 18px}
-      .art p{font-size:18px;line-height:1.75;color:var(--on-dark-mid);margin-bottom:20px}
-      .art p strong{color:var(--on-dark-hi);font-weight:600}
+        line-height:1.15;color:var(--navy);margin:52px 0 18px}
+      .art p{font-size:18px;line-height:1.75;color:var(--on-light-mid);margin-bottom:20px}
+      .art p strong{color:var(--navy);font-weight:600}
       .art ul{margin:0 0 20px 0;padding:0;list-style:none}
-      .art li{font-size:17px;line-height:1.7;color:var(--on-dark-mid);
+      .art li{font-size:17px;line-height:1.7;color:var(--on-light-mid);
         padding-left:22px;position:relative;margin-bottom:12px}
       .art li::before{content:"";position:absolute;left:0;top:12px;width:8px;height:2px;
         background:var(--orange)}
-      .art li strong{color:var(--on-dark-hi);font-weight:600}
-      .art hr{border:0;border-top:1px solid rgba(252,250,231,0.14);margin:52px 0}
+      .art li strong{color:var(--navy);font-weight:600}
+      .art hr{border:0;border-top:1px solid rgba(9,34,49,0.14);margin:52px 0}
       /* Style links in the PROSE only. A blanket .art a rule beat both
          .cta and .back on specificity: it painted teal on the orange
          button (1.30:1, unreadable) and turned the back link teal too.
          Naming the containers keeps the button ink-on-orange at 5.31:1
          and leaves .back its orange. */
-      .art p a, .art li a{color:var(--teal300)}
+      .art p a, .art li a{color:var(--deep)}
       .art .meta{font-family:var(--text);font-size:12px;font-weight:600;letter-spacing:0.2em;
-        text-transform:uppercase;color:var(--on-dark-lo);margin-bottom:22px}
+        text-transform:uppercase;color:var(--on-light-lo);margin-bottom:22px}
       .art .back{display:inline-block;margin-bottom:38px;font-family:var(--text);font-size:12px;
-        font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);
+        font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--rust);
         text-decoration:none}
-      .art .end{margin-top:60px;padding-top:38px;border-top:1px solid rgba(252,250,231,0.14)}
+      .art .end{margin-top:60px;padding-top:38px;border-top:1px solid rgba(9,34,49,0.14)}
+      .art .app-line{margin-bottom:38px;padding:24px 26px;border-radius:24px;background:var(--sand)}
+      .art .app-line .body{color:var(--navy);margin-bottom:16px}
       .art .end .cta{margin-top:6px}
       .art .site-id{margin-top:46px;padding-top:22px;
-        border-top:1px solid rgba(252,250,231,0.14);
+        border-top:1px solid rgba(9,34,49,0.14);
         font-family:var(--text);font-size:13px;line-height:1.6;
-        color:var(--on-dark-lo);max-width:62ch}
+        color:var(--on-light-lo);max-width:62ch}
     </style>
     <script type="application/ld+json">${ld}</script>${analyticsTag()}
   </head>
   <body>
-    <div class="page on-ink">
+    <div class="page light on-cream2">
       <article class="art">
         <a class="back" href="/">← ${esc(BRAND)}</a>
         <p class="meta">Updated ${d} · ${esc(AUTHOR)}</p>
         ${html}
         <div class="end">
+          <div class="app-line">
+            <p class="body">At 2am right now? The free app gives you something to do instead of texting her.</p>
+            <a class="app-cta" href="${APP_URL}" ${appEventAttrs("article")}>Open the app, free</a>
+          </div>
           <p class="body">The whole thing — the five stages, what to do with the pain,
           how to rebuild, and the exercise that closes it — is in the book.</p>
           ${cta}

@@ -60,8 +60,8 @@ function cta(ctx) {
   const label = `Get the book + audiobook — ${PRICE}`;
   return BUY_URL
     ? `<a class="cta" href="${BUY_URL}" ${ctx.buyEventAttrs("video")}>${label}</a>
-       <p class="included hi">${INCLUDED}</p>
-       <p class="terms lo" style="margin-top:4px">${PAGES}-page ${FORMAT} · ${READ_TIME} to read · ${LISTEN_TIME} audiobook · instant download</p>`
+       <p class="included hi-d">${INCLUDED}</p>
+       <p class="terms lo-d" style="margin-top:4px">${PAGES}-page ${FORMAT} · ${READ_TIME} to read · ${LISTEN_TIME} audiobook · instant download</p>`
     : `<span class="cta" role="link" aria-disabled="true">${label}</span>`;
 }
 
@@ -69,18 +69,20 @@ function cta(ctx) {
 const BASE_CSS = `
   .vp{max-width:1080px;margin-inline:auto;padding:var(--bay) var(--gut)}
   .vp h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,5.2vw,60px);
-    line-height:1.03;letter-spacing:-0.015em;color:var(--on-dark-hi);margin-bottom:20px}
-  .vp p{font-size:18px;line-height:1.7;color:var(--on-dark-mid)}
+    line-height:1.03;letter-spacing:-0.015em;color:var(--navy);margin-bottom:20px}
+  .vp p{font-size:18px;line-height:1.7;color:var(--on-light-mid)}
   .vp .back{display:inline-block;margin-bottom:38px;font-family:var(--text);font-size:12px;
-    font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);text-decoration:none}
+    font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--rust);text-decoration:none}
   .vp .kick{font-family:var(--text);font-size:12px;font-weight:600;letter-spacing:0.2em;
-    text-transform:uppercase;color:var(--on-dark-lo);margin-bottom:12px}
+    text-transform:uppercase;color:var(--on-light-lo);margin-bottom:12px}
   .vp .lede{max-width:60ch}
-  .vp .lede a{color:var(--teal300)}
-  .vp .end{margin-top:80px;padding-top:38px;border-top:1px solid rgba(252,250,231,0.14);max-width:720px}
+  .vp .lede a{color:var(--deep)}
+  .vp .end{margin-top:80px;padding-top:38px;border-top:1px solid rgba(9,34,49,0.14);max-width:720px}
+  .vp .app-line{margin-bottom:38px;padding:24px 26px;border-radius:24px;background:var(--sand)}
+  .vp .app-line p{color:var(--navy);margin-bottom:16px}
   .vp .end .cta{margin-top:18px}
-  .vp .site-id{margin-top:46px;padding-top:22px;border-top:1px solid rgba(252,250,231,0.14);
-    font-family:var(--text);font-size:13px;line-height:1.6;color:var(--on-dark-lo);max-width:62ch}
+  .vp .site-id{margin-top:46px;padding-top:22px;border-top:1px solid rgba(9,34,49,0.14);
+    font-family:var(--text);font-size:13px;line-height:1.6;color:var(--on-light-lo);max-width:62ch}
   .dur{position:absolute;right:10px;bottom:10px;background:rgba(10,33,48,0.88);color:var(--on-dark-hi);
     font-family:var(--text);font-size:13px;font-weight:600;padding:3px 8px;border-radius:4px;
     font-variant-numeric:tabular-nums}
@@ -96,13 +98,13 @@ const BASE_CSS = `
   .card .play{left:10px;top:auto;bottom:10px;width:44px;height:44px;margin:0}
   .card .play::after{left:16px;top:12px;border-width:9px 0 9px 14px}
   .card h2, .card h3{font-family:var(--display);font-weight:400;font-size:clamp(22px,2.4vw,28px);
-    line-height:1.15;color:var(--on-dark-hi);margin-bottom:10px}
+    line-height:1.15;color:var(--navy);margin-bottom:10px}
   .card h2 a, .card h3 a{color:inherit;text-decoration:none}
   .card h2 a::after, .card h3 a::after{content:"";position:absolute;inset:0;z-index:1}
   .card .sum{font-size:16px;line-height:1.6;margin-bottom:14px}
   .card .ytl{position:relative;z-index:2;align-self:flex-start;margin-top:auto;font-family:var(--text);
-    font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--on-dark-lo);text-decoration:none;padding:6px 0}
-  .card .ytl:hover{color:var(--on-dark-hi)}
+    font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--deep);text-decoration:none;padding:6px 0}
+  .card .ytl:hover{color:var(--navy)}
   .card:hover img{transform:scale(1.03)}
   .card:hover .play{background:var(--orange)}
   .card h2 a:focus-visible{outline:none}
@@ -117,7 +119,7 @@ function page({ ctx, url, title, description, ogType, image, css, ld, body, scri
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0A2130" />
+    <meta name="theme-color" content="#FCF8DF" />
     <title>${esc(title)}</title>
     <meta name="description" content="${esc(description)}" />
     <link rel="canonical" href="${url}" />
@@ -145,7 +147,7 @@ function page({ ctx, url, title, description, ogType, image, css, ld, body, scri
     <script type="application/ld+json">${ld}</script>${ctx.analyticsTag()}
   </head>
   <body>
-    <div class="page on-ink">
+    <div class="page light on-cream2">
       <main class="vp">
 ${body}
         <p class="site-id">${esc(ctx.IDENTITY)}</p>
@@ -208,6 +210,10 @@ export function videosIndexPage(ctx) {
         <div class="grid">${VIDEOS.map((v) => card(v, "h2")).join("")}
         </div>
         <div class="end">
+          <div class="app-line">
+            <p>At 2am right now? The free app gives you something to do instead of texting her.</p>
+            <a class="app-cta" href="${ctx.APP_URL}" ${ctx.appEventAttrs("video")}>Open the app, free</a>
+          </div>
           <p>The videos cover one night each. The book covers the whole way out.</p>
           ${cta(ctx)}
         </div>`;
@@ -314,6 +320,10 @@ export function videoWatchPage(v, ctx) {
           </div>
         </section>` : ""}
         <div class="end">
+          <div class="app-line">
+            <p>At 2am right now? The free app gives you something to do instead of texting her.</p>
+            <a class="app-cta" href="${ctx.APP_URL}" ${ctx.appEventAttrs("video")}>Open the app, free</a>
+          </div>
           <p>The videos cover one night each. The book covers the whole way out.</p>
           ${cta(ctx)}
         </div>`;

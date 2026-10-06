@@ -552,5 +552,7 @@ export const analyticsTag = () => ANALYTICS.websiteId
 // Attributes for a buy link, so every "Buy" click is one event named "buy",
 // split by where on the site it was pressed.
 export const buyEvent = (where) => ({ "data-umami-event": "buy", "data-umami-event-where": where });
+export const appEventAttrs = (where) =>
+  `data-umami-event="app" data-umami-event-where="${where}"`;
 export const buyEventAttrs = (where) =>
   `data-umami-event="buy" data-umami-event-where="${where}"`;

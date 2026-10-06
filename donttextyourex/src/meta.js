@@ -270,6 +270,15 @@ export const ARTICLES = [
 export const CHANNEL_URL = "https://www.youtube.com/@2amGuy-mk1";
 export const VIDEOS = [
   {
+    id: "7NeT0VJ4o2Y",
+    slug: "message-her-at-2am",
+    episode: 4,
+    title: "Why You Want to Message Her at 2 AM?",   // oEmbed 2026-10-06
+    summary: "One night, minute by minute: a long message edited down to “hey”, a thumb on the send arrow at 2:19, and what stops it.",
+    seconds: 660,             // ffprobe on EP04_The_Night_You_Didnt_Text_v3.mp4 (660.8s), the file prepared for upload
+    uploaded: "2026-10-06",   // channel feed <published> 2026-10-06T16:01:19Z
+  },
+  {
     id: "arSoNFhVMlQ",
     slug: "instagram-spiral",
     episode: 3,

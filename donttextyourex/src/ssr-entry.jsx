@@ -11,5 +11,5 @@ export { default } from "./App.jsx";
 export { jsonLdString, SITE_URL, ARTICLES, AUTHOR, BRAND, TITLE, BUY_URL,
          PRICE, PAGES, FORMAT, READ_TIME, LISTEN_TIME, INCLUDED, abs, COVER_SRC,
          IDENTITY, ALT_NAME, POSITIONING, DESCRIPTION, VIDEOS, CHANNEL_URL,
-         analyticsTag, buyEventAttrs } from "./meta.js";
+         analyticsTag, buyEventAttrs, appEventAttrs, APP_URL } from "./meta.js";
 export { CSS } from "./styles.js";

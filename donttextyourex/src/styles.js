@@ -197,6 +197,87 @@ img{max-width:100%;display:block}
 .faq-a{padding:0 0 26px;max-width:64ch;font-size:16px;line-height:1.7;
   color:var(--on-light-mid)}
 
+/* ── 2026-10-06 redesign: app first, light ────────────────────────────── */
+/* Kamil: the page was too dark, and that navy is in neither the app nor the
+   book. These grounds are the app's own tokens (dont-text-your-ex-app
+   src/tokens.jsx, light "Day & Night"), which were sampled from the same cover:
+   cream #FCF8DF, sand #FAECC5, sage #9FC7A1, deep teal #116263, orange #F0693D,
+   navy #092231 for text, near-black #020B13 for the app's buttons.
+   Contrast, computed 2026-10-06 (WCAG 2.1): navy on cream 15.3:1, on sand 13.9:1,
+   on sage 8.7:1; cream on deep teal 6.7:1; navy on orange 5.3:1 (4.6:1 at the
+   gradient's darkest stop); rust #9A4437 on cream 6.0:1, on sand 5.5:1; deep teal
+   on cream 6.7:1. Orange is NEVER text on a light ground (2.9:1) - rust or teal.
+   The article and video pages still use the dark grounds above; they are not
+   part of this pass. */
+:root{--cream2:#FCF8DF;--sand:#FAECC5;--sage2:#9FC7A1;--deep:#116263;--sun:#F0693D;
+  --navy:#092231;--btn:#020B13;--sunline:#F9BC6D}
+.page.light{background:var(--cream2)}
+.on-cream2{background:var(--cream2);color:var(--on-light-mid)}
+.on-sand  {background:var(--sand);  color:var(--on-light-mid)}
+.on-sage2 {background:var(--sage2); color:var(--on-light-hi)}
+.on-deep  {background:var(--deep);  color:var(--on-dark-mid)}
+.on-sun   {background:linear-gradient(160deg,#F7914D 0%,var(--sun) 55%,#E35F38 100%);color:var(--navy)}
+.c-deep{color:var(--deep)} .c-navy{color:var(--navy)}
+.light .row{border-top-color:rgba(9,34,49,0.14)}
+.light .row:last-child{border-bottom-color:rgba(9,34,49,0.14)}
+.on-deep .row{border-top-color:rgba(252,248,223,0.18)}
+.on-deep .row:last-child{border-bottom-color:rgba(252,248,223,0.18)}
+
+/* The app's own button: near-black pill, cream text (18.5:1). Used for every
+   "open the app" action, so the site's buttons look like the app's buttons. */
+.app-cta{display:inline-flex;align-items:center;gap:10px;background:var(--btn);color:var(--cream2);
+  font-family:var(--text);font-size:16px;font-weight:600;border-radius:999px;padding:18px 30px;min-height:56px;
+  text-decoration:none;box-shadow:0 12px 30px -12px rgba(2,11,19,0.55);
+  transition:transform 180ms cubic-bezier(.2,.7,.3,1),box-shadow 180ms ease}
+.app-cta:hover{transform:translateY(-1px);box-shadow:0 16px 36px -12px rgba(2,11,19,0.6)}
+.app-cta svg{transition:transform 180ms cubic-bezier(.2,.7,.3,1)}
+.app-cta:hover svg{transform:translateX(3px)}
+.light .cta{border-radius:999px}
+.ghost-d{display:inline-flex;align-items:center;gap:9px;padding:8px 0;min-height:44px;font-size:15px;
+  color:var(--deep);border-bottom:1px solid currentColor;text-decoration:none}
+.ghost-d:hover{opacity:0.72}
+.facts{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:20px}
+.facts span{font-size:13px;font-weight:600;color:var(--navy);background:var(--sand);border-radius:999px;padding:7px 14px}
+.on-sand .facts span{background:var(--cream2)}
+
+/* The sunburst from the cover, the app header and the thumbnails. Decoration
+   only: aria-hidden, behind everything, low opacity so text stays on cream. */
+.sunburst{position:absolute;pointer-events:none;z-index:0}
+.hero-wrap{position:relative;z-index:1}
+
+/* Real app screens in a phone frame. The screenshots are the live app
+   (captured 2026-10-05, headless Chrome, throwaway profile). */
+.dev{position:relative;width:min(300px,70vw);aspect-ratio:412/915;border-radius:44px;background:var(--navy);
+  padding:10px;box-shadow:0 40px 80px -30px rgba(9,34,49,0.55),0 0 0 1px rgba(9,34,49,0.25)}
+.dev img{width:100%;height:100%;object-fit:cover;border-radius:35px}
+.dev.sm{width:min(230px,62vw);border-radius:36px;padding:8px}
+.dev.sm img{border-radius:29px}
+.duo{position:relative;display:flex;align-items:flex-end;justify-content:center}
+.duo .dev+.dev{margin-left:-70px;margin-bottom:-40px;transform:rotate(4deg)}
+.duo .dev:first-child{transform:rotate(-3deg)}
+@media(max-width:560px){.duo .dev+.dev{display:none}}
+
+.steps{display:grid;gap:clamp(40px,5vw,56px) clamp(24px,3vw,40px);grid-template-columns:1fr}
+@media(min-width:720px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.steps{grid-template-columns:repeat(4,1fr)}}
+.step{display:flex;flex-direction:column;align-items:center;text-align:center}
+.step .dev{margin-bottom:26px}
+.step h3{font-family:var(--display);font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.15;color:var(--navy);margin-bottom:10px}
+.step p{font-size:15px;line-height:1.6;max-width:30ch}
+.step .n{font-family:var(--text);font-size:12px;font-weight:600;letter-spacing:0.2em;color:var(--rust);margin-bottom:12px}
+
+.feat{display:grid;gap:18px;grid-template-columns:1fr}
+/* Two columns only where each card gets room: while the section is stacked, or on wide screens. */
+@media(min-width:620px) and (max-width:899px),(min-width:1200px){.feat{grid-template-columns:repeat(2,1fr)}}
+.feat>div{background:var(--cream2);border-radius:24px;padding:26px 26px 24px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.feat .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--sage2);color:var(--navy)}
+.feat .ic.t{background:#29BC9D}.feat .ic.o{background:var(--sun)}.feat .ic.s{background:var(--sand)}
+.feat b{display:block;font-size:17px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.feat span{font-size:15px;line-height:1.6;color:var(--on-light-mid)}
+
+.cover-card{width:min(300px,68vw);height:auto;border-radius:6px;box-shadow:0 34px 70px -24px rgba(9,34,49,0.55)}
+.light .deal{border-left-color:var(--sun)}
+
 /* ── motion ───────────────────────────────────────────────────────────── */
 /* Visible is the DEFAULT. The hidden state is only applied once the inline
    script in index.html has confirmed IntersectionObserver exists (html.js), so a

@@ -74,12 +74,56 @@ const chapters = [
 const COUNT_WORD = { 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six",
                      7: "Seven", 8: "Eight", 9: "Nine", 10: "Ten" };
 
+// Every line here is checked against the live app (2026-10-06): the counter is
+// "Since last contact", "Today's line" comes from the book, there are eight
+// habits and ten levels with a picture each. No notifications - none promised.
 const features = [
-  { Icon: Block, title: "Don't Text Your Ex", desc: "Intercepts the urge and redirects it into something real. Instantly." },
-  { Icon: Bars,  title: "No Contact Counter", desc: "Track every day of distance. Watch the number grow. That number is you." },
-  { Icon: Book,  title: "Daily Thought",      desc: "One line from the book, on your screen every day." },
-  { Icon: Check, title: "Habit Tracker",      desc: "Eight habits. One tap each. Small wins that build a life." },
+  { Icon: Block, tone: "o", title: "The button",          desc: "“Don't text your ex” sits at the bottom of every day. One tap when you're about to." },
+  { Icon: Bars,  tone: "",  title: "Days since last contact", desc: "The big number. It only grows while you hold, and your longest run is kept." },
+  { Icon: Book,  tone: "t", title: "Today's line",        desc: "One line from the book, on your screen every day." },
+  { Icon: Check, tone: "s", title: "Eight habits",        desc: "Cold shower, exercise, no contact, journal and four more. One tap each." },
 ];
+
+// The four screens of "How it works", in the order he meets them at 2am.
+// Each line is what that real screen shows.
+const HOW = [
+  { name: "today", title: "The button.", text: "It sits at the bottom of every day, under the count. Tap it when you're about to.",
+    alt: "The Today screen with the Don't text your ex button at the bottom." },
+  { name: "task", title: "One thing to do instead.", text: "A small task with a timer. Don't like it? Ask for a different one.",
+    alt: "A task card: press your feet flat into the floor and push, thirty seconds." },
+  { name: "write", title: "Or say all of it.", text: "Write the whole message out. It isn't saved anywhere, and there's no send button.",
+    alt: "The write-it-out screen: a long draft, with the note that it is not saved and cannot be sent." },
+  { name: "level", title: "It counts what you didn't send.", text: "Days held, habits done, texts you didn't send. Ten levels, a picture for each.",
+    alt: "A level card, One Week Standing, with counts of days kept, texts not sent and habits done." },
+];
+
+// The cover's sunburst (teal and amber rays), as on the thumbnails and in the app's sky.
+const Sunburst = ({ style }) => {
+  const n = 20, r = 1000, rays = [];
+  for (let k = 0; k < n; k++) {
+    const a0 = (2 * Math.PI * k) / n, a1 = (2 * Math.PI * (k + 0.5)) / n;
+    rays.push(<polygon key={k} fill={k % 2 ? "#29BC9D" : "#F9BC6D"}
+      points={`0,0 ${(r * Math.cos(a0)).toFixed(1)},${(r * Math.sin(a0)).toFixed(1)} ${(r * Math.cos(a1)).toFixed(1)},${(r * Math.sin(a1)).toFixed(1)}`} />);
+  }
+  return (
+    <svg className="sunburst" viewBox="-1000 -1000 2000 2000" aria-hidden="true" focusable="false" style={style}>
+      <defs><radialGradient id="sb-fade"><stop offset="0.15" stopColor="#fff" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></radialGradient>
+        <mask id="sb-m"><circle r="1000" fill="url(#sb-fade)" /></mask></defs>
+      <g mask="url(#sb-m)">{rays}</g>
+    </svg>
+  );
+};
+
+// A real app screen in a phone frame. webp with a jpg fallback, fixed size so the
+// layout never jumps.
+const Shot = ({ name, alt, small = false }) => (
+  <div className={`dev${small ? " sm" : ""}`}>
+    <picture>
+      <source srcSet={`/app/${name}.webp`} type="image/webp" />
+      <img src={`/app/${name}.jpg`} width="412" height="915" alt={alt} loading={name === "today" ? "eager" : "lazy"} />
+    </picture>
+  </div>
+);
 
 // ── Reveal on scroll ────────────────────────────────────────────────────────
 // The hidden state only exists while <html class="js"> is set, and that class is
@@ -224,110 +268,143 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="page">
+    <div className="page light">
       <style>{CSS}</style>
 
-      {/* ── NAV ── */}
+      {/* ── NAV ── light, like the app's own bar. "Open the app" is the action now;
+          the price stays one tap away in the book section. */}
       <header className="nav-bar"
         style={{
           position: "fixed", inset: "0 0 auto 0", zIndex: 100,
           padding: "14px var(--gut)",
-          background: navOn ? "rgba(10,33,48,0.94)" : "transparent",
+          background: navOn ? "rgba(252,248,223,0.94)" : "transparent",
           backdropFilter: navOn ? "blur(14px)" : "none",
-          transition: "background 320ms ease",
+          borderBottom: navOn ? "1px solid rgba(9,34,49,0.08)" : "1px solid transparent",
+          transition: "background 320ms ease, border-color 320ms ease",
         }}
       >
-        {/* Home link (Kamil, 2026-09-17). On the home page it scrolls back to the
-            top instead of reloading; href="/" keeps it working without JS. */}
         <a className="label nav-l nav-home" href="/" onClick={toTop}
-           style={{ color: navOn ? "var(--teal300)" : "var(--on-dark-lo)", textDecoration: "none" }}>
-          Survival Guide
+           style={{ color: "var(--navy)", textDecoration: "none" }}>
+          {BRAND}
         </a>
         <span className="nav-links">
-          {/* The articles were live but unreachable: the only link to them was
-              inside a collapsed FAQ accordion, which a crawler follows and a
-              person never finds. */}
+          <a className="label nav-l" href="#book" style={{ color: "var(--on-light-mid)", textDecoration: "none" }}>The book</a>
           {ARTICLES.length > 0 && (
-            <a className="label nav-l" href="#reading"
-               style={{ color: navOn ? "var(--on-dark-mid)" : "var(--on-dark-lo)", textDecoration: "none" }}>
+            <a className="label nav-l" href="#reading" style={{ color: "var(--on-light-mid)", textDecoration: "none" }}>
               Read for free
             </a>
           )}
           {VIDEOS.length > 0 && (
-            <a className="label nav-l" href="/videos/"
-               style={{ color: navOn ? "var(--on-dark-mid)" : "var(--on-dark-lo)", textDecoration: "none" }}>
+            <a className="label nav-l" href="/videos/" style={{ color: "var(--on-light-mid)", textDecoration: "none" }}>
               Videos
             </a>
           )}
         </span>
         <div className="nav-buy" style={{ opacity: navOn ? 1 : 0, pointerEvents: navOn ? "auto" : "none", transition: "opacity 320ms ease" }}>
-          {BUY_URL
-            ? <a className="cta" style={{ padding: "12px 20px", minHeight: 44, fontSize: 14 }} href={BUY_URL} {...buyEvent("nav")}>{PRICE}<Arrow size={16} /></a>
-            : <span className="cta" style={{ padding: "12px 20px", minHeight: 44, fontSize: 14 }} role="link" aria-disabled="true">{PRICE}<Arrow size={16} /></span>}
+          <a className="app-cta" style={{ padding: "11px 20px", minHeight: 44, fontSize: 14 }} href={APP_URL} {...appEvent("nav")}>
+            Open the app<Arrow size={16} />
+          </a>
         </div>
       </header>
 
       <main>
-        {/* ── HERO — the floor ── */}
-        <section className="sec on-ink" aria-labelledby="h-hero"
-          style={{ minHeight: "100dvh", display: "flex", alignItems: "center", paddingTop: "clamp(110px,15vh,180px)" }}>
-          <div className="wrap g-split">
+        {/* ── HERO — the app first (Kamil, 2026-10-06) ──
+            The H1 is the brand, which is also the phrase people type. The book's
+            query ("A Survival Guide For Men After A Breakup") moved to the book
+            section's H2; the page title and the schema still carry it. */}
+        <section className="sec on-cream2" aria-labelledby="h-hero"
+          style={{ position: "relative", overflow: "hidden", minHeight: "100dvh", display: "flex", alignItems: "center",
+                   paddingTop: "clamp(150px,18vh,180px)" }}>
+          <Sunburst style={{ right: "-18%", top: "-10%", width: "min(1200px,140vw)", opacity: 0.32 }} />
+          <div className="wrap g-split hero-wrap">
             <div>
-              {/* The primary query belongs inside the H1, not in a sibling
-                  span above it. It read "A Survival Guide For Men" alone, so
-                  the most important heading on the page did not contain the
-                  thing people search for. Same pixels, different markup: the
-                  kicker is now a block-level span inside the heading.
-                  One Reveal, not two - `.rv` animates translateY, which an
-                  inline span inside a heading will not honour. */}
               <Reveal>
-                <h1 id="h-hero" className="d-xl hi" style={{ marginBottom: 24 }}>
-                  <span className="h1-kicker">{BRAND}</span>
-                  A Survival Guide For<br />Men After A Breakup
+                <h1 id="h-hero" className="d-xl hi-d" style={{ marginBottom: 26 }}>
+                  <span className="h1-kicker" style={{ color: "var(--rust)" }}>The free app for 2am</span>
+                  Don't text your ex.<br /><span className="it c-deep">Open this instead.</span>
                 </h1>
               </Reveal>
               <Reveal delay={160}>
-                <p className="lead it c-teal" style={{ marginBottom: 10 }}>Written by a man who's been there.</p>
-              </Reveal>
-              <Reveal delay={190}>
-                <p className="label lo" style={{ marginBottom: 22 }}>Kamil Zaleński</p>
-              </Reveal>
-              <Reveal delay={220}>
-                {/* The closing sentence used to be "This book was built for that
-                    moment", which gestured at the position without naming it.
-                    POSITIONING names it, and this is the visible statement that
-                    entitles the schema to carry the same claim - meta.js may
-                    only assert what the page shows. Decided 2026-09-11. */}
-                <p className="lead" style={{ marginBottom: 44 }}>
-                  You're not sleeping. You're checking her Instagram at midnight.
-                  You're replaying conversations that go nowhere. This is {POSITIONING}.
+                <p className="lead" style={{ marginBottom: 34 }}>
+                  Your thumb is already on her name. Tap one button and the app gives you one small thing to
+                  do instead, right now. Or somewhere to write the whole message out, with no send button.
                 </p>
               </Reveal>
-              <Reveal delay={300}><BuyBlock where="hero" /></Reveal>
+              <Reveal delay={240}>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "14px 26px" }}>
+                  <a className="app-cta" href={APP_URL} {...appEvent("hero")}>Open the app, free<Arrow size={18} /></a>
+                  <a className="ghost-d" href="#book">Or read the book<Arrow size={16} /></a>
+                </div>
+                <div className="facts">
+                  <span>Free</span><span>No account</span><span>Stays on your phone</span><span>Works offline</span>
+                </div>
+              </Reveal>
             </div>
 
-            <Reveal delay={240} style={{ justifySelf: "center" }}>
-              {coverOk ? (
-                <img
-                  src={COVER_SRC} width="800" height="1280"
-                  alt={`Cover of ${TITLE}`}
-                  onError={() => setCoverOk(false)}
-                  style={{ width: "min(320px,72vw)", height: "auto", borderRadius: 3, boxShadow: "0 34px 70px -20px rgba(7,24,35,0.85)" }}
-                />
-              ) : (
-                <div aria-hidden="true" style={{ width: "min(320px,72vw)", aspectRatio: "5/8", background: "var(--teal900)", borderRadius: 3 }} />
-              )}
+            <Reveal delay={200} style={{ justifySelf: "center" }}>
+              <div className="duo">
+                <Shot name="today" alt="The app's Today screen: days since last contact, today's line from the book, eight habits, and the Don't text your ex button." />
+                <Shot name="task" small alt="After tapping the button: one small task to do instead, with a thirty-second timer." />
+              </div>
             </Reveal>
           </div>
         </section>
 
-        {/* ── PROBLEM — still on the floor ── */}
-        <section className="sec on-ink" aria-labelledby="h-problem">
+        {/* ── HOW IT WORKS — four real screens, in the order he meets them ── */}
+        <section className="sec on-sand" aria-labelledby="h-how">
+          <div className="wrap">
+            <div style={{ marginBottom: "clamp(44px,6vw,72px)" }}>
+              <span className="label c-rust">How it works</span>
+              <h2 id="h-how" className="d-l hi-d" style={{ marginTop: 18 }}>What happens<br />when you tap it.</h2>
+            </div>
+            <div className="steps">
+              {HOW.map((s, i) => (
+                <Reveal key={s.name} delay={i * 80} className="step">
+                  <Shot name={s.name} small alt={s.alt} />
+                  <span className="n">0{i + 1}</span>
+                  <h3>{s.title}</h3>
+                  <p>{s.text}</p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── WHAT ELSE IS IN IT ── */}
+        <section className="sec on-sage2" aria-labelledby="h-app">
+          <div className="wrap g-split-r">
+            <div>
+              <span className="label c-navy">Every day, not only at 2am</span>
+              <h2 id="h-app" className="d-l" style={{ marginTop: 18, marginBottom: 22, color: "var(--navy)" }}>
+                The number<br />is you.
+              </h2>
+              <p className="body" style={{ marginBottom: 30, color: "var(--navy)" }}>
+                The urge is one minute. The rest of the app is for the days around it: a count that
+                only goes up while you hold, and small things to do that make the next night easier.
+              </p>
+              <a className="app-cta" href={APP_URL} {...appEvent("app-section")}>Open the app<Arrow size={18} /></a>
+              <p className="small" style={{ marginTop: 16, color: "var(--navy)" }}>
+                Free. No account. Everything stays on your phone. Add it to your home screen and it works offline.
+              </p>
+            </div>
+            <div className="feat">
+              {features.map(({ Icon, title, desc, tone }) => (
+                <Reveal key={title}>
+                  <span className={`ic ${tone}`}><Icon size={22} /></span>
+                  <span><b>{title}</b><span>{desc}</span></span>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── PROBLEM ── */}
+        <section className="sec on-cream2" aria-labelledby="h-problem">
           <div className="wrap">
             <div className="g-split-r" style={{ marginBottom: "clamp(32px,5vw,56px)" }}>
               <div>
-                <span className="label c-teal">Sound familiar?</span>
-                <h2 id="h-problem" className="d-l hi" style={{ marginTop: 18 }}>
+                <span className="label c-rust">Sound familiar?</span>
+                <h2 id="h-problem" className="d-l hi-d" style={{ marginTop: 18 }}>
                   You know exactly<br />what this feels like.
                 </h2>
               </div>
@@ -340,44 +417,24 @@ export default function LandingPage() {
             <ul style={{ listStyle: "none" }}>
               {problems.map(({ Icon, text }, i) => (
                 <Reveal as="li" key={i} delay={i * 70} className="row">
-                  <span className="num c-orange" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="num c-rust" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
                   <span style={{ display: "flex", gap: 18, alignItems: "flex-start" }}>
-                    <span className="c-teal" style={{ flexShrink: 0, marginTop: 3 }}><Icon size={22} /></span>
-                    <span className="d-m hi" style={{ fontSize: "clamp(19px,2.4vw,30px)" }}>{text}</span>
+                    <span className="c-deep" style={{ flexShrink: 0, marginTop: 3 }}><Icon size={22} /></span>
+                    <span className="d-m hi-d" style={{ fontSize: "clamp(19px,2.4vw,30px)" }}>{text}</span>
                   </span>
                 </Reveal>
               ))}
             </ul>
-
-            <Reveal delay={140}>
-              <p className="lead" style={{ marginTop: "clamp(40px,6vw,68px)" }}>
-                This isn't a therapy manual. This isn't a list of affirmations. This is a blueprint —
-                written by a man who's been on the floor and figured out how to get back up.
-              </p>
-            </Reveal>
           </div>
         </section>
 
-        {/* ── THE HARD PART ──
-            The two ideas that separate this book from every other breakup page,
-            and neither was on the site. The first is the most arresting page in
-            the manuscript (p.11) and the second is its one genuinely unusual
-            claim (p.12) - the site was selling six chapter titles while keeping
-            its best material behind the paywall, which is backwards. Give away
-            the ideas; the book is the working-through.
-
-            Darkest ground on the page, on purpose. This is the section that says
-            the unwelcome thing, and it sits between the description of the floor
-            and the first light in the next section.
-
-            The prose is lifted close to the manuscript's own wording rather than
-            rewritten as marketing, so the voice a visitor meets here is the voice
-            he gets if he buys. */}
-        <section className="sec on-abyss" aria-labelledby="h-truth">
+        {/* ── THE HARD PART ── the one deep-teal section: the colour of the app's
+            links and the cover's sea, the darkest thing either of them uses. */}
+        <section className="sec on-deep" aria-labelledby="h-truth">
           <div className="wrap">
             <div className="g-split-r" style={{ marginBottom: "clamp(40px,6vw,72px)" }}>
               <div>
-                <span className="label c-orange">The hard part</span>
+                <span className="label" style={{ color: "var(--sunline)" }}>From the book</span>
                 <h2 id="h-truth" className="d-l hi" style={{ marginTop: 18 }}>
                   Two things<br />nobody will<br />say to you.
                 </h2>
@@ -390,7 +447,7 @@ export default function LandingPage() {
 
             <div className="stack-l">
               <Reveal>
-                <p className="label c-teal" style={{ marginBottom: 20 }}>One</p>
+                <p className="label" style={{ marginBottom: 20, color: "var(--sunline)" }}>One</p>
                 <h3 className="d-m hi it" style={{ marginBottom: 22 }}>
                   She's probably already moved on.
                 </h3>
@@ -403,7 +460,7 @@ export default function LandingPage() {
               </Reveal>
 
               <Reveal delay={90}>
-                <p className="label c-teal" style={{ marginBottom: 20 }}>Two</p>
+                <p className="label" style={{ marginBottom: 20, color: "var(--sunline)" }}>Two</p>
                 <h3 className="d-m hi it" style={{ marginBottom: 22 }}>
                   What broke isn't the love. It's the respect.
                 </h3>
@@ -414,7 +471,7 @@ export default function LandingPage() {
                   himself he respected most. That is what's actually crushing you. Not the absence of
                   love. The collapse of self-respect.
                 </p>
-                <p className="lead c-teal it" style={{ marginTop: 22 }}>
+                <p className="lead it" style={{ marginTop: 22, color: "var(--sunline)" }}>
                   Which is the good news, because self-respect is a thing you can rebuild.
                 </p>
               </Reveal>
@@ -422,63 +479,71 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── QUOTE 1 — first light ── */}
-        <section className="sec on-t900">
+        {/* ── QUOTE — the orange of the app's sky and the cover's sun ── */}
+        <section className="sec on-sun">
           <Reveal>
             <figure className="wrap" style={{ maxWidth: 860 }}>
-              <blockquote className="d-l it hi">
+              <blockquote className="d-l it">
                 “The pain is fuel. The only question is what you point it at.”
               </blockquote>
-              <figcaption className="label c-teal" style={{ marginTop: 30 }}>Chapter 2 — Discipline</figcaption>
+              <figcaption className="label" style={{ marginTop: 30 }}>Chapter 2 — Discipline</figcaption>
             </figure>
           </Reveal>
         </section>
 
-        {/* ── BOOK ── */}
-        <section className="sec on-t900" aria-labelledby="h-book" style={{ paddingTop: 0 }}>
+        {/* ── BOOK ── carries the book's search phrase as its H2 and POSITIONING
+            word for word (DECISIONS 2026-09-11: repeat it verbatim; the schema may
+            only assert what the page shows). */}
+        <section className="sec on-cream2" aria-labelledby="h-book" id="book">
           <div className="wrap">
-            <hr className="rule" style={{ marginBottom: "clamp(56px,8vw,96px)", color: "var(--on-dark-hi)" }} />
-            <div className="g-split-r">
+            <div className="g-split" style={{ marginBottom: "clamp(56px,8vw,96px)" }}>
               <div>
-                <span className="label c-teal">The book</span>
-                <h2 id="h-book" className="d-l hi" style={{ marginTop: 18, marginBottom: 22 }}>
-                  Six chapters.<br />One goal.<br />Get you back.
+                <span className="label c-rust">The book behind the app</span>
+                <h2 id="h-book" className="d-l hi-d" style={{ marginTop: 18, marginBottom: 14 }}>
+                  A Survival Guide For<br />Men After A Breakup
                 </h2>
-                <p className="body" style={{ marginBottom: 38 }}>
+                <p className="lead it c-deep" style={{ marginBottom: 6 }}>Written by a man who's been there.</p>
+                <p className="label lo-d" style={{ marginBottom: 24 }}>{AUTHOR}</p>
+                <p className="lead" style={{ marginBottom: 14 }}>
+                  The app is for the minute. The book is for the weeks around it. You're not sleeping.
+                  You're checking her Instagram at midnight. You're replaying conversations that go
+                  nowhere. This is {POSITIONING}.
+                </p>
+                <p className="body" style={{ marginBottom: 36 }}>
                   Short on purpose. We won't dwell on what went wrong. We'll focus on how to get out
                   of the hole you're in.
                 </p>
-                <BuyBlock where="book" />
+                <BuyBlock light where="book" />
               </div>
+              <Reveal delay={160} style={{ justifySelf: "center" }}>
+                {coverOk ? (
+                  <img src={COVER_SRC} width="800" height="1280" alt={`Cover of ${TITLE}`}
+                       onError={() => setCoverOk(false)} className="cover-card" />
+                ) : (
+                  <div aria-hidden="true" className="cover-card" style={{ aspectRatio: "5/8", background: "var(--deep)" }} />
+                )}
+              </Reveal>
+            </div>
 
+            <div className="g-split-r">
               <div>
-                {/* A ul, not an ol: three of these nine sections are not
-                    numbered chapters, and an ordered list that skips numbers
-                    reads as a mistake. Keyed on id because num is no longer
-                    unique - three entries share an empty one. */}
+                <h3 className="d-m hi-d" style={{ marginBottom: 14 }}>Six chapters.<br />One goal.<br />Get you back.</h3>
+                <p className="small lo-d it">Six chapters, and the three sections around them.</p>
+              </div>
+              <div>
                 <ul style={{ listStyle: "none" }}>
                   {chapters.map((ch, i) => (
                     <Reveal as="li" key={ch.id} delay={i * 60} className="row" style={{ alignItems: "baseline" }}>
-                      <span className="label c-orange" style={{ minWidth: 28 }} aria-hidden={!ch.num}>
+                      <span className="label c-rust" style={{ minWidth: 28 }} aria-hidden={!ch.num}>
                         {ch.num || "—"}
                       </span>
-                      <span className={ch.num ? "hi" : "lo"} style={{ fontSize: "clamp(16px,1.7vw,20px)", lineHeight: 1.5 }}>{ch.title}</span>
+                      <span className={ch.num ? "hi-d" : "lo-d"} style={{ fontSize: "clamp(16px,1.7vw,20px)", lineHeight: 1.5 }}>{ch.title}</span>
                     </Reveal>
                   ))}
                 </ul>
-                <p className="small lo it" style={{ marginTop: 22 }}>
-                  Six chapters, and the three sections around them.
-                </p>
-
-                {/* The prologue's terms (p.6), which were nowhere on a site named
-                    after them. This is the book's only demand of the reader and
-                    it is also, said out loud, the sharpest thing the page can
-                    say about what it is for. Set as a bordered strip rather than
-                    a section: it belongs to the book description, and the page is
-                    already long. */}
                 <Reveal delay={140} className="deal">
-                  <p className="label c-orange" style={{ marginBottom: 14 }}>Before you start</p>
-                  <p className="hi" style={{ fontSize: "clamp(17px,1.7vw,20px)", lineHeight: 1.6 }}>
+                  <p className="label c-rust" style={{ marginBottom: 14 }}>Before you start</p>
+                  <p className="hi-d" style={{ fontSize: "clamp(17px,1.7vw,20px)", lineHeight: 1.6 }}>
                     There's a deal. No calling. No texting. No watching her every story hoping she'll
                     notice — not until you've finished the book. That's it. It's a small ask, and it
                     isn't long. Short on purpose.
@@ -489,73 +554,15 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── APP ── */}
-        <section className="sec on-t700" aria-labelledby="h-app">
-          <div className="wrap">
-            <div style={{ marginBottom: "clamp(44px,6vw,76px)", maxWidth: "22ch" }}>
-              <span className="label c-teal">The app</span>
-              <h2 id="h-app" className="d-l hi" style={{ marginTop: 18 }}>
-                For the 2am moment.<br />Right in your pocket.
-              </h2>
-            </div>
-
-            <div className="g-split">
-              <div className="stack-l">
-                {features.map(({ Icon, title, desc }, i) => (
-                  <Reveal key={title} delay={i * 70} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 18, alignItems: "start" }}>
-                    <span className="c-teal" style={{ marginTop: 2 }}><Icon size={26} /></span>
-                    <span>
-                      <span className="hi" style={{ display: "block", fontSize: 18, fontWeight: 600, marginBottom: 6 }}>{title}</span>
-                      <span className="body" style={{ display: "block" }}>{desc}</span>
-                    </span>
-                  </Reveal>
-                ))}
-                {APP_URL
-                  ? <div style={{ display: "grid", gap: 12, justifyItems: "start" }}>
-                      <a className="ghost" href={APP_URL} {...appEvent("app-section")}>Open the app<Arrow size={16} /></a>
-                      <p className="small lo">Free. No account. Everything stays on your phone. Add it to your home screen and it works offline.</p>
-                    </div>
-                  : <p className="small lo it">The app is still in build. The book stands on its own.</p>}
-              </div>
-
-              <Reveal delay={180} style={{ justifySelf: "center" }}>
-                <div className="phone float" role="img" aria-label="Preview of the app: an interrupt button, a habit grid, and the day's thought.">
-                  <p className="label c-orange" style={{ fontSize: 9, textAlign: "center", marginBottom: 14 }}>Don't Text Your Ex</p>
-                  <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "15px 13px", marginBottom: 10, borderRadius: 3, border: "1px solid var(--orange)", background: "rgba(239,105,62,0.13)" }}>
-                    <span className="c-orange"><Block size={22} /></span>
-                    <span>
-                      <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "var(--orange)" }}>Don't Text Your Ex</span>
-                      <span style={{ display: "block", fontSize: 11, color: "var(--on-dark-lo)" }}>Tap for an instant redirect</span>
-                    </span>
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7, marginBottom: 10 }}>
-                    {[["Cold shower", true], ["Exercise", true], ["No contact", false], ["Journal", false]].map(([lbl, done]) => (
-                      <span key={lbl} className={done ? "tile done" : "tile"}>
-                        {done ? <Check size={14} /> : <Circle size={14} />}{lbl}
-                      </span>
-                    ))}
-                  </div>
-                  <div style={{ padding: "12px 13px", borderRadius: 3, border: "1px solid rgba(252,250,231,0.12)" }}>
-                    <span className="label" style={{ fontSize: 9, color: "var(--teal300)" }}>Today's thought</span>
-                    <p className="it" style={{ fontSize: 12, color: "var(--on-dark-mid)", marginTop: 7, lineHeight: 1.55 }}>
-                      “The goal right now isn't transformation. It's interruption.”
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/* ── QUOTE 2 — the turn. Hard cut into the light, on purpose. ── */}
-        <section className="sec on-sage">
+        {/* ── QUOTE 2 ── */}
+        <section className="sec on-sage2">
           <Reveal>
             <figure className="wrap" style={{ maxWidth: 900 }}>
               <blockquote className="d-l it hi-d">
                 “Somewhere underneath the coal of all this pain, there is a diamond. It was always
                 there. The breakup didn't create it. But it created the pressure.”
               </blockquote>
-              <figcaption className="label c-t700" style={{ marginTop: 30 }}>Chapter 4 — Rebuilding your life</figcaption>
+              <figcaption className="label c-navy" style={{ marginTop: 30 }}>Chapter 4 — Rebuilding your life</figcaption>
             </figure>
           </Reveal>
         </section>
@@ -597,7 +604,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── AUTHOR ── */}
-        <section className="sec on-cream" aria-labelledby="h-author">
+        <section className="sec on-sand" aria-labelledby="h-author">
           <div className="wrap" style={{ maxWidth: 760 }}>
             <h2 id="h-author" className="label c-rust" style={{ marginBottom: 26 }}>Who wrote this</h2>
             <p className="d-m it hi-d">
@@ -616,10 +623,10 @@ export default function LandingPage() {
             Sits directly above the FAQ because a man deciding whether to trust
             a stranger's book should be able to read the stranger first. */}
         {ARTICLES.length > 0 && (
-          <section className="sec on-t700" aria-labelledby="h-reading" id="reading">
+          <section className="sec on-cream2" aria-labelledby="h-reading" id="reading">
             <div className="wrap" style={{ maxWidth: 900 }}>
-              <span className="label c-teal">Free to read</span>
-              <h2 id="h-reading" className="d-l hi" style={{ marginTop: 18, marginBottom: 18 }}>
+              <span className="label c-rust">Free to read</span>
+              <h2 id="h-reading" className="d-l hi-d" style={{ marginTop: 18, marginBottom: 18 }}>
                 Start here.<br />No payment, no email.
               </h2>
               {/* Derived, never typed. This said "Two" and went stale the moment
@@ -634,13 +641,13 @@ export default function LandingPage() {
               <ul style={{ listStyle: "none" }}>
                 {ARTICLES.map((a, i) => (
                   <Reveal as="li" key={a.slug} delay={i * 70}
-                          style={{ borderTop: "1px solid rgba(252,250,231,0.18)" }}>
+                          style={{ borderTop: "1px solid rgba(9,34,49,0.14)" }}>
                     <a href={`/${a.slug}/`}
                        style={{ display: "block", padding: "26px 0", textDecoration: "none" }}>
-                      <span className="d-m hi" style={{ display: "block", marginBottom: 8 }}>
+                      <span className="d-m hi-d" style={{ display: "block", marginBottom: 8 }}>
                         {a.title}
                       </span>
-                      <span className="small lo" style={{ display: "block", maxWidth: "62ch" }}>
+                      <span className="small lo-d" style={{ display: "block", maxWidth: "62ch" }}>
                         {a.description}
                       </span>
                     </a>
@@ -650,7 +657,7 @@ export default function LandingPage() {
               {/* The only link into /videos/ - the crawl path for that page. */}
               {VIDEOS.length > 0 && (
                 <p className="body" style={{ marginTop: "clamp(34px,5vw,52px)" }}>
-                  <a className="c-orange" href="/videos/">
+                  <a className="c-rust" href="/videos/">
                     Or watch: {VIDEOS.length} {VIDEOS.length === 1 ? "episode" : "episodes"} of The 2AM Guy →
                   </a>
                 </p>
@@ -665,7 +672,7 @@ export default function LandingPage() {
             it only earns that by being visible here. The same array drives the
             FAQPage JSON-LD - see meta.js. Native <details>, so it works with no
             JavaScript at all and stays keyboard-operable for free. */}
-        <section className="sec on-cream" aria-labelledby="h-faq" id="faq">
+        <section className="sec on-sand" aria-labelledby="h-faq" id="faq">
           <div className="wrap" style={{ maxWidth: 820 }}>
             <span className="label c-rust">Straight answers</span>
             <h2 id="h-faq" className="d-l hi-d" style={{ marginTop: 18, marginBottom: "clamp(34px,5vw,54px)" }}>
@@ -687,7 +694,7 @@ export default function LandingPage() {
                         putting one somewhere else. */}
                     {more && (
                       <p className="faq-a" style={{ marginTop: 14 }}>
-                        <a className="c-orange" href={more.href}>{more.label} →</a>
+                        <a className="c-rust" href={more.href}>{more.label} →</a>
                       </p>
                     )}
                   </details>
@@ -747,7 +754,7 @@ export default function LandingPage() {
         )}
       </main>
 
-      <footer className="on-paper" style={{ padding: "clamp(40px,6vw,64px) var(--gut)" }}>
+      <footer className="on-cream2" style={{ padding: "clamp(40px,6vw,64px) var(--gut)" }}>
         <div className="wrap stack-m">
           <p className="small lo-d" style={{ maxWidth: "62ch" }}>
             {REFUND && `${REFUND} `}A {PAGES}-page {FORMAT} and a {LISTEN_TIME} audiobook, both

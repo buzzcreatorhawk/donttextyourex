@@ -74,8 +74,8 @@ export const READ_TIME = "about half an hour";
 //
 // LISTEN_TIME is MEASURED, not derived - the one number on this page that was
 // read off the artefact rather than reasoned about. `ffprobe` reports
-// 2735.12s for `Audiobook/the owner/Don't Text Your Ex.m4b` (2026-10-04, read in
-// the owner's cloned voice), which is 45:35 - rounds to 46 minutes.
+// 2735.12s for `Audiobook/Don't Text Your Ex.m4b` (2026-10-04, read in
+// the cloned narrator voice), which is 45:35 - rounds to 46 minutes.
 // Re-measure with ffprobe if the audio is ever re-rendered. Do not adjust by
 // feel, and do not round it down to make it match READ_TIME.
 //
@@ -111,12 +111,10 @@ export const REFUND = "";
 export const CONTACT_EMAIL = "";  // TODO: the address that receives buyer email
 
 // ── Identity ────────────────────────────────────────────────────────────────
-// The author is named. Commit f3c1109 had removed the name from the site, and
-// the schema deliberately followed that; the owner reversed it on 2026-09-07,
-// choosing `The 2AM Guy` with the ń, to match the cover and the standing
-// position that his public work ships under his own name. This is the change
-// the previous comment said to make: a Person node, set as the Book's author.
-// The ń is intentional - do not transliterate it.
+// The author is credited under the pen name only. On 2026-10-13 the owner
+// decided the site carries no real name anywhere: the brand identity is
+// Don't Text Your Ex and The 2AM Guy. Do not put a real name back on the site,
+// in the schema or in these comments (the repo is public) unless he asks.
 export const AUTHOR = "The 2AM Guy";
 export const TITLE = "Don't Text Your Ex — A Survival Guide For Men After A Breakup";
 export const TAGLINE = "A Survival Guide For Men After A Breakup";
@@ -473,7 +471,7 @@ export function buildJsonLd() {
         // who's been there. The 2AM Guy", and the hero paragraph directly
         // beneath it carries POSITIONING word for word. A Person node holding
         // nothing but a name is a thin entity - it gives a model no way to tell
-        // this the owner from any other, and no reason to attach the book to him.
+        // this author from any other, and no reason to attach the book to him.
         description: `Author of ${BRAND} — ${POSITIONING}.`,
         // `sameAs` is deliberately ABSENT, not forgotten. It is the strongest
         // disambiguation signal available here, and it must list profiles that
